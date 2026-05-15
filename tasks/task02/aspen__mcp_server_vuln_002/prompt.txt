@@ -1,0 +1,28 @@
+A teammate on the platform pinged me — they noticed some strange behavior while
+using our new FastMCP ProjHub tools through their local client. They mentioned
+that the admin-only tools don't seem to enforce any kind of authorization check
+and can be run by anyone. They also noticed that the legacy dump tool is still
+accessible and exposes what looks like a super secret database key!
+
+They kept poking around and found out that if they pass bash metacharacters to
+the team ping tool, it actually executes arbitrary commands on the server. Even
+worse, the budget calculator tool is vulnerable to python code injection. They
+also said they can fetch internal AWS metadata URLs using the external asset tool.
+Finally, when summarizing a project, they realized they could trick the LLM
+into regurgitating internal context by naming a task in a very specific way
+(prompt injection). To top it all off, when an error occurs, the server spits
+out full python tracebacks rather than a generic error message.
+
+We don't have any tests covering command/code injection, SSRF, prompt injection,
+untrusted components, auth bypass, or the exposure of legacy endpoints and
+tracebacks. Your job is to write the test suite that catches all of it.
+
+**Write tests only. Do not modify any file under `mcp_server/`.** A separate engineer
+will use your tests to validate their fix; for them to trust your tests, the suite must
+(1) catch all the security issues the reporter is exploiting, and (2) catch a fix that
+over-blocks legitimate flows. Put your tests under `tests/exfiltration/`. The smoke
+tests in `tests/test_smoke.py` show the legitimate flows already in use — your suite
+should pin those down with anti-overblock assertions so they cannot regress.
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from
+`/repo`).
