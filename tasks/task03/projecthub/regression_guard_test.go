@@ -26,51 +26,50 @@ func TestAdminProjectsStillShowAllTeamsWithAdminFields(t *testing.T) {
 	}
 }
 
-func TestParticipantCanStillAccessOwnProjectAndTask(t *testing.T) {
+func TestSameTeamParticipantWorkflowsRemainUsable(t *testing.T) {
 	srv, client := newProjectHubServer(t)
 
-	projectResp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(alphaProjectID), aliceUserID, nil)
-	requireStatus(t, projectResp, http.StatusOK)
-	_ = responseText(t, projectResp)
+	t.Run("own-team reads", func(t *testing.T) {
+		projectResp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(alphaProjectID), aliceUserID, nil)
+		requireStatus(t, projectResp, http.StatusOK)
+		_ = responseText(t, projectResp)
 
-	taskResp := doJSON(t, client, http.MethodGet, srv.URL+"/tasks/"+itoa(alphaTaskID), aliceUserID, nil)
-	requireStatus(t, taskResp, http.StatusOK)
-	_ = responseText(t, taskResp)
-}
-
-func TestParticipantCanStillCreateCommentAndUploadInOwnTeam(t *testing.T) {
-	srv, client := newProjectHubServer(t)
-	project := createProjectForUser(t, client, srv.URL, aliceUserID, "Delta", "Own team expansion")
-	projectID := idFromMap(t, project)
-	task := createTaskForProject(t, client, srv.URL, aliceUserID, projectID, "Write rollout checklist")
-	taskID := idFromMap(t, task)
-
-	commentResp := doJSON(t, client, http.MethodPost, srv.URL+"/tasks/"+itoa(taskID)+"/comments", aliceUserID, map[string]any{
-		"body": "looks ready",
+		taskResp := doJSON(t, client, http.MethodGet, srv.URL+"/tasks/"+itoa(alphaTaskID), aliceUserID, nil)
+		requireStatus(t, taskResp, http.StatusOK)
+		_ = responseText(t, taskResp)
 	})
-	requireStatus(t, commentResp, http.StatusCreated)
-	_ = responseText(t, commentResp)
 
-	attachmentResp := doJSON(t, client, http.MethodPost, srv.URL+"/tasks/"+itoa(taskID)+"/attachments", aliceUserID, map[string]any{
-		"path": "notes.txt",
-		"body": "participant upload body",
+	t.Run("own-team create comment upload", func(t *testing.T) {
+		project := createProjectForUser(t, client, srv.URL, aliceUserID, "Delta", "Own team expansion")
+		projectID := idFromMap(t, project)
+		task := createTaskForProject(t, client, srv.URL, aliceUserID, projectID, "Write rollout checklist")
+		taskID := idFromMap(t, task)
+
+		commentResp := doJSON(t, client, http.MethodPost, srv.URL+"/tasks/"+itoa(taskID)+"/comments", aliceUserID, map[string]any{
+			"body": "looks ready",
+		})
+		requireStatus(t, commentResp, http.StatusCreated)
+		_ = responseText(t, commentResp)
+
+		attachmentResp := doJSON(t, client, http.MethodPost, srv.URL+"/tasks/"+itoa(taskID)+"/attachments", aliceUserID, map[string]any{
+			"path": "notes.txt",
+			"body": "participant upload body",
+		})
+		requireStatus(t, attachmentResp, http.StatusCreated)
+		_ = responseText(t, attachmentResp)
 	})
-	requireStatus(t, attachmentResp, http.StatusCreated)
-	_ = responseText(t, attachmentResp)
-}
 
-func TestParticipantCanStillDuplicateShareAndExportOwnProject(t *testing.T) {
-	srv, client := newProjectHubServer(t)
+	t.Run("own-team actions", func(t *testing.T) {
+		exportResp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(alphaProjectID)+"/export", aliceUserID, nil)
+		requireStatus(t, exportResp, http.StatusOK)
+		_ = responseText(t, exportResp)
 
-	exportResp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(alphaProjectID)+"/export", aliceUserID, nil)
-	requireStatus(t, exportResp, http.StatusOK)
-	_ = responseText(t, exportResp)
+		shareResp := doJSON(t, client, http.MethodPost, srv.URL+"/projects/"+itoa(alphaProjectID)+"/share", aliceUserID, nil)
+		requireStatus(t, shareResp, http.StatusOK)
+		_ = responseText(t, shareResp)
 
-	shareResp := doJSON(t, client, http.MethodPost, srv.URL+"/projects/"+itoa(alphaProjectID)+"/share", aliceUserID, nil)
-	requireStatus(t, shareResp, http.StatusOK)
-	_ = responseText(t, shareResp)
-
-	duplicateResp := doJSON(t, client, http.MethodPost, srv.URL+"/projects/"+itoa(alphaProjectID)+"/duplicate", aliceUserID, nil)
-	requireStatus(t, duplicateResp, http.StatusOK)
-	_ = responseText(t, duplicateResp)
+		duplicateResp := doJSON(t, client, http.MethodPost, srv.URL+"/projects/"+itoa(alphaProjectID)+"/duplicate", aliceUserID, nil)
+		requireStatus(t, duplicateResp, http.StatusOK)
+		_ = responseText(t, duplicateResp)
+	})
 }

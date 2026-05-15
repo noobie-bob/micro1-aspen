@@ -22,22 +22,27 @@ func TestParticipantListProjectsOnlyOwnTeam(t *testing.T) {
 	}
 }
 
-func TestParticipantCannotGetCrossTeamProject(t *testing.T) {
+func TestParticipantCannotUseCrossTeamProjectSurfaces(t *testing.T) {
 	srv, client := newProjectHubServer(t)
 
-	resp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(betaProjectID), aliceUserID, nil)
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
-}
+	tests := []struct {
+		name   string
+		method string
+		path   string
+		body   any
+	}{
+		{name: "project detail", method: http.MethodGet, path: "/projects/" + itoa(betaProjectID)},
+		{name: "project task listing", method: http.MethodGet, path: "/projects/" + itoa(betaProjectID) + "/tasks"},
+		{name: "project patch", method: http.MethodPatch, path: "/projects/" + itoa(betaProjectID), body: map[string]any{"name": "attacker-controlled-name"}},
+	}
 
-func TestParticipantCannotPatchCrossTeamProject(t *testing.T) {
-	srv, client := newProjectHubServer(t)
-
-	resp := doJSON(t, client, http.MethodPatch, srv.URL+"/projects/"+itoa(betaProjectID), aliceUserID, map[string]any{
-		"name": "attacker-controlled-name",
-	})
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			resp := doJSON(t, client, tc.method, srv.URL+tc.path, aliceUserID, tc.body)
+			requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
+			_ = responseText(t, resp)
+		})
+	}
 
 	verify := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(betaProjectID), adminUserID, nil)
 	requireStatus(t, verify, http.StatusOK)
@@ -47,30 +52,26 @@ func TestParticipantCannotPatchCrossTeamProject(t *testing.T) {
 	}
 }
 
-func TestParticipantCannotListCrossTeamProjectTasks(t *testing.T) {
+func TestParticipantCannotUseCrossTeamTaskSurfaces(t *testing.T) {
 	srv, client := newProjectHubServer(t)
 
-	resp := doJSON(t, client, http.MethodGet, srv.URL+"/projects/"+itoa(betaProjectID)+"/tasks", aliceUserID, nil)
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
-}
+	tests := []struct {
+		name   string
+		method string
+		body   any
+	}{
+		{name: "task detail", method: http.MethodGet},
+		{name: "task patch", method: http.MethodPatch, body: map[string]any{"title": "attacker-edited-title"}},
+		{name: "task delete", method: http.MethodDelete},
+	}
 
-func TestParticipantCannotGetCrossTeamTask(t *testing.T) {
-	srv, client := newProjectHubServer(t)
-
-	resp := doJSON(t, client, http.MethodGet, srv.URL+"/tasks/"+itoa(betaTaskID), aliceUserID, nil)
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
-}
-
-func TestParticipantCannotPatchCrossTeamTask(t *testing.T) {
-	srv, client := newProjectHubServer(t)
-
-	resp := doJSON(t, client, http.MethodPatch, srv.URL+"/tasks/"+itoa(betaTaskID), aliceUserID, map[string]any{
-		"title": "attacker-edited-title",
-	})
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			resp := doJSON(t, client, tc.method, srv.URL+"/tasks/"+itoa(betaTaskID), aliceUserID, tc.body)
+			requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
+			_ = responseText(t, resp)
+		})
+	}
 
 	verify := doJSON(t, client, http.MethodGet, srv.URL+"/tasks/"+itoa(betaTaskID), adminUserID, nil)
 	requireStatus(t, verify, http.StatusOK)
@@ -78,18 +79,6 @@ func TestParticipantCannotPatchCrossTeamTask(t *testing.T) {
 	if task["title"] != "Migrate DB" {
 		t.Fatalf("cross-team patch mutated task title: got %v", task["title"])
 	}
-}
-
-func TestParticipantCannotDeleteCrossTeamTask(t *testing.T) {
-	srv, client := newProjectHubServer(t)
-
-	resp := doJSON(t, client, http.MethodDelete, srv.URL+"/tasks/"+itoa(betaTaskID), aliceUserID, nil)
-	requireStatusOneOf(t, resp, http.StatusForbidden, http.StatusNotFound)
-	_ = responseText(t, resp)
-
-	verify := doJSON(t, client, http.MethodGet, srv.URL+"/tasks/"+itoa(betaTaskID), adminUserID, nil)
-	requireStatus(t, verify, http.StatusOK)
-	_ = decodeBody[map[string]any](t, verify)
 }
 
 func TestParticipantCannotReadCrossTeamAttachment(t *testing.T) {
