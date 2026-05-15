@@ -23,8 +23,8 @@ A Flask-based project management API ("ProjHub") with cross-team data isolation 
 
 - **Tag:** `micro1ai/aspen-projhub:visibility-v4`
 - **Digest:** `sha256:ba1a704d7483ac3bb512ecbec2d8658395a775ee4a27041ebadfa5916065434a`
-- **Base commit:** _(pending)_
-- **Status:** Needs rebuild after hardening changes
+- **Base commit:** `e8ebcc47099853f75e992b19f23da5ba3cf15b36`
+- **Status:** Pushed to Docker Hub — set to PRIVATE
 
 ## Calibration Results
 
