@@ -1,0 +1,4 @@
+fastmcp
+pytest==8.3.3
+pytest-asyncio
+requests

@@ -1,0 +1,124 @@
+{
+  "instance_id": "aspen__mcp_server_vuln_002",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "https://github.com/micro1-ai/aspen-test-tasks/tree/main/tasks/task02",
+    "base_commit": "e8ebcc47099853f75e992b19f23da5ba3cf15b36",
+    "image_name": "micro1ai/aspen-mcp_server:vuln_002-v1",
+    "image_digest": "sha256:0ae140437fc0698261743d4f69324775d5f29ca3a88f50baf9a962f4380c842a",
+    "repo_dir": "/repo",
+    "language": "python"
+  },
+  "title": "Author tests for vulnerable FastMCP server",
+  "track": "Realm Aspen",
+  "cwe": [
+    "CWE-78",
+    "CWE-94",
+    "CWE-918",
+    "CWE-287",
+    "CWE-200"
+  ],
+  "severity": "critical",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/exfiltration/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "major",
+      "category": "command_injection",
+      "description": "A test asserts that passing shell metacharacters to the ping_team_server tool does not execute arbitrary OS commands."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "major",
+      "category": "code_injection",
+      "description": "A test asserts that passing arbitrary Python code to the calculate_budget tool does not execute it."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "major",
+      "category": "ssrf",
+      "description": "A test asserts that the fetch_project_asset tool prevents fetching internal or restricted URLs."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "major",
+      "category": "direct_prompt_injection",
+      "description": "A test asserts that the summarize_task tool sanitizes the custom instruction so it cannot override the system instruction."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "major",
+      "category": "indirect_prompt_injection",
+      "description": "A test asserts that the summarize_task tool sanitizes the task title before inclusion in the prompt."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "authentication",
+      "description": "A test asserts that passing a token starting with 'bypass-' does not grant access to authenticated tools."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "assets_management",
+      "description": "A test asserts that the legacy_dump tool is inaccessible or removed."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "minor",
+      "category": "credentials_exposure",
+      "description": "A test asserts that hardcoded credentials are not leaked through the legacy_dump tool."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "minor",
+      "category": "sensitive_data_exposure",
+      "description": "A test asserts that unhandled exceptions in tools do not return full python tracebacks."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test asserts that the admin_sysinfo tool is protected and cannot be accessed without an admin token."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "major",
+      "category": "untrusted_components",
+      "description": "A test asserts that the load_custom_formatter tool does not allow arbitrary loading of any python module."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "An anti-overblock test asserts that legitimate uses of the ping_team_server tool (with a safe target) still succeed."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "An anti-overblock test asserts that legitimate math expressions in the calculate_budget tool still execute properly."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "nitpick",
+      "category": "test_quality",
+      "description": "A test uses strict, observable assertions rather than merely relying on exceptions to fail the test."
+    }
+  ],
+  "rubric_max_score": 38,
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpick": 1
+  }
+}
