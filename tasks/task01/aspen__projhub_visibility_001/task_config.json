@@ -30,97 +30,178 @@
       "id": "RUB-001",
       "severity": "major",
       "category": "access_control",
-      "description": "A test asserts that a non-admin GET /projects (list endpoint) returns only projects belonging to the caller's team, not projects from other teams."
+      "description": "A test asserts that a non-admin GET /projects (list endpoint) returns only projects belonging to the caller's team, not projects from other teams.",
+      "justification": "The substrate's /projects endpoint lacks team-scoped filtering, returning all projects regardless of caller's team. This is the primary IDOR vector (CWE-639) enabling cross-team data enumeration.",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_cross_team_isolation.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py"
+      ]
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "access_control",
-      "description": "A test asserts that a non-admin GET /projects/{id} returns a 403 (or 404) for a project belonging to a different team than the caller's."
+      "description": "A test asserts that a non-admin GET /projects/{id} returns a 403 (or 404) for a project belonging to a different team than the caller's.",
+      "justification": "Direct object reference by ID bypasses any list-level filtering. Without ownership validation on detail retrieval, an attacker with a valid project ID can read another team's data (CWE-284).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_cross_team_isolation.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py"
+      ]
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "access_control",
-      "description": "A test asserts that a non-admin GET /tasks/{id} returns a 403 (or 404) for a task belonging to a cross-team project."
+      "description": "A test asserts that a non-admin GET /tasks/{id} returns a 403 (or 404) for a task belonging to a cross-team project.",
+      "justification": "Tasks inherit project-level visibility boundaries. The substrate performs no parent-project ownership check on task detail, enabling transitive IDOR through task IDs (CWE-639).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_cross_team_isolation.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/tasks.py"
+      ]
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "redaction",
-      "description": "A test asserts that a non-admin GET /tasks/{id} response (for an own-team task) does not contain admin-only fields: internal_priority, reviewer_notes, security_classification, estimated_cost."
+      "description": "A test asserts that a non-admin GET /tasks/{id} response (for an own-team task) does not contain admin-only fields: internal_priority, reviewer_notes, security_classification, estimated_cost.",
+      "justification": "The substrate serializes the full task model including privileged fields to all callers. These fields contain cost estimates and security labels that violate least-privilege disclosure (CWE-200).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_field_redaction.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/tasks.py"
+      ]
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "redaction",
-      "description": "A test asserts that a non-admin GET /tasks/{id}/comments filters out comments marked internal: true, only returning public comments."
+      "description": "A test asserts that a non-admin GET /tasks/{id}/comments filters out comments marked internal: true, only returning public comments.",
+      "justification": "Internal comments may contain security notes, reviewer feedback, or sensitive discussion. The substrate returns all comments unfiltered, leaking internal communications to non-admin users (CWE-200).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_field_redaction.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/comments.py"
+      ]
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "redaction",
-      "description": "A test asserts that non-admin project export, share, or duplicate responses do not leak admin-only fields (internal_metrics, admin_config, budget_allocation)."
+      "description": "A test asserts that non-admin project export, share, or duplicate responses do not leak admin-only fields (internal_metrics, admin_config, budget_allocation).",
+      "justification": "Export/share/duplicate endpoints produce full project snapshots. The substrate copies all fields including admin-only data, creating secondary leakage channels that bypass detail-endpoint redaction (CWE-200).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_field_redaction.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py"
+      ]
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "sql_injection",
-      "description": "A test asserts that the GET /search/tasks endpoint is not vulnerable to SQL injection — a UNION SELECT or similar injection payload in the q parameter must not return data from other tables (e.g. internal_priority, reviewer_notes from task_index) or cause the endpoint to leak sensitive columns."
+      "description": "A test asserts that the GET /search/tasks endpoint is not vulnerable to SQL injection — a UNION SELECT or similar injection payload in the q parameter must not return data from other tables (e.g. internal_priority, reviewer_notes from task_index) or cause the endpoint to leak sensitive columns.",
+      "justification": "The substrate constructs the search query via string concatenation without parameterization. A UNION-based injection extracts privileged columns from task_index, bypassing all application-layer access controls (CWE-89).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_injection.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/search.py"
+      ]
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test asserts that GET /debug/users is either not accessible or does not return plaintext API tokens/credentials. The endpoint must require admin authentication or be removed entirely."
+      "description": "A test asserts that GET /debug/users is either not accessible or does not return plaintext API tokens/credentials. The endpoint must require admin authentication or be removed entirely.",
+      "justification": "The substrate ships a /debug/users endpoint that dumps all user records including plaintext API tokens. This enables full account takeover of any user without requiring their credentials (CWE-200).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_sensitive_data.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/debug.py"
+      ]
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test asserts that GET /debug/config and GET /debug/env are either not accessible without admin authentication or are removed, preventing exposure of internal system configuration and environment variables."
+      "description": "A test asserts that GET /debug/config and GET /debug/env are either not accessible without admin authentication or are removed, preventing exposure of internal system configuration and environment variables.",
+      "justification": "These debug endpoints expose database connection strings, secret keys, and runtime environment variables. Accessible without authentication, they provide an attacker with infrastructure-level intelligence (CWE-200, CWE-1295).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_sensitive_data.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/debug.py"
+      ]
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "mass_assignment",
-      "description": "A test asserts that a non-admin PATCH /tasks/{id} cannot overwrite admin-only fields (internal_priority, security_classification, estimated_cost) — mass assignment of privileged fields must be rejected or ignored."
+      "description": "A test asserts that a non-admin PATCH /tasks/{id} cannot overwrite admin-only fields (internal_priority, security_classification, estimated_cost) — mass assignment of privileged fields must be rejected or ignored.",
+      "justification": "The substrate applies PATCH payloads directly to the task model without field-level allowlisting. A non-admin can escalate data by writing to privileged fields like security_classification (CWE-915).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_mass_assignment.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/tasks.py"
+      ]
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "mass_assignment",
-      "description": "A test asserts that a non-admin PATCH /projects/{id} cannot overwrite admin-only fields (internal_metrics, admin_config, budget_allocation) — mass assignment of privileged fields must be rejected or ignored."
+      "description": "A test asserts that a non-admin PATCH /projects/{id} cannot overwrite admin-only fields (internal_metrics, admin_config, budget_allocation) — mass assignment of privileged fields must be rejected or ignored.",
+      "justification": "Same mass-assignment flaw as RUB-010 but on the project model. Unguarded PATCH allows non-admins to tamper with budget_allocation and admin_config, corrupting project governance data (CWE-915).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_mass_assignment.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py"
+      ]
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "information_exposure",
-      "description": "A test asserts that error responses from the application do not include full Python stack traces, internal file paths, or framework version information."
+      "description": "A test asserts that error responses from the application do not include full Python stack traces, internal file paths, or framework version information.",
+      "justification": "The substrate runs Flask in debug mode, returning verbose tracebacks with file paths and dependency versions. This information aids attackers in crafting targeted exploits against known library vulnerabilities (CWE-209).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_info_exposure.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/app.py"
+      ]
     },
     {
       "id": "RUB-013",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test asserts that a same-team non-admin participant CAN still access their own team's projects and tasks (returns 200, not 403)."
+      "description": "An anti-overblock test asserts that a same-team non-admin participant CAN still access their own team's projects and tasks (returns 200, not 403).",
+      "justification": "Security fixes must not break legitimate access. This guard ensures the model's patch correctly scopes restrictions to cross-team requests and does not accidentally deny same-team users their own data.",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_regression_guards.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/tasks.py"
+      ]
     },
     {
       "id": "RUB-014",
       "severity": "minor",
       "category": "regression_guard",
-      "description": "An anti-overblock test asserts that a non-admin participant CAN still call /projects/{id}/duplicate, /projects/{id}/share, and /projects/{id}/export on their own team's projects (returns 200, not 403)."
+      "description": "An anti-overblock test asserts that a non-admin participant CAN still call /projects/{id}/duplicate, /projects/{id}/share, and /projects/{id}/export on their own team's projects (returns 200, not 403).",
+      "justification": "These action endpoints are legitimate team-member functionality. Over-restrictive fixes that block own-team duplicate/share/export degrade usability and indicate imprecise access-control scoping.",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_regression_guards.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/projects.py"
+      ]
     },
     {
       "id": "RUB-015",
       "severity": "minor",
       "category": "input_validation",
-      "description": "A test asserts that GET /debug/dump is either not accessible without admin authentication or is removed, preventing unauthenticated full database dump exposure."
+      "description": "A test asserts that GET /debug/dump is either not accessible without admin authentication or is removed, preventing unauthenticated full database dump exposure.",
+      "justification": "The /debug/dump endpoint exports the entire SQLite database contents without authentication. This is the highest-severity data exposure vector in the substrate, warranting explicit coverage (CWE-200).",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_sensitive_data.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/projhub/routes/debug.py"
+      ]
     },
     {
       "id": "RUB-016",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "Tests seed sentinel marker bytes into admin-only fields (reviewer_notes, internal_metrics, admin_config) and assert those marker bytes do not appear anywhere in non-admin responses. Strictly stronger than status-code-only assertions."
+      "description": "Tests seed sentinel marker bytes into admin-only fields (reviewer_notes, internal_metrics, admin_config) and assert those marker bytes do not appear anywhere in non-admin responses. Strictly stronger than status-code-only assertions.",
+      "justification": "Status-code checks alone cannot detect partial data leakage in 200-OK responses. Sentinel markers prove data-level isolation by verifying privileged content is absent from the response body, not just the status line.",
+      "source_urls": [
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_field_redaction.py",
+        "https://github.com/noobie-bob/micro1-aspen/blob/main/tasks/task01/tests/exfiltration/test_cross_team_isolation.py"
+      ]
     }
   ],
   "rubric_max_score": 44,
