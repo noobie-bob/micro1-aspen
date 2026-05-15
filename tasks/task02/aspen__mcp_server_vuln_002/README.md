@@ -14,10 +14,10 @@ A FastMCP-based Model Context Protocol (MCP) server for "ProjHub" with multiple 
 
 ## Image
 
-- **Tag:** `micro1ai/aspen-mcp_server:vuln_002-v1`
-- **Digest:** `sha256:0ae140437fc0698261743d4f69324775d5f29ca3a88f50baf9a962f4380c842a`
+- **Tag:** `micro1ai/aspen-mcp_server:vuln_002-v2`
+- **Digest:** `sha256:1e43f656d4d73ffce19891df6644db5247e19b2af58ca1a0f1a7041fe717e3e9`
 - **Base commit:** `e8ebcc47099853f75e992b19f23da5ba3cf15b36`
-- **Status:** Pushed to Docker Hub — set to PRIVATE
+- **Status:** Pushed to Docker Hub — set to PRIVATE (HARDENED v2)
 
 ## Calibration Results
 

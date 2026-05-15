@@ -10,7 +10,7 @@ from mcp_server.db import TEAMS, PROJECTS, TASKS, COMMENTS, generate_id
 
 mcp = FastMCP("ProjHub-MCP")
 
-# ── Auth Helper ────────────────────────────────────────────────────────────
+# Auth Helper
 VALID_TOKENS = {
     "admin-key":  ("admin", "admin-uuid"),
     "user-key":   ("user",  "alice-uuid"),
@@ -29,8 +29,6 @@ def is_team_member(user_id: str, team_id: str) -> bool:
     team = TEAMS.get(team_id)
     if not team: return False
     return user_id in team["member_ids"]
-
-# ── Legitimate ProjHub Tools ───────────────────────────────────────────────
 
 @mcp.tool()
 def create_team(token: str, name: str, member_ids: list[str]) -> str:
@@ -129,8 +127,6 @@ def search_tasks(token: str, q: str) -> str:
             if role == "admin" or is_team_member(uid, project["team_id"]):
                 results.append(t)
     return json.dumps(results)
-
-# ── Vulnerable Tools ───────────────────────────────────────────────────────
 
 @mcp.tool()
 def ping_team_server(token: str, target: str) -> str:
