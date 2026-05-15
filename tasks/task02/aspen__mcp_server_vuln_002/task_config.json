@@ -33,85 +33,127 @@
       "id": "RUB-001",
       "severity": "major",
       "category": "command_injection",
-      "description": "A test asserts that passing shell metacharacters to the ping_team_server tool does not execute arbitrary OS commands."
+      "description": "A test asserts that passing shell metacharacters to the ping_team_server tool does not execute arbitrary OS commands.",
+      "metadata": {
+        "justification": "Ensures the system prevents command injection vulnerabilities from un-sanitized tool inputs."
+      }
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "code_injection",
-      "description": "A test asserts that passing arbitrary Python code to the calculate_budget tool does not execute it."
+      "description": "A test asserts that passing arbitrary Python code to the calculate_budget tool does not execute it.",
+      "metadata": {
+        "justification": "Mitigates arbitrary code execution through evaluate-like features."
+      }
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "ssrf",
-      "description": "A test asserts that the fetch_project_asset tool prevents fetching internal or restricted URLs."
+      "description": "A test asserts that the fetch_project_asset tool prevents fetching internal or restricted URLs.",
+      "metadata": {
+        "justification": "Ensures protection against SSRF attacks on internal network endpoints."
+      }
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "direct_prompt_injection",
-      "description": "A test asserts that the summarize_task tool sanitizes the custom instruction so it cannot override the system instruction."
+      "description": "A test asserts that the summarize_task tool sanitizes the custom instruction so it cannot override the system instruction.",
+      "metadata": {
+        "justification": "Guards against direct prompt injection bypassing system boundaries."
+      }
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "indirect_prompt_injection",
-      "description": "A test asserts that the summarize_task tool sanitizes the task title before inclusion in the prompt."
+      "description": "A test asserts that the summarize_task tool sanitizes the task title before inclusion in the prompt.",
+      "metadata": {
+        "justification": "Prevents indirect prompt injection from externally provided content."
+      }
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "authentication",
-      "description": "A test asserts that passing a token starting with 'bypass-' does not grant access to authenticated tools."
+      "description": "A test asserts that passing a token starting with 'bypass-' does not grant access to authenticated tools.",
+      "metadata": {
+        "justification": "Validates that authentication mechanisms cannot be bypassed using weak logic."
+      }
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "assets_management",
-      "description": "A test asserts that the legacy_dump tool is inaccessible or removed."
+      "description": "A test asserts that the legacy_dump tool is inaccessible or removed.",
+      "metadata": {
+        "justification": "Ensures deprecated or dangerous debugging tools are not exposed."
+      }
     },
     {
       "id": "RUB-008",
       "severity": "minor",
       "category": "credentials_exposure",
-      "description": "A test asserts that hardcoded credentials are not leaked through the legacy_dump tool."
+      "description": "A test asserts that hardcoded credentials are not leaked through the legacy_dump tool.",
+      "metadata": {
+        "justification": "Prevents the exposure of sensitive hardcoded secrets."
+      }
     },
     {
       "id": "RUB-009",
       "severity": "minor",
       "category": "sensitive_data_exposure",
-      "description": "A test asserts that unhandled exceptions in tools do not return full python tracebacks."
+      "description": "A test asserts that unhandled exceptions in tools do not return full python tracebacks.",
+      "metadata": {
+        "justification": "Protects against information disclosure via detailed error messages."
+      }
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "access_control",
-      "description": "A test asserts that the admin_sysinfo tool is protected and cannot be accessed without an admin token."
+      "description": "A test asserts that the admin_sysinfo tool is protected and cannot be accessed without an admin token.",
+      "metadata": {
+        "justification": "Verifies correct authorization controls for administrative endpoints."
+      }
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "untrusted_components",
-      "description": "A test asserts that the load_custom_formatter tool does not allow arbitrary loading of any python module."
+      "description": "A test asserts that the load_custom_formatter tool does not allow arbitrary loading of any python module.",
+      "metadata": {
+        "justification": "Prevents malicious module loading from untrusted user inputs."
+      }
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test asserts that legitimate uses of the ping_team_server tool (with a safe target) still succeed."
+      "description": "An anti-overblock test asserts that legitimate uses of the ping_team_server tool (with a safe target) still succeed.",
+      "metadata": {
+        "justification": "Ensures security fixes do not break core functionality."
+      }
     },
     {
       "id": "RUB-013",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test asserts that legitimate math expressions in the calculate_budget tool still execute properly."
+      "description": "An anti-overblock test asserts that legitimate math expressions in the calculate_budget tool still execute properly.",
+      "metadata": {
+        "justification": "Ensures security fixes do not break core functionality."
+      }
     },
     {
       "id": "RUB-014",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "A test uses strict, observable assertions rather than merely relying on exceptions to fail the test."
+      "description": "A test uses strict, observable assertions rather than merely relying on exceptions to fail the test.",
+      "metadata": {
+        "justification": "Promotes robust test design that explicitly verifies state changes."
+      }
     }
   ],
   "rubric_max_score": 38,
