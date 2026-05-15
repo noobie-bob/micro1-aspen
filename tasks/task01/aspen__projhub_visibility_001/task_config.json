@@ -4,7 +4,7 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
-    "base_commit": "dccfffb2a5b2581d24bcf2589634c8f89929c239",
+    "base_commit": "3198082a0f243617c1a5b606bf873f0f979477c0",
     "image_name": "micro1ai/aspen-projhub:visibility-v3",
     "image_digest": "sha256:9903e0556fa71aa2840e153238b890395bf24aa92a4948619e81cf300256302d",
     "repo_dir": "/repo",
