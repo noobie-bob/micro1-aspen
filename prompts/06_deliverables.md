@@ -31,6 +31,8 @@ In addition:
 - Pointer to `test_smoke.py` as the legitimate-flow reference.
 - Submission format: unified diff via `submit_answer`.
 
+Describe the symptoms, not the audit plan. Do not enumerate every route family, endpoint type, module, or vulnerability class the agent should inspect.
+
 Do not list the rubric items here. The agent must induce what's worth testing from the code, not from the prompt.
 
 ### task_config.json
@@ -90,5 +92,6 @@ The full Docker build context. Must include the Dockerfile, requirements/manifes
 - Calibration data in `README.md`, verdict = `DISCRIMINATIVE`.
 - Top-of-frontier rung exists in the per-rubric catch table.
 - Prompt does not enumerate rubric items or list the structural axes the agent is expected to find.
+- Prompt does not point directly to the suspicious route families or inspection locations beyond the test directory and smoke reference.
 - No old pipeline-name strings (no `shield`/`sequoia`/`hornbeam` in commit messages, git config, file headers, etc.).
 - Peer QC passes on file structure, rubric atomicity, and discrimination verdict.

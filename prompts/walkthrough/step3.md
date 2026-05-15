@@ -1,6 +1,6 @@
 # Step 3: Build the Docker Image, Write the Prompt & Rubric
 
-> **Goal:** Containerize the service with anti-cheating measures, write the agent-facing prompt, construct the rubric with ~15 items, and create all configuration files.
+> **Goal:** Containerize the service with anti-cheating measures, write the agent-facing prompt, construct a varied rubric that usually lands in the 11-18 item range, and create all configuration files.
 
 ---
 
@@ -246,6 +246,7 @@ write the test suite that catches all of it.
 |------|-----|
 | Do NOT list rubric items | Agent must induce what to test from code |
 | Do NOT list structural axes | Eliminates the scenario-induction signal |
+| Do NOT name every route family or module worth inspecting | Turns the prompt into a scavenger-hunt answer key |
 | DO mention the reported behavior conversationally | Gives direction without giving answers |
 | DO specify where to put tests | Agent needs to know `tests/exfiltration/` |
 | DO reference `test_smoke.py` | Agent needs the legitimate-flow reference |
@@ -256,16 +257,20 @@ write the test suite that catches all of it.
 
 ## 3.4 Construct the Rubric (task_config.json)
 
-### Rubric Design (~15 items)
+### Rubric Design (typically 11-18 items)
 
 Decompose your scenario into **atomic, binary** rubric items along structural axes:
 
 | Structural Axis | Item Count | Purpose |
 |-----------------|-----------|---------|
 | Direct coverage (primary) | 6-8 items | Exercise the target scenario at its primary surfaces |
-| Direct coverage (secondary) | 2-3 items | Cover secondary/adjacent surfaces |
-| Anti-overblock / regression guards | 2-3 items | Legitimate flows must still work |
+| Direct coverage (secondary) | 2-4 items | Cover secondary/adjacent surfaces with different assertion shapes |
+| Anti-overblock / regression guards | 3-4 items | Legitimate flows must still work across more than one workflow |
 | Test quality | 1-2 items | Beyond-surface assertions (sentinel markers, side effects) |
+
+Avoid a rubric that is mostly the same test template copied across neighboring endpoints. You want some items that require list/detail comparison, body inspection, mutation followed by read-back, or alternate serialization paths.
+
+Going above 18 items is reasonable only when those extra items bring real variety. If several items are very simple or nearly identical, combine them or replace them with harder, more discriminative checks.
 
 ### Severity Distribution
 

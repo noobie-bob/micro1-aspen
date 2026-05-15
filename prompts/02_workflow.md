@@ -21,6 +21,8 @@ aspen__taskhub_idor_001/
 
 `test_smoke.py` (or equivalent in other languages) is load-bearing. The smoke test file inside the image encodes the route-to-role mapping (which endpoints non-admin participants can call, which only admins can) naturalistically. Removing it floors model performance because the agent cannot induce the participant flow from the buggy router code alone. Every Aspen task ships one.
 
+The smoke suite should teach legitimate use without becoming a template for the hidden rubric. If the smoke tests already enumerate the suspicious surfaces or implicitly tell the agent which routes matter, you are leaking the task.
+
 ## What you submit
 
 Upload the directory containing these six artifacts to our platform.
@@ -52,10 +54,14 @@ In addition, you must:
 
 1. **Decompose the scenario:** Break the test scenario into atomic rubric items along structural axes (direct coverage and anti-overblock guards).
    - The rubric includes both direct-coverage items and anti-overblock items (See the Rubric Taxonomy section).
-2. **Write the prompt:** Frame the task as a peer-to-peer asking the agent to write a test suite. Explicitly forbid code modifications outside the test directory. This is important, as agents will sometimes write the implementation or fix instead.
+   - Intentionally reserve some hard rungs for chained reasoning, secondary serialization paths, or subtle regression guards. Avoid a rubric that is just six copies of the same assertion pattern on neighboring endpoints.
+   - As a default sizing rule, 11-18 substantive items is a healthy range. Go higher only when the extra items add real variety rather than simple neighboring-endpoint repeats.
+2. **Write the prompt:** Frame the task as a peer-to-peer bug report asking the agent to write a test suite. Explicitly forbid code modifications outside the test directory. This is important, as agents will sometimes write the implementation or fix instead.
+   - Describe symptoms, not the inspection plan. Do not name every route family, module, or bug class the agent should audit.
 3. **Assign severities:** Use the standard weights `critical=4, major=3, minor=2, nitpick=1`.
+4. **Calibrate for separation:** Aim for Opus 4.7 to land around 75-85% on average and Qwen around 20-50%. If Qwen is consistently above 50%, the task is usually too guessable, too repetitive, or too explicitly hinted by the prompt/smoke tests.
 
 ### Phase 3: Quality Control (~1–2 hrs)
 
-1. **Peer review:** A second engineer verifies: rubric items are atomic and binary, prompt does not enumerate the rubric items, smoke test correctly encodes the legitimate flow surface, Dockerfile applies anti-cheating, and calibration data supports the DISCRIMINATIVE verdict.
+1. **Peer review:** A second engineer verifies: rubric items are atomic and binary, prompt does not enumerate the rubric items or tell the agent where to look, smoke test correctly encodes the legitimate flow surface, Dockerfile applies anti-cheating, and calibration data supports the DISCRIMINATIVE verdict.
 2. **HDM/HDL sign-off:** Final review for ground-truth coverage and ship-readiness.

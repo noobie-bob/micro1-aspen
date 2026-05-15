@@ -177,7 +177,7 @@ Bun.serve({
 
 ## 1.4 Seed the Vulnerabilities / Scenarios
 
-For ~15 rubric items, you typically need 4-6 distinct vulnerability classes or scenario axes. Each axis produces 2-4 rubric items.
+For a typical 11-18 item rubric, you usually need 4-6 distinct vulnerability classes or scenario axes. Each axis produces 2-4 rubric items. Go above that range only when the extra items come from genuinely different behaviors rather than simple endpoint repetition.
 
 ### Security Task Example (task01 pattern)
 
