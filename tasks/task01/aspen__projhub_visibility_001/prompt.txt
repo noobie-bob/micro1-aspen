@@ -1,8 +1,10 @@
-A teammate on the platform pinged me — they noticed they can see project tasks, comments, and internal details from other teams they're not members of. They said they were browsing the API with their regular participant key and stumbled into projects and tasks that belong to a completely different team. They kept poking around and found internal reviewer notes, admin-only budget data, and even the audit log. Then they tried the search endpoint and noticed something weird with the SQL, and found some debug endpoints that probably shouldn't be there. They also mentioned that when they hit a bad URL or triggered an error, the response came back with way too much detail — version numbers, code paths, the works.
+A teammate on the platform pinged me — they were using the ProjHub API with their regular participant key and noticed some serious security issues. First, they realized the API isn't properly isolating data between teams, allowing them to view projects and tasks that don't belong to them. Second, they noticed that the API doesn't properly sanitize what it returns or what it accepts, allowing them to read and write administrative fields they shouldn't have access to. 
 
-We don't have any tests covering cross-team isolation, admin-field redaction, injection surfaces, or the debug endpoints. Your job is to write the test suite that catches all of it.
+They also did some deeper poking around and found a severe database injection vulnerability, discovered some leftover administrative debugging endpoints that expose sensitive data, and noticed that error handling is dangerously verbose.
 
-**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the cross-team data leaks and security issues the participant is exploiting, (2) catch admin-only information being exposed to regular users, and (3) catch a fix that over-blocks legitimate same-team or admin flows.
+We need a comprehensive security test suite covering all of these access control, data exposure, and injection vulnerabilities. Your job is to write the test suite that catches all of them.
+
+**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the cross-team data leaks and other security issues, and (2) catch a fix that over-blocks legitimate same-team or admin flows.
 
 Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant + admin flows already in use — your suite should pin those down with anti-overblock assertions so they cannot regress.
 
