@@ -12,32 +12,35 @@ go test ./...
 
 The benchmark uses Go's built-in `testing` package and `net/http/httptest`. No external runner dependency is required.
 
+The final starter image should include only the service source and the load-bearing smoke test. The authored security suite is for local rubric design and calibration and should not be baked into the agent-facing image.
+
+For task03 specifically, the root [tasks/task03/Dockerfile](tasks/task03/Dockerfile) is the local authoring image and may include the full test suite, while [tasks/task03/aspen__projecthub_visibility_001/Dockerfile](tasks/task03/aspen__projecthub_visibility_001/Dockerfile) is the benchmark package image and should ship only `main.go` plus `smoke_test.go`.
+
 ## Rubric Shape
 
 | Severity | Count | Weight | Points |
 |----------|-------|--------|--------|
-| major | 28 | 3 | 84 |
-| minor | 5 | 2 | 10 |
+| major | 15 | 3 | 45 |
+| minor | 2 | 2 | 4 |
 | nitpick | 1 | 1 | 1 |
 
-**Rubric max score:** 95
+**Rubric max score:** 50
 
 ### Category breakdown
 
 | Category | Count | Notes |
 |----------|-------|-------|
-| access_control / ownership | 8 major | Cross-team list/detail/mutation/attachment coverage |
-| redaction | 6 major | Project/task detail plus export/share/duplicate bundles |
-| admin / debug / legacy | 9 items | Admin routes, debug routes, legacy routes, debug dump |
-| injection / validation / crypto | 6 major | Search, report generation, webhook URLs, share-link predictability |
-| mass_assignment | 2 major | Task and project admin-only fields |
-| information_exposure | 1 major | Panic and error disclosure |
-| regression_guard | 4 minor | Admin and same-team legitimate flows |
+| access_control / ownership | 4 major | Cross-team list/detail/mutation/attachment coverage |
+| redaction | 3 major | Detail views plus bundled export/share/duplicate responses |
+| admin / operational surfaces | 2 major | Admin routes plus debug/legacy exposure checks |
+| utility hardening | 5 major | Search, report generation, mass assignment, webhook URLs, share-link predictability |
+| information_exposure | 1 major | Traversal and panic disclosure |
+| regression_guard | 2 minor | Admin breadth and same-team workflow preservation |
 | test_quality | 1 nitpick | Sentinel-based body assertions |
 
 ## Calibration intent
 
-This revision intentionally increases the rubric beyond the original mock by splitting previously bundled items and adding missing high-value coverage for project redaction, project patch ownership, and cross-team attachment access. Basic models should catch direct cross-team access-control failures. Stronger models should catch response-body redaction, admin/debug/legacy exposure, mass assignment, unsafe input handling, and weak share-link generation. Frontier-level submissions should also preserve legitimate admin and same-team participant flows and use sentinel markers rather than status-code-only assertions.
+This revision intentionally moves away from the inflated mock rubric and keeps only the highest-value varied checks. Basic models should catch direct cross-team access-control failures. Stronger models should catch response-body redaction, operational-surface exposure, mass assignment, unsafe utility handling, and weak share-link generation. Frontier-level submissions should also preserve legitimate admin and same-team participant workflows and use sentinel markers rather than status-code-only assertions.
 
 ## Calibration results
 

@@ -7,6 +7,7 @@ RUN groupadd -r user && useradd -r -g user -u 1000 -m -d /home/user user     && 
 WORKDIR /repo
 
 COPY go.mod /repo/go.mod
+# Local authoring image: copy the full Go package, including authored security tests.
 COPY projecthub/ /repo/projecthub/
 
 RUN git init -q     && git config user.email build@aspen.local     && git config user.name build     && git add -A     && git commit -q -m "buggy starter (projecthub visibility v1)"
