@@ -1,0 +1,14 @@
+# Exclude the gold-standard answer from the Docker image
+tests/exfiltration/
+
+# Python caches
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# Task config artifacts (not part of the substrate image)
+aspen__projhub_visibility_001/
+
+# Git
+.git/
+.gitignore
