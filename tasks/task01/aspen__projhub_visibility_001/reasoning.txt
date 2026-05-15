@@ -6,24 +6,17 @@ comments, and attachments:
    beyond creation lacks team-membership checks.
 2. Missing field redaction: admin-only fields (internal_priority, reviewer_notes,
    internal_metrics, admin_config, budget_allocation) are never stripped.
-3. Missing function-level access control: admin endpoints (audit log, reports)
-   are accessible to any authenticated user.
-4. SQL injection: search endpoints use raw string interpolation into SQLite queries.
-5. OS command injection: report generation passes user input to subprocess with
-   shell=True.
-6. SSRF: webhook notification endpoint makes server-side requests to user-supplied
-   URLs without validation.
-7. Mass assignment: PATCH endpoints accept admin-only fields from non-admin callers.
-8. Sensitive data exposure: debug endpoints leak plaintext API tokens, environment
+3. SQL injection: search endpoints use raw string interpolation into SQLite queries.
+4. Mass assignment: PATCH endpoints accept admin-only fields from non-admin callers.
+5. Sensitive data exposure: debug endpoints leak plaintext API tokens, environment
    variables, and system configuration without authentication.
-9. Improper assets management: deprecated /api/v1/* endpoints serve data without auth.
-10. Information exposure: error handler returns full Python stack traces and framework
-    version to callers.
-11. Weak cryptography: share-link tokens use MD5 of project ID (predictable).
+6. Information exposure: error handler returns full Python stack traces and framework
+   version to callers.
 
 Test-authoring is the right shape because the threat surface spans 25+ endpoints
 across 9 route modules. The rubric decomposes along structural axes covering all
 vulnerability classes above.
 
-Severity distribution: 24 major + 3 minor + 1 nitpick = 24x3 + 3x2 + 1x1 = 79
-rubric_max_score = 79
+Severity distribution: 13 major + 2 minor + 1 nitpick = 13x3 + 2x2 + 1x1 = 44
+rubric_max_score = 44
+

@@ -14,8 +14,7 @@
   "track": "Realm Aspen",
   "cwe": [
     "CWE-284", "CWE-639", "CWE-200", "CWE-862",
-    "CWE-89", "CWE-78", "CWE-918", "CWE-915",
-    "CWE-22", "CWE-328", "CWE-209", "CWE-1295"
+    "CWE-89", "CWE-915", "CWE-209", "CWE-1295"
   ],
   "severity": "critical",
   "behavioral_prompt": "prompt.txt",
@@ -43,160 +42,88 @@
       "id": "RUB-003",
       "severity": "major",
       "category": "access_control",
-      "description": "A test asserts that a non-admin GET /projects/{id}/tasks returns a 403 (or 404) for a project belonging to a different team, preventing cross-team task listing."
-    },
-    {
-      "id": "RUB-004",
-      "severity": "major",
-      "category": "access_control",
       "description": "A test asserts that a non-admin GET /tasks/{id} returns a 403 (or 404) for a task belonging to a cross-team project."
     },
     {
-      "id": "RUB-005",
-      "severity": "major",
-      "category": "ownership",
-      "description": "A test asserts that a non-admin PATCH /tasks/{id} returns a 403 for a task in a cross-team project, preventing unauthorized modification."
-    },
-    {
-      "id": "RUB-006",
-      "severity": "major",
-      "category": "ownership",
-      "description": "A test asserts that a non-admin DELETE /tasks/{id} returns a 403 for a task in a cross-team project, preventing unauthorized deletion."
-    },
-    {
-      "id": "RUB-007",
+      "id": "RUB-004",
       "severity": "major",
       "category": "redaction",
       "description": "A test asserts that a non-admin GET /tasks/{id} response (for an own-team task) does not contain admin-only fields: internal_priority, reviewer_notes, security_classification, estimated_cost."
     },
     {
-      "id": "RUB-008",
+      "id": "RUB-005",
       "severity": "major",
       "category": "redaction",
       "description": "A test asserts that a non-admin GET /tasks/{id}/comments filters out comments marked internal: true, only returning public comments."
     },
     {
-      "id": "RUB-009",
+      "id": "RUB-006",
       "severity": "major",
       "category": "redaction",
       "description": "A test asserts that non-admin project export, share, or duplicate responses do not leak admin-only fields (internal_metrics, admin_config, budget_allocation)."
     },
     {
-      "id": "RUB-010",
-      "severity": "major",
-      "category": "admin_endpoint",
-      "description": "A test asserts that a non-admin GET /admin/audit-log returns a 403, preventing non-admin access to the system audit log."
-    },
-    {
-      "id": "RUB-011",
-      "severity": "major",
-      "category": "admin_endpoint",
-      "description": "A test asserts that a non-admin GET /admin/reports/summary returns a 403, preventing non-admin access to org-wide metrics and budget data."
-    },
-    {
-      "id": "RUB-012",
+      "id": "RUB-007",
       "severity": "major",
       "category": "sql_injection",
       "description": "A test asserts that the GET /search/tasks endpoint is not vulnerable to SQL injection — a UNION SELECT or similar injection payload in the q parameter must not return data from other tables (e.g. internal_priority, reviewer_notes from task_index) or cause the endpoint to leak sensitive columns."
     },
     {
-      "id": "RUB-013",
-      "severity": "major",
-      "category": "command_injection",
-      "description": "A test asserts that POST /projects/{id}/generate-report does not allow OS command injection via the title or format parameter — shell metacharacters (e.g. semicolons, backticks, pipes) must not execute arbitrary commands."
-    },
-    {
-      "id": "RUB-014",
+      "id": "RUB-008",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test asserts that GET /debug/users is either not accessible or does not return plaintext API tokens/credentials. The endpoint must require admin authentication or be removed entirely."
     },
     {
-      "id": "RUB-015",
+      "id": "RUB-009",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test asserts that GET /debug/config and GET /debug/env are either not accessible without admin authentication or are removed, preventing exposure of internal system configuration and environment variables."
     },
     {
-      "id": "RUB-016",
-      "severity": "major",
-      "category": "improper_assets",
-      "description": "A test asserts that deprecated API endpoints (GET /api/v1/tasks, GET /api/v1/projects) are either removed, require authentication, or return 404/403 — they must not serve data without authentication."
-    },
-    {
-      "id": "RUB-017",
+      "id": "RUB-010",
       "severity": "major",
       "category": "mass_assignment",
       "description": "A test asserts that a non-admin PATCH /tasks/{id} cannot overwrite admin-only fields (internal_priority, security_classification, estimated_cost) — mass assignment of privileged fields must be rejected or ignored."
     },
     {
-      "id": "RUB-018",
+      "id": "RUB-011",
       "severity": "major",
       "category": "mass_assignment",
       "description": "A test asserts that a non-admin PATCH /projects/{id} cannot overwrite admin-only fields (internal_metrics, admin_config, budget_allocation) — mass assignment of privileged fields must be rejected or ignored."
     },
     {
-      "id": "RUB-019",
-      "severity": "major",
-      "category": "ssrf",
-      "description": "A test asserts that POST /tasks/{id}/notify-webhook does not allow SSRF — the webhook_url parameter must be validated to prevent requests to internal/private IP addresses (127.0.0.1, 169.254.169.254, 10.x, etc.)."
-    },
-    {
-      "id": "RUB-020",
+      "id": "RUB-012",
       "severity": "major",
       "category": "information_exposure",
       "description": "A test asserts that error responses from the application do not include full Python stack traces, internal file paths, or framework version information."
     },
     {
-      "id": "RUB-021",
-      "severity": "major",
-      "category": "weak_crypto",
-      "description": "A test asserts that POST /projects/{id}/share-link does not use a predictable or reversible token generation algorithm (e.g. MD5 of the project ID) — share tokens must be cryptographically random."
-    },
-    {
-      "id": "RUB-022",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "An anti-overblock test asserts that an admin GET /projects (list endpoint) STILL returns all projects from all teams with full detail including internal_metrics, admin_config, budget_allocation."
-    },
-    {
-      "id": "RUB-023",
+      "id": "RUB-013",
       "severity": "major",
       "category": "regression_guard",
       "description": "An anti-overblock test asserts that a same-team non-admin participant CAN still access their own team's projects and tasks (returns 200, not 403)."
     },
     {
-      "id": "RUB-024",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "Anti-overblock tests assert that a non-admin participant CAN still create tasks, add comments, and upload attachments in their own team's projects (returns 200, not 403)."
-    },
-    {
-      "id": "RUB-025",
+      "id": "RUB-014",
       "severity": "minor",
       "category": "regression_guard",
       "description": "An anti-overblock test asserts that a non-admin participant CAN still call /projects/{id}/duplicate, /projects/{id}/share, and /projects/{id}/export on their own team's projects (returns 200, not 403)."
     },
     {
-      "id": "RUB-026",
-      "severity": "minor",
-      "category": "traversal",
-      "description": "A test asserts that a non-admin cannot use path traversal (e.g., .. segments) in /tasks/{id}/attachments/{path} to reach files outside the task's attachment directory."
-    },
-    {
-      "id": "RUB-027",
+      "id": "RUB-015",
       "severity": "minor",
       "category": "input_validation",
       "description": "A test asserts that GET /debug/dump is either not accessible without admin authentication or is removed, preventing unauthenticated full database dump exposure."
     },
     {
-      "id": "RUB-028",
+      "id": "RUB-016",
       "severity": "nitpick",
       "category": "test_quality",
       "description": "Tests seed sentinel marker bytes into admin-only fields (reviewer_notes, internal_metrics, admin_config) and assert those marker bytes do not appear anywhere in non-admin responses. Strictly stronger than status-code-only assertions."
     }
   ],
-  "rubric_max_score": 79,
+  "rubric_max_score": 44,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
@@ -204,3 +131,4 @@
     "nitpick": 1
   }
 }
+
