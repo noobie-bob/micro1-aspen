@@ -4,7 +4,7 @@
 
 | Substrate | Rubric Items | Max Score | Status |
 |-----------|-------------|-----------|--------|
-| projhub (Flask, ~1.5k LOC) | 28 (24 major + 3 minor + 1 nitpick) | 79 | PUSHED — awaiting calibration |
+| projhub (Flask, ~1.5k LOC) | 16 (13 major + 2 minor + 1 nitpick) | 44 | PUSHED — awaiting calibration |
 
 ## Substrate Summary
 
@@ -45,40 +45,28 @@ A Flask-based project management API ("ProjHub") with cross-team data isolation 
 | RUB-001 | access_control | major | — | — |
 | RUB-002 | access_control | major | — | — |
 | RUB-003 | access_control | major | — | — |
-| RUB-004 | access_control | major | — | — |
-| RUB-005 | ownership | major | — | — |
-| RUB-006 | ownership | major | — | — |
-| RUB-007 | redaction | major | — | — |
-| RUB-008 | redaction | major | — | — |
-| RUB-009 | redaction | major | — | — |
-| RUB-010 | admin_endpoint | major | — | — |
-| RUB-011 | admin_endpoint | major | — | — |
-| RUB-012 | sql_injection | major | — | — |
-| RUB-013 | command_injection | major | — | — |
-| RUB-014 | sensitive_data_exposure | major | — | — |
-| RUB-015 | sensitive_data_exposure | major | — | — |
-| RUB-016 | improper_assets | major | — | — |
-| RUB-017 | mass_assignment | major | — | — |
-| RUB-018 | mass_assignment | major | — | — |
-| RUB-019 | ssrf | major | — | — |
-| RUB-020 | information_exposure | major | — | — |
-| RUB-021 | weak_crypto | major | — | — |
-| RUB-022 | regression_guard | major | — | — |
-| RUB-023 | regression_guard | major | — | — |
-| RUB-024 | regression_guard | major | — | — |
-| RUB-025 | regression_guard | minor | — | — |
-| RUB-026 | traversal | minor | — | — |
-| RUB-027 | input_validation | minor | — | — |
-| RUB-028 | test_quality | nitpick | — | — |
+| RUB-004 | redaction | major | — | — |
+| RUB-005 | redaction | major | — | — |
+| RUB-006 | redaction | major | — | — |
+| RUB-007 | sql_injection | major | — | — |
+| RUB-008 | sensitive_data_exposure | major | — | — |
+| RUB-009 | sensitive_data_exposure | major | — | — |
+| RUB-010 | mass_assignment | major | — | — |
+| RUB-011 | mass_assignment | major | — | — |
+| RUB-012 | information_exposure | major | — | — |
+| RUB-013 | regression_guard | major | — | — |
+| RUB-014 | regression_guard | minor | — | — |
+| RUB-015 | input_validation | minor | — | — |
+| RUB-016 | test_quality | nitpick | — | — |
 
 ### Discrimination ladder rung breakdown
 
 | Rung | Description | Rubric Items |
 |------|-------------|--------------|
-| Floor | Any model catches basic access control | RUB-001–004 |
-| Mid | Model catches injection + redaction bugs | RUB-007–009, 012–013 |
-| Ceiling | Model catches mass assignment, SSRF, weak crypto, debug endpoints | RUB-014–021 |
-| Top-of-frontier | Model writes regression guards + sentinel markers | RUB-022–028 |
+| Floor | Any model catches basic access control | RUB-001–003 |
+| Mid | Model catches redaction + injection bugs | RUB-004–007 |
+| Ceiling | Model catches sensitive data, mass assignment, info exposure | RUB-008–012 |
+| Top-of-frontier | Model writes regression guards + sentinel markers | RUB-013–016 |
 
 ### Discrimination verdict
 

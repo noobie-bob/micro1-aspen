@@ -94,38 +94,32 @@ def debug_users():
 
 | Category | Items | What It Tests |
 |----------|-------|---------------|
-| access_control (4) | RUB-001–004 | Cross-team read isolation on list/detail endpoints |
-| ownership (2) | RUB-005–006 | Cross-team write protection on update/delete |
-| redaction (3) | RUB-007–009 | Admin-only field stripping from responses |
-| admin_endpoint (2) | RUB-010–011 | Audit log and reports restricted to admin |
-| sql_injection (1) | RUB-012 | Search endpoint parameterisation |
-| command_injection (1) | RUB-013 | Report generation shell escaping |
-| sensitive_data_exposure (2) | RUB-014–015 | Debug endpoints removed or auth-gated |
-| improper_assets (1) | RUB-016 | Deprecated /api/v1/ endpoints removed |
-| mass_assignment (2) | RUB-017–018 | PATCH rejects admin-only fields from non-admin |
-| ssrf (1) | RUB-019 | Webhook URL validation |
-| information_exposure (1) | RUB-020 | Error responses don't leak stack traces |
-| weak_crypto (1) | RUB-021 | Share tokens use secure randomness |
-| regression_guard (4) | RUB-022–025 | Anti-overblock: admin sees everything, same-team works |
-| traversal (1) | RUB-026 | Path traversal on attachment download |
-| input_validation (1) | RUB-027 | Database dump endpoint access control |
-| test_quality (1) | RUB-028 | Sentinel marker assertions |
+| access_control (3) | RUB-001–003 | Cross-team read isolation on list/detail endpoints |
+| redaction (3) | RUB-004–006 | Admin-only field stripping from responses |
+| sql_injection (1) | RUB-007 | Search endpoint parameterisation |
+| sensitive_data_exposure (2) | RUB-008–009 | Debug endpoints removed or auth-gated |
+| mass_assignment (2) | RUB-010–011 | PATCH rejects admin-only fields from non-admin |
+| information_exposure (1) | RUB-012 | Error responses don't leak stack traces |
+| regression_guard (2) | RUB-013–014 | Anti-overblock: same-team works, duplicate/share/export |
+| input_validation (1) | RUB-015 | Database dump endpoint access control |
+| test_quality (1) | RUB-016 | Sentinel marker assertions |
 
-**Total: 28 items.** 24 major (×3) + 3 minor (×2) + 1 nitpick (×1) = **79 points max.**
+**Total: 16 items.** 13 major (×3) + 2 minor (×2) + 1 nitpick (×1) = **44 points max.**
 
 ## How to Read the Calibration Numbers
 
 Once calibration is run (N=12 per model):
 
-- **Mean Reward** — Average rubric score as fraction of max (79). Higher = model catches more bugs.
+- **Mean Reward** — Average rubric score as fraction of max (44). Higher = model catches more bugs.
 - **Saturation Rate** — Fraction of runs that score ≥ 80% of max. Measures consistency.
 - **Pass Rate** — Fraction of runs where smoke tests still pass after adding exfiltration tests.
 - **Catch Rate per rubric** — How often each rubric item is caught across N runs. Items caught by all models are "floor" items; items caught only by frontier models are discriminative.
 
 **Discrimination ladder:**
-- **Floor** (any model catches): basic IDOR/access control (RUB-001–004)
-- **Mid** (strong models catch): redaction + injection (RUB-007–013)
-- **Ceiling** (frontier-only): mass assignment, SSRF, debug endpoints, weak crypto (RUB-014–021)
-- **Top-of-frontier**: regression guards + sentinel markers (RUB-022–028)
+- **Floor** (any model catches): basic IDOR/access control (RUB-001–003)
+- **Mid** (strong models catch): redaction + injection (RUB-004–007)
+- **Ceiling** (frontier-only): sensitive data, mass assignment, info exposure (RUB-008–012)
+- **Top-of-frontier**: regression guards + sentinel markers (RUB-013–016)
 
 A task is **DISCRIMINATIVE** if there's clear separation between frontier and non-frontier model scores. It's **UNDER-CALIBRATED** if all models score similarly, and **FLAKY** if scores vary wildly within the same model.
+
