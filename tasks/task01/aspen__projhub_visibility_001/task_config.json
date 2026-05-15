@@ -3,10 +3,10 @@
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
-    "source_url": "local://projhub-cross-team-visibility",
-    "base_commit": "0124c1e9beb295c90bd57e2321d81068c4fa2b5e",
-    "image_name": "micro1ai/aspen-projhub:visibility-v2",
-    "image_digest": "sha256:5e8f8849a569d29ecb33adf677a59f93555083bfde2a09e266b5c979993a3620",
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
+    "base_commit": "dccfffb2a5b2581d24bcf2589634c8f89929c239",
+    "image_name": "micro1ai/aspen-projhub:visibility-v3",
+    "image_digest": "sha256:9903e0556fa71aa2840e153238b890395bf24aa92a4948619e81cf300256302d",
     "repo_dir": "/repo",
     "language": "python"
   },
