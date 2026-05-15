@@ -47,7 +47,7 @@ def upload_attachment(task_id):
 @bp.route("/tasks/<task_id>/attachments", methods=["GET"])
 @require_auth
 def list_attachments(task_id):
-    """List attachment filenames. BUG: no team membership check."""
+    """List attachment filenames for a task."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -58,11 +58,10 @@ def list_attachments(task_id):
     return jsonify(files)
 
 
-# ── BUG: No team membership check on download ──────────────────────────────
 @bp.route("/tasks/<task_id>/attachments/<path:filename>", methods=["GET"])
 @require_auth
 def download_attachment(task_id, filename):
-    """Download an attachment. BUG: no team check, no path-traversal guard."""
+    """Download an attachment by filename."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -73,11 +72,10 @@ def download_attachment(task_id, filename):
     return Response(_read_bytes(path), mimetype="application/octet-stream")
 
 
-# ── BUG: No team membership check on zip download ──────────────────────────
 @bp.route("/tasks/<task_id>/attachments-zip", methods=["GET"])
 @require_auth
 def download_attachments_zip(task_id):
-    """Download all attachments as ZIP. BUG: no team membership check."""
+    """Download all attachments for a task as a ZIP archive."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404

@@ -27,8 +27,8 @@ def _project_team_id(project_id: str) -> str | None:
 @bp.route("/projects/<project_id>/tasks", methods=["POST"])
 @require_auth
 def create_task(project_id):
-    """Create a task in a project. Correctly enforces team membership
-    for non-admin callers (this endpoint is NOT buggy)."""
+    """Create a task in a project. Enforces team membership
+    for non-admin callers."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
@@ -51,7 +51,6 @@ def create_task(project_id):
         "priority": data.get("priority", "medium"),
         "assigned_to": data.get("assigned_to"),
         "created_by": g.caller.user_id,
-        # ── Admin-only internal fields ──────────────────────────────────
         "internal_priority": data.get("internal_priority", "P2"),
         "reviewer_notes": data.get("reviewer_notes", ""),
         "security_classification": data.get("security_classification", "public"),
@@ -63,12 +62,10 @@ def create_task(project_id):
     return jsonify(task)
 
 
-# ── BUG: No team membership check, returns tasks from any project ──────────
 @bp.route("/projects/<project_id>/tasks", methods=["GET"])
 @require_auth
 def list_tasks(project_id):
-    """List tasks in a project. BUG: no team membership check. Any
-    authenticated user can list tasks from any project in any team."""
+    """List tasks in a project."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
@@ -76,32 +73,24 @@ def list_tasks(project_id):
     return jsonify(tasks)
 
 
-# ── BUG: No team check, leaks internal fields ──────────────────────────────
 @bp.route("/tasks/<task_id>", methods=["GET"])
 @require_auth
 def get_task(task_id):
-    """Get task detail. BUG: no team membership check. Returns ALL fields
-    including internal_priority, reviewer_notes, security_classification,
-    estimated_cost to any authenticated user."""
+    """Get task detail by ID."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
     return jsonify(task)
 
 
-# ── BUG: No team membership check for updates ──────────────────────────────
 @bp.route("/tasks/<task_id>", methods=["PATCH"])
 @require_auth
 def update_task(task_id):
-    """Update task. BUG: no team membership check — any authenticated
-    user can modify any task in any project."""
+    """Update a task's fields."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
     data = request.get_json(force=True)
-    # BUG: Mass assignment — accepts ALL keys from user input including
-    # admin-only fields. A non-admin can set internal_priority,
-    # reviewer_notes, security_classification, estimated_cost.
     for key in ("title", "description", "status", "priority", "assigned_to",
                 "internal_priority", "reviewer_notes",
                 "security_classification", "estimated_cost"):
@@ -111,11 +100,10 @@ def update_task(task_id):
     return jsonify(task)
 
 
-# ── BUG: No team membership check for deletion ─────────────────────────────
 @bp.route("/tasks/<task_id>", methods=["DELETE"])
 @require_auth
 def delete_task(task_id):
-    """Soft-delete task. BUG: no team membership check."""
+    """Soft-delete a task."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -124,12 +112,10 @@ def delete_task(task_id):
     return jsonify({"status": "deleted", "id": task_id})
 
 
-# ── BUG: Can assign tasks in other teams ────────────────────────────────────
 @bp.route("/tasks/<task_id>/assign", methods=["POST"])
 @require_auth
 def assign_task(task_id):
-    """Assign a task to a user. BUG: no team membership check on the task,
-    and no check that the assignee is in the same team as the task's project."""
+    """Assign a task to a user."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -147,7 +133,7 @@ def assign_task(task_id):
 @bp.route("/tasks/<task_id>/transition", methods=["POST"])
 @require_auth
 def transition_task(task_id):
-    """Move task through workflow states. BUG: no team membership check."""
+    """Move task through workflow states."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404

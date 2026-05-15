@@ -10,22 +10,17 @@ from projhub.db import AUDIT_LOG, PROJECTS, TASKS
 bp = Blueprint("admin", __name__)
 
 
-# ── BUG: No admin check — any authenticated user can read audit log ─────────
 @bp.route("/admin/audit-log", methods=["GET"])
 @require_auth
 def get_audit_log():
-    """Return the system audit log. BUG: should be admin-only but any
-    authenticated user can access it, leaking all operations including
-    user_ids, internal details, and sensitive actions."""
+    """Return the system audit log."""
     return jsonify(AUDIT_LOG)
 
 
-# ── BUG: No admin check — any user can see org-wide metrics ─────────────────
 @bp.route("/admin/reports/summary", methods=["GET"])
 @require_auth
 def org_summary_report():
-    """Org-wide summary report. BUG: should be admin-only but accessible
-    to any authenticated user. Leaks cross-team metrics."""
+    """Org-wide summary report with cross-team metrics."""
     total_projects = len(PROJECTS)
     total_tasks = len(TASKS)
     projects_by_team: dict[str, int] = {}

@@ -16,7 +16,7 @@ from projhub.db import PROJECTS, TASKS
 
 bp = Blueprint("search", __name__)
 
-# ── Module-level SQLite connection (in-memory, shared across requests) ──────
+# Module-level SQLite connection (in-memory, shared across requests)
 _SEARCH_DB: sqlite3.Connection | None = None
 
 
@@ -80,36 +80,26 @@ def reset_search_db() -> None:
     _SEARCH_DB = None
 
 
-# ── BUG: SQL injection via string interpolation ────────────────────────────
 @bp.route("/search/tasks", methods=["GET"])
 @require_auth
 def search_tasks():
-    """Search tasks by title/description. BUG: the query parameter is
-    interpolated directly into a SQL string without parameterisation,
-    making this endpoint vulnerable to SQL injection. An attacker can
-    use UNION SELECT to extract data from other tables (e.g. reviewer_notes,
-    internal_priority) or from project_index."""
+    """Search tasks by title or description keyword."""
     q = request.args.get("q", "")
     rebuild_search_index()
     db = _get_search_db()
-    # ── VULNERABLE: raw string interpolation ────────────────────────────
     sql = f"SELECT id, title, description, status FROM task_index WHERE title LIKE '%{q}%' OR description LIKE '%{q}%'"
     try:
         cursor = db.execute(sql)
         results = [dict(row) for row in cursor.fetchall()]
     except Exception as e:
-        # BUG: leaks SQL error details to the caller
         return jsonify({"detail": f"search error: {e}"}), 400
     return jsonify(results)
 
 
-# ── BUG: SQL injection on project search too ───────────────────────────────
 @bp.route("/search/projects", methods=["GET"])
 @require_auth
 def search_projects():
-    """Search projects by name. BUG: same SQL injection vulnerability as
-    task search. Also no team membership filtering — returns matches from
-    all teams."""
+    """Search projects by name keyword."""
     q = request.args.get("q", "")
     rebuild_search_index()
     db = _get_search_db()
@@ -122,17 +112,13 @@ def search_projects():
     return jsonify(results)
 
 
-# ── BUG: Weak hash for share tokens — uses MD5 ────────────────────────────
 @bp.route("/projects/<project_id>/share-link", methods=["POST"])
 @require_auth
 def generate_share_link(project_id):
-    """Generate a shareable link with a token. BUG: uses MD5 to derive the
-    share token from the project ID, making the token predictable and
-    reversible. Should use a cryptographically secure random token."""
+    """Generate a shareable link with a token derived from the project ID."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
-    # BUG: MD5 of a known input = predictable token
     token = hashlib.md5(project_id.encode()).hexdigest()
     return jsonify({
         "project_id": project_id,
