@@ -34,12 +34,12 @@ Experts in this project will work with:
 
 ## Models & Calibration Targets
 
-Aspen calibrates against specific models to ensure task quality and discriminative signaling. A task is considered DISCRIMINATIVE if it meets the following targets:
+Aspen calibrates against specific models to ensure task quality and discriminative signaling. A task is considered DISCRIMINATIVE when the frontier model clearly outperforms the smaller model without saturating the rubric.
 
-- **Claude Opus 4.7:** Scores 80%+
-- **Qwen 3.5:** Run 4 times and scores in the range of 25-50%.
+- **Claude Opus 4.7:** Target mean reward roughly 75-85%. A single perfect run is acceptable, but repeated 95-100% runs usually mean the task is too easy or the prompt leaks too much.
+- **Qwen 3.5:** Run 4 times and target roughly 20-50%.
 
-NOTE: This is not a hard and fast rule since some well-authored tasks may stump both models. However, this success criteria should be used to calibrate against the current desired target difficulty. Please verify discrimination ladder.
+These are guide rails, not hard thresholds. The real goal is a clean separation curve: Opus should be strong but still miss the hardest rungs, while Qwen should catch only the more obvious or well-taught behaviors.
 
 ## Sample Task Reference
 

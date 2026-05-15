@@ -10,8 +10,8 @@ Aspen calibrates against specific models to ensure discrimination:
 
 | Model | Expected Score | Runs |
 |-------|---------------|------|
-| Claude Opus 4.7 | 80%+ (ideally hits 100% at least once) | N=12 |
-| Qwen 3.5 | 25-50% range | N=4 (run 4 times) |
+| Claude Opus 4.7 | ~75-85% mean reward | N=12 |
+| Qwen 3.5 | ~20-50% mean reward | N=4 (run 4 times) |
 
 ### What "DISCRIMINATIVE" Means
 
@@ -20,14 +20,14 @@ A task is **DISCRIMINATIVE** if:
 - There's a spread of ~0.20 between models
 - No saturation (not all models score the same)
 - Top-of-frontier rung exists (≥1 item caught only by frontier)
-- Frontier model hits 1.0 (100%) on at least 1 run
+- Frontier model is strong without saturating the rubric
 
 ### Verdicts
 
 | Verdict | Meaning | Action |
 |---------|---------|--------|
 | `DISCRIMINATIVE` | Clear separation between models ✅ | Ship it |
-| `UNDER-CALIBRATED` | All models score similarly | Increase rubric difficulty |
+| `UNDER-CALIBRATED` | All models score similarly or the smaller model scores too high | Increase rubric difficulty |
 | `FLAKY` | Scores vary wildly within same model | Fix rubric atomicity |
 
 ---
@@ -64,8 +64,8 @@ After each run, collect:
 ```markdown
 | Model | N | Mean Reward | Saturation Rate | Pass Rate | Distribution |
 |-------|---|-------------|-----------------|-----------|--------------|
-| Claude Opus 4.7 | 12 | 0.82 | 0.25 | 1.00 | 0.65–1.00 |
-| Qwen 3.5 | 4 | 0.38 | 0.00 | 0.75 | 0.25–0.50 |
+| Claude Opus 4.7 | 12 | 0.79 | 0.08 | 0.92 | 0.62–0.92 |
+| Qwen 3.5 | 4 | 0.33 | 0.00 | 0.25 | 0.20–0.45 |
 ```
 
 ### Per-Rubric Catch Rates
@@ -108,20 +108,24 @@ Map each rubric item to a rung based on catch rates:
 
 ## 5.4 Adjust Rubric Based on Calibration
 
-### If Opus scores too high (>95% consistently)
+### If Opus scores too high (>90% consistently)
 - Add harder rubric items (sentinel markers, chained flows)
 - Increase the anti-overblock coverage
-- Add items that require reasoning across multiple files
+- Add items that require reasoning across multiple files or multiple retrieval paths
+- Remove prompt hints that name the suspicious surfaces too directly
 
-### If Opus scores too low (<60%)
+### If Opus scores too low (<65%)
 - Simplify some rubric items
-- Make the prompt slightly more directive (still don't list rubric items)
+- Make the prompt slightly more concrete about the reported symptoms, not the exact places to inspect
 - Ensure the smoke test adequately teaches the API surface
 
 ### If Qwen scores too high (>50% consistently)
 - Add items requiring deeper code analysis
 - Add items requiring multi-step reasoning
 - Increase the proportion of "hard rung" items
+- Add more test variety rather than just more items: mutation + read-back, alternate serialization paths, body-level sentinel checks, and non-trivial regression guards
+- Reduce prompt leakage if the current prompt points at the relevant files or route families
+- If the rubric is already large, remove easy repetitive items instead of only adding more
 
 ### If results are FLAKY (high variance)
 - Check rubric items for ambiguity — make them more atomic
@@ -135,7 +139,7 @@ Map each rubric item to a rung based on catch rates:
 > 2. Identify items that are redundant (covered by other items)
 > 3. Identify items that are ambiguous (inconsistent MET/UNMET across runs)
 > 4. Merge closely related items into single atomic items
-> 5. Keep ~15 items that cleanly discriminate
+> 5. Keep a compact set, often around 11-18 items, that cleanly discriminate
 > 6. Recalculate `rubric_max_score` after every change
 
 ---
