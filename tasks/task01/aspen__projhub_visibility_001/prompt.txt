@@ -1,11 +1,9 @@
-A teammate on the platform pinged me — they were using the ProjHub API with their regular participant key and noticed some serious security issues. First, they realized the API isn't properly isolating data between teams, allowing them to view projects and tasks that don't belong to them. Second, they noticed that the API doesn't properly sanitize what it returns or what it accepts, allowing them to read and write administrative fields they shouldn't have access to. 
+A teammate on the platform noticed some concerning behaviour with the ProjHub API. When using their regular participant API key, they were able to access data they probably shouldn't be seeing. They mentioned something about the responses containing more information than expected and that request scoping "felt off."
 
-They also did some deeper poking around and found a severe database injection vulnerability, discovered some leftover administrative debugging endpoints that expose sensitive data, and noticed that error handling is dangerously verbose.
+We need a comprehensive security test suite that exercises the API's access boundaries and validates that data handling is correct. Your job is to write the test suite.
 
-We need a comprehensive security test suite covering all of these access control, data exposure, and injection vulnerabilities. Your job is to write the test suite that catches all of them.
+**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must catch real issues and also include anti-overblock assertions so legitimate flows do not regress.
 
-**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the cross-team data leaks and other security issues, and (2) catch a fix that over-blocks legitimate same-team or admin flows.
-
-Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant + admin flows already in use — your suite should pin those down with anti-overblock assertions so they cannot regress.
+Put your tests under `tests/exfiltration/`. The existing `tests/test_smoke.py` demonstrates the legitimate participant and admin flows already in use.
 
 Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).

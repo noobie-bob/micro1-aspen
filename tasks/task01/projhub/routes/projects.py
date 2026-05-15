@@ -23,8 +23,8 @@ bp = Blueprint("projects", __name__)
 @bp.route("/projects", methods=["POST"])
 @require_auth
 def create_project():
-    """Create a project under a team. Correctly enforces team membership
-    for non-admin callers (this endpoint is NOT buggy)."""
+    """Create a project under a team. Enforces team membership
+    for non-admin callers."""
     data = request.get_json(force=True)
     team_id = data.get("team_id")
     if not team_id or team_id not in TEAMS:
@@ -59,42 +59,31 @@ def create_project():
     return jsonify(project)
 
 
-# ── BUG: Returns ALL projects from all teams, unfiltered ────────────────────
 @bp.route("/projects", methods=["GET"])
 @require_auth
 def list_projects():
-    """List projects. BUG: returns projects from ALL teams regardless of
-    the caller's team membership. Also leaks admin-only fields
-    (internal_metrics, admin_config, budget_allocation)."""
+    """List all projects visible to the caller."""
     return jsonify(list(PROJECTS.values()))
 
 
-# ── BUG: No team membership check, no field redaction ───────────────────────
 @bp.route("/projects/<project_id>", methods=["GET"])
 @require_auth
 def get_project(project_id):
-    """Get single project. BUG: no team membership check. Returns all
-    fields including internal_metrics, admin_config, budget_allocation
-    to any authenticated user."""
+    """Get a single project by ID."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
     return jsonify(project)
 
 
-# ── BUG: No team membership check for updates ──────────────────────────────
 @bp.route("/projects/<project_id>", methods=["PATCH"])
 @require_auth
 def update_project(project_id):
-    """Update project metadata. BUG: no team membership check — any
-    authenticated user can rename/modify any project."""
+    """Update project metadata."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
     data = request.get_json(force=True)
-    # BUG: Mass assignment — accepts admin-only fields from user input.
-    # A non-admin can overwrite internal_metrics, admin_config,
-    # budget_allocation via PATCH.
     for key in ("name", "description", "status",
                 "internal_metrics", "admin_config", "budget_allocation"):
         if key in data:
@@ -103,11 +92,10 @@ def update_project(project_id):
     return jsonify(project)
 
 
-# ── BUG: No team membership check for deletion ─────────────────────────────
 @bp.route("/projects/<project_id>", methods=["DELETE"])
 @require_auth
 def delete_project(project_id):
-    """Soft-delete project. BUG: no team membership check."""
+    """Soft-delete a project."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
@@ -116,12 +104,11 @@ def delete_project(project_id):
     return jsonify({"status": "deleted", "id": project_id})
 
 
-# ── BUG: Leaks internal fields in cloned response ──────────────────────────
 @bp.route("/projects/<project_id>/duplicate", methods=["POST"])
 @require_auth
 def duplicate_project(project_id):
-    """Clone a project. BUG: response includes inherited internal_metrics,
-    admin_config, budget_allocation from the source project."""
+    """Clone a project. The cloned project inherits all fields from the
+    source including configuration and metrics."""
     src = PROJECTS.get(project_id)
     if src is None:
         return jsonify({"detail": "project not found"}), 404
@@ -139,12 +126,10 @@ def duplicate_project(project_id):
     return jsonify(cloned)
 
 
-# ── BUG: Leaks internal fields in share response ───────────────────────────
 @bp.route("/projects/<project_id>/share", methods=["POST"])
 @require_auth
 def share_project(project_id):
-    """Generate a shareable link payload. BUG: response includes the full
-    project dict with internal_metrics, admin_config, budget_allocation."""
+    """Generate a shareable link payload for a project."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404
@@ -159,12 +144,10 @@ def share_project(project_id):
     })
 
 
-# ── BUG: Leaks internal fields in export response ──────────────────────────
 @bp.route("/projects/<project_id>/export", methods=["GET"])
 @require_auth
 def export_project(project_id):
-    """Export full project data as JSON. BUG: returns everything including
-    admin_config, internal_metrics, budget_allocation."""
+    """Export full project data as JSON."""
     project = PROJECTS.get(project_id)
     if project is None:
         return jsonify({"detail": "project not found"}), 404

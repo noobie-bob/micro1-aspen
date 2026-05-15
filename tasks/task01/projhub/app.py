@@ -27,11 +27,9 @@ def create_app() -> Flask:
     app.register_blueprint(reports.bp)
     app.register_blueprint(debug.bp)
 
-    # ── BUG: Verbose error handler leaks internal details ──────────────
     @app.errorhandler(Exception)
     def handle_exception(e):
-        """BUG: returns full stack trace and internal paths to caller.
-        Should return a generic error message in production."""
+        """Return error details for unhandled exceptions."""
         tb = traceback.format_exc()
         return jsonify({
             "error": str(e),
@@ -41,7 +39,7 @@ def create_app() -> Flask:
 
     @app.errorhandler(404)
     def handle_404(e):
-        """BUG: leaks framework version in error response."""
+        """Handle 404 errors."""
         import flask
         return jsonify({
             "error": "not found",

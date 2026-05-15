@@ -48,20 +48,17 @@ def add_team_member(team_id):
     return jsonify({"team_id": team_id, "members": TEAM_MEMBERS[team_id]})
 
 
-# ── BUG: Returns ALL teams with internal admin-only fields to any user ──────
 @bp.route("/teams", methods=["GET"])
 @require_auth
 def list_teams():
-    """List all teams. BUG: no filtering by membership, no redaction of
-    internal_budget / admin_notes / billing_code for non-admin callers."""
+    """List all teams."""
     return jsonify(list(TEAMS.values()))
 
 
 @bp.route("/teams/<team_id>", methods=["GET"])
 @require_auth
 def get_team(team_id):
-    """Get a single team. BUG: no membership check, no redaction of
-    internal fields for non-admin callers."""
+    """Get a single team by ID."""
     team = TEAMS.get(team_id)
     if team is None:
         return jsonify({"detail": "team not found"}), 404

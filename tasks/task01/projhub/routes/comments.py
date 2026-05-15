@@ -13,9 +13,8 @@ bp = Blueprint("comments", __name__)
 @bp.route("/tasks/<task_id>/comments", methods=["POST"])
 @require_auth
 def add_comment(task_id):
-    """Add a comment to a task. BUG: no team membership check — any
-    authenticated user can comment on any task in any team. Admin callers
-    can set ``internal: true`` to mark a comment as admin-only."""
+    """Add a comment to a task. Admin callers can set ``internal: true``
+    to mark a comment as internal-only."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -37,13 +36,10 @@ def add_comment(task_id):
     return jsonify(comment)
 
 
-# ── BUG: Returns ALL comments including internal ones to any caller ─────────
 @bp.route("/tasks/<task_id>/comments", methods=["GET"])
 @require_auth
 def list_comments(task_id):
-    """List comments on a task. BUG: returns ALL comments including those
-    marked ``internal: true`` to non-admin callers. Internal comments should
-    be visible only to admins. Also no team membership check."""
+    """List comments on a task."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
@@ -53,8 +49,7 @@ def list_comments(task_id):
 @bp.route("/tasks/<task_id>/comments/<comment_id>", methods=["DELETE"])
 @require_auth
 def delete_comment(task_id, comment_id):
-    """Delete a comment. BUG: no ownership or team check — any user can
-    delete any comment on any task."""
+    """Delete a comment by ID."""
     task = TASKS.get(task_id)
     if task is None:
         return jsonify({"detail": "task not found"}), 404
