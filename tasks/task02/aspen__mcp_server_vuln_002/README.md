@@ -76,6 +76,5 @@ A FastMCP-based Model Context Protocol (MCP) server for "ProjHub" with multiple 
 ## Aspen Pipeline Notes
 
 - The Docker image IS the agent's working environment — there is no in-sandbox test verifier.
-- The smoke test (`tests/test_smoke.py`) is load-bearing: it teaches the agent the legitimate FastMCP tools.
 - The prompt does NOT enumerate rubric items — the agent must induce what to test from the code.
 - Image built with `--provenance=false --sbom=false` to avoid E2B OCI parsing issues.

@@ -6,12 +6,6 @@
 
 ## 2.1 Why Smoke Tests Are Load-Bearing
 
-The smoke test file (`tests/test_smoke.py`) is the **single most important file** in the Docker image for model performance. Without it:
-
-- The agent **cannot induce** the legitimate API surface from buggy router code alone
-- Model performance floors to near-zero
-- The agent has no reference for what "normal" looks like vs. what's broken
-
 **The smoke test encodes:**
 
 - Which endpoints exist and what HTTP methods they use

@@ -24,7 +24,6 @@ The agent lands in `/repo` with:
 │   └── db.py                   # In-memory storage for ProjHub data
 ├── tests/
 │   ├── conftest.py             # Fixtures: fastmcp.Client, auth tokens, test data
-│   └── test_smoke.py           # 23 load-bearing legitimate-flow tests
 ├── requirements.txt
 └── pytest.ini
 ```

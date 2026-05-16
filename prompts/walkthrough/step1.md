@@ -67,8 +67,8 @@ micro1-aspen/tasks/task02/
 │       └── debug.py                 # (if applicable)
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py                  # Shared fixtures
-│   └── test_smoke.py                # Load-bearing legitimate flow tests
+│   ├── conftest.py                  # Shared fixtures (include in production image)
+│   └── test_smoke.py                # Load-bearing legitimate flow tests (remove for production image)
 └── aspen__{substrate}_{vuln}_{NNN}/ # Task config directory
     ├── prompt.txt
     ├── task_config.json

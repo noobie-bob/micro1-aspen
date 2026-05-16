@@ -28,7 +28,6 @@ In addition:
 - The reported leak (briefly, without giving away the rubric structure).
 - Where to put the tests (e.g., `tests/exfiltration/`).
 - Do not modify any file under `{substrate}/`.
-- Pointer to `test_smoke.py` as the legitimate-flow reference.
 - Submission format: unified diff via `submit_answer`.
 
 Describe the symptoms, not the audit plan. Do not enumerate every route family, endpoint type, module, or vulnerability class the agent should inspect.

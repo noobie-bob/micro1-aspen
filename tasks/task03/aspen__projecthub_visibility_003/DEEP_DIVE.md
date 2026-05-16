@@ -2,27 +2,38 @@
 
 ## Five-Second Summary
 
-ProjectHub is a compact Go HTTP service that manages teams, projects, tasks, comments, attachments, shares, and reporting flows. The scenario is not one isolated endpoint bug: it is a deliberately tangled set of visibility, redaction, share-state, operational-surface, and input-handling problems that all show up as externally observable behavior. That makes this a test-authoring task rather than a bug-fix task.
+ProjectHub is a compact Go HTTP service for teams, projects, tasks, comments, attachments, sharing, reporting, and operational tooling. The scenario is not one isolated handler bug: the same underlying state leaks through boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths. That makes this a test-authoring task rather than a bug-fix task.
 
 ## Why Test-Authoring Is the Right Shape
 
-The right artifact here is a behavioral test suite because the service exposes the same state through several paths and role combinations. A good suite has to enforce the dual contract: direct coverage that proves participants cannot cross team boundaries or see privileged data, and anti-overblock coverage that proves legitimate same-team, admin, lead, and auditor flows still work after a fix. A patch that simply blocks everything would be wrong, and a test suite that only checks one route family would miss the real scenario.
+The right artifact here is a behavioural suite because the service exposes the same objects through several roles and retrieval paths. A strong suite has to enforce the dual contract: direct coverage that proves non-privileged actors cannot cross organisational boundaries or recover privileged content, and anti-overblock coverage that proves legitimate same-team, admin, and role-scoped flows still work after a fix. A patch that simply denies everything would be wrong, and a test suite that checks only one route family would miss the real scenario.
 
 ## What the Agent Sees
 
-The substrate is a small Go module. `projecthub/wire.go` registers the full HTTP surface. `projecthub/common.go` contains most of the authorization, response-shaping, and handler logic. `projecthub/types.go` defines the domain model for users, teams, projects, tasks, comments, attachments, shares, and audit events. `projecthub/paths.go` adds noisy packet, knot, drift, and weave helpers that increase repository reasoning surface without changing the basic external contract. `tests/smoke_test.go` demonstrates the intended happy-path flows for participants, leads, admins, sharing, bundles, search, and reporting.
+The agent lands in a small Go module. `projecthub/wire.go` registers the HTTP surface. `projecthub/common.go` contains almost all of the gate logic, projector functions, and handlers. `projecthub/types.go` defines users, teams, projects, tasks, comments, attachments, shares, and audit events. `projecthub/seed.go` populates a fixed set of actors and sentinel-rich records. `projecthub/paths.go` adds extra packet and weave helpers that increase code-reading surface without changing the external contract. `tests/smoke_test.go` shows the intended happy-path flows for participants, leads, admins, sharing, bundles, search, and reporting.
+
+The seeded actors matter because the visibility model is role-based rather than anonymous-versus-authenticated. The service includes an org-wide admin, same-team participant and lead users, a participant from another team, an auditor-style user, and a child-team guest. The smoke suite demonstrates that ordinary same-team project and task work should continue to function even after the security gaps are closed.
 
 ## What the Scenario Looks Like as Code
 
-The interesting code shape is centralized authorization plus inconsistent view shaping. The project gate and task gate helpers decide access through branches like admin, team, mirror, share, audit, and task-person access. Separate projector functions decide which fields a caller sees. That is realistic engineering territory: once one service tries to support normal product flows, mirrored data, shared access, legacy endpoints, operational tooling, and debug helpers at the same time, scope checks and redaction logic drift apart. Here that shows up in widened list behavior, mutable privileged fields, predictable share tokens, overly trusting attachment and webhook or report paths, and verbose error or debug output.
+The interesting code shape is centralised authorization plus inconsistent response shaping. One set of helpers decides whether a caller can reach a project or task. Another set decides what fields appear once access is granted. A third set packages the same records into exports, shares, duplicates, snapshots, summaries, and operational views. That is realistic engineering territory: once a service supports delegated access, mirrored data, historical or debug surfaces, and a handful of auxiliary workflows, scope checks and projector rules drift apart.
 
-## How the Rubric Items Decompose the Scenario
+In ProjectHub, the drift shows up in several ways. Boundary checks can widen under special conditions. Delegated access is stateful and therefore easy to over-grant. Non-privileged updates can alter fields that should be authoritative. The service also includes predictable access tokens, broad diagnostic surfaces, and a recoverer that returns internal-looking error text. None of those problems require source modification to observe; they are all visible from the HTTP boundary.
 
-The rubric is intentionally merged into denser journeys rather than one tiny endpoint-local check per item. Eight critical items cover the main scenario chains: access-control and anti-overblock behavior, response redaction, stateful sharing, mass assignment with readback, debug and legacy and ops exposure, injection and traversal and SSRF variants, weak token generation, and error exposure. Twenty major items cover narrower but still important scope leaks and positive-role boundaries. Seven minor items cover boundary behavior, controls, and repeatability. Four nitpick items reward sentinel markers, reusable helpers, merged flows, and clear diagnostics.
+## How the Rubric Decomposes the Scenario
+
+The rubric is intentionally compact. Instead of one tiny endpoint-local check per issue, it groups the scenario into denser behavioural journeys:
+
+- 5 critical items cover the main chains: organisational boundary enforcement, response shaping across primary and secondary paths, delegated-scope confinement, operational-surface lockdown, and crafted-input abuse.
+- 8 major items cover mutation integrity, token quality, special visibility modes, artifact consistency, widened summaries, specialised role boundaries, error sanitisation, and anti-overblock regression guards.
+- 1 minor item rewards repeatability and state isolation.
+- 1 nitpick item rewards sentinel-based body assertions and reusable helper quality.
+
+That shape keeps the task within the healthier Aspen range while still forcing multi-actor reasoning, readback checks, and comparison across alternate retrieval paths.
 
 ## How to Read the Calibration Numbers
 
-Start with mean reward and saturation rate, but do not stop there. The per-rubric catch table is the real signal: a good task has some baseline items that strong and mid-tier models can catch, some harder items that only stronger models catch reliably, and at least one frontier-skewed rung. If smaller models catch nearly every critical chain, the rubric is too easy. If frontier models miss the positive-control and anti-overblock items, the issue is often prompt or smoke-surface clarity rather than true task difficulty. Calibration is good when the task separates models by reasoning depth, not by hidden instructions.
+Start with mean reward and saturation rate, but do not stop there. The per-rubric catch table is the real signal: a good task has some floor items that multiple strong models can catch, some harder items that only stronger models catch reliably, and at least one frontier-skewed rung. If smaller models clear most of the critical chains, the prompt or rubric is leaking too much. If frontier models miss the anti-overblock or same-team flows, the issue is usually smoke-surface clarity rather than legitimate task difficulty. Calibration is good when the task separates models by reasoning depth, not by hidden instructions.
 
 
 

@@ -1,18 +1,16 @@
 # Rubric Overlap Review
 
-The previous rubric shape had many endpoint-local checks that a model could satisfy with one request per issue. This version merges overlapping checks into scenario chains. Each critical item requires multiple actors, at least one state transition or endpoint comparison, and body-level assertions.
+The earlier task03 draft behaved like a checklist: too many endpoint-local items, too many category labels that leaked the answer, and too little pressure to write dense multi-step tests. This revision compresses the pack into a smaller set of behavioural journeys so the agent has to reason across actors, state transitions, and alternate retrieval paths.
 
 ## Merge Decisions
 
-- Access-control list/detail/task/mutation/delete checks are merged into RUB-001 so the test must prove both isolation and anti-overblocking in one chain.
-- Task redaction, project meta redaction, internal comments, and bundle leaks are merged into RUB-002 because they are all response-shaping consistency issues.
-- Share acceptance, share replay, and shared-user cross-project escape are merged into RUB-003 and expanded by RUB-018.
-- Project and task mass assignment are merged into RUB-004 and require readback through multiple endpoints.
-- Debug, legacy, admin, replay, and cursor surfaces are merged into RUB-005, with narrower checks in RUB-011, RUB-012, RUB-016, and RUB-017.
-- Search injection, report command injection, webhook SSRF, and attachment traversal remain distinct categories but are grouped into RUB-006 for table-driven I/O variant coverage.
-- Weak token tests are isolated in RUB-007 because they need repeated calls and cross-actor comparisons.
-- Information exposure is isolated in RUB-008 because stack/path leakage often requires malformed/error responses rather than normal data endpoints.
+- Cross-boundary list, detail, mutation, and delete checks are merged into one organisational-boundary journey with same-boundary positive controls.
+- Primary-response redaction, internal collaboration leakage, and secondary packaging leaks are merged into one response-shaping journey.
+- Shared-access, mirrored-access, replay, and expiry issues are treated as one delegated-scope problem instead of several route-local checks.
+- Debug, legacy, replay, cursor, audit, and reporting surfaces are grouped as one operational-surface chain so the suite has to compare privileged and non-privileged roles.
+- Search abuse, report abuse, outbound-request abuse, and file-retrieval abuse are grouped into one table-driven unsafe-input chain with benign controls.
+- Mutation integrity, token quality, special visibility modes, role-scoped boundaries, and regression guards remain separate supporting items because they reward different kinds of reasoning.
 
 ## Expected Test Shape
 
-A strong generated suite should have fewer, denser tests: access-control journey, redaction journey, stateful share journey, mutation-readback journey, debug/legacy/admin journey, and I/O attack variant journey. This should reduce duplicate tests while increasing reasoning difficulty.
+A strong generated suite should land closer to 6-10 dense tests than 30-40 tiny ones. The best shape is a handful of actor-switching journeys with readback, body inspection, sentinel checks, and explicit anti-overblock coverage, plus a smaller number of focused supporting tests for repeatability and helper quality.

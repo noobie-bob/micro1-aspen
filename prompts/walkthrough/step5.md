@@ -235,7 +235,6 @@ A peer reviewer will audit before HDM/HDL sign-off:
 | Severity weights | Calibrated and consistent                                |
 | Prompt integrity | No rubric enumeration, no structural axis listing        |
 | Dockerfile       | Anti-cheating (single commit, no remote, fresh git init) |
-| Smoke test       | Encodes legitimate surface, doesn't prescribe scenario   |
 | Calibration data | Spread ~0.20, no saturation, top-of-frontier exists      |
 | Pipeline cleanup | No leftover `shield`/`sequoia`/`hornbeam` strings        |
 
@@ -247,7 +246,6 @@ A peer reviewer will audit before HDM/HDL sign-off:
 | Saturated frontier (Opus = 1.00 at n=1) | Add harder rubric items         |
 | `rubric_max_score` arithmetic error     | Recompute: Σ(weight × count)    |
 | Pipeline-name leftover                  | Search & remove all references  |
-| Smoke test missing or anemic            | Add 15-25 legitimate-flow tests |
 | Prompt leaks the rubric                 | Rewrite without listing items   |
 
 ---

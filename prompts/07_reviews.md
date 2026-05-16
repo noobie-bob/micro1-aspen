@@ -17,8 +17,6 @@ A peer reviewer will audit tasks before HDM/HDL sign-off to verify the following
 ### Technical Execution
 
 - Dockerfile applies anti-cheating (single commit, no remote, fresh git init) with no pipeline-name leftovers.
-- Smoke test correctly encodes the codebase's normal-operation surface (the public API in legitimate use), without prescribing the scenario-under-test.
-- Scenario is not trivially guessable from the smoke suite plus prompt alone.
 
 ### Calibration Distribution
 
@@ -36,7 +34,6 @@ Tasks that come back from QC most often fail for one of these reasons:
 - **Inflated rubric count:** The task has many items, but several are simple neighbors of each other and do not add meaningful discrimination.
 - **rubric_max_score arithmetic error:** The sum of severity weights doesn't match the field. Recompute on every rubric edit.
 - **Pipeline-name leftover:** Strings like `shield.local` or `sequoia` in the Dockerfile, README, or commit message. Tells the reviewer the task was forked from a sibling pipeline without cleanup.
-- **Smoke test missing or anemic:** Without a load-bearing smoke test, frontier models cannot induce the codebase's normal-operation surface, and reward floors.
 - **Prompt leaks the rubric:** Enumerating the rubric items or structural axes in the prompt eliminates the scenario-induction signal — the agent doesn't have to think.
 - **Prompt leaks the search space:** Telling the agent to inspect `debug`, `legacy`, `search`, `report`, etc. in the prompt narrows the work too much and collapses the calibration gap.
 - **Not enough test variety:** The suite is mostly one style of GET/assert-status check, with little body inspection, mutation/read-back, secondary path coverage, or realistic regression guards.
