@@ -39,91 +39,106 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "boundary_journey",
-      "description": "A test chain proves a standard participant cannot enumerate, retrieve, mutate, or destroy resources that belong to a different organisational boundary, while an equivalent same-boundary flow still succeeds."
+      "description": "A test chain proves a standard participant cannot enumerate, retrieve, mutate, or destroy resources that belong to a different organisational boundary, while an equivalent same-boundary flow still succeeds.",
+      "justification": "Prevents cross-tenant data leaks and enforces strict organisational boundaries, a core requirement for multi-tenant security. The expected value is determined by the legitimate access scope for each participant."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "response_shaping",
-      "description": "A test chain proves non-privileged callers do not receive privileged metadata or internal collaboration content through primary responses or secondary packaging flows; seeded marker values must remain absent, while privileged callers retain their broader view."
+      "description": "A test chain proves non-privileged callers do not receive privileged metadata or internal collaboration content through primary responses or secondary packaging flows; seeded marker values must remain absent, while privileged callers retain their broader view.",
+      "justification": "Ensures sensitive or privileged information is not exposed to unauthorized users, protecting confidentiality. The expected value is based on the role-based access model and seeded marker absence."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "delegated_scope",
-      "description": "A test chain proves delegated access remains confined to the explicitly granted workspace, cannot be replayed or stretched to neighbouring resources, and fails once the delegated state is invalid, expired, or incomplete."
+      "description": "A test chain proves delegated access remains confined to the explicitly granted workspace, cannot be replayed or stretched to neighbouring resources, and fails once the delegated state is invalid, expired, or incomplete.",
+      "justification": "Prevents privilege escalation and replay attacks by ensuring delegated tokens are strictly scoped and time-bound. The expected value is determined by the explicit grant and token validity."
     },
     {
       "id": "RUB-004",
       "severity": "critical",
       "category": "operational_surfaces",
-      "description": "A test chain proves diagnostic, historical, or operational surfaces cannot be used by non-privileged callers to retrieve broad application state, credentials, configuration, or organisation-wide records, while intended privileged access still works."
+      "description": "A test chain proves diagnostic, historical, or operational surfaces cannot be used by non-privileged callers to retrieve broad application state, credentials, configuration, or organisation-wide records, while intended privileged access still works.",
+      "justification": "Protects against information disclosure via auxiliary or debug surfaces, which are common sources of accidental leaks. The expected value is based on privilege checks and surface restrictions."
     },
     {
       "id": "RUB-005",
       "severity": "critical",
       "category": "unsafe_inputs",
-      "description": "A table-driven test chain proves crafted inputs across discovery, reporting, outbound-request, and file-retrieval surfaces cannot exfiltrate hidden data or trigger unsafe behaviour, while benign variants on those same surfaces still work."
+      "description": "A table-driven test chain proves crafted inputs across discovery, reporting, outbound-request, and file-retrieval surfaces cannot exfiltrate hidden data or trigger unsafe behaviour, while benign variants on those same surfaces still work.",
+      "justification": "Defends against injection, SSRF, and exfiltration attacks by validating input handling across all surfaces. The expected value is determined by the absence of marker leaks and safe handling of edge cases."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "mutation_integrity",
-      "description": "A test chain proves a non-privileged caller cannot overwrite ownership, boundary placement, or privileged attributes through ordinary update paths, and confirms the authoritative state with follow-up reads from more than one surface."
+      "description": "A test chain proves a non-privileged caller cannot overwrite ownership, boundary placement, or privileged attributes through ordinary update paths, and confirms the authoritative state with follow-up reads from more than one surface.",
+      "justification": "Prevents unauthorized privilege escalation or resource takeover by enforcing strict update controls. The expected value is based on state consistency across multiple surfaces."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "token_properties",
-      "description": "A test verifies delegated-access tokens and shareable links are unique, non-derivable from stable identifiers, and not reused across repeated issuances or different actors."
+      "description": "A test verifies delegated-access tokens and shareable links are unique, non-derivable from stable identifiers, and not reused across repeated issuances or different actors.",
+      "justification": "Ensures tokens and links cannot be guessed or reused, reducing the risk of unauthorized access. The expected value is determined by token entropy and issuance logic."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "special_visibility_scope",
-      "description": "A test verifies archived, mirrored, private, or otherwise non-default visibility modes do not leak into unrelated callers' list, discovery, or packaged views, while their intended audiences still retain access."
+      "description": "A test verifies archived, mirrored, private, or otherwise non-default visibility modes do not leak into unrelated callers' list, discovery, or packaged views, while their intended audiences still retain access.",
+      "justification": "Prevents information leaks from special-case resources, ensuring only intended audiences have access. The expected value is based on visibility mode logic and access checks."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "artifact_consistency",
-      "description": "A test verifies non-privileged callers cannot recover internal discussions or restricted file content through collaboration views, file retrieval, or alternate parent-child lookup paths."
+      "description": "A test verifies non-privileged callers cannot recover internal discussions or restricted file content through collaboration views, file retrieval, or alternate parent-child lookup paths.",
+      "justification": "Protects sensitive collaboration and file content from unauthorized access, even via indirect or alternate paths. The expected value is determined by access control and serialization logic."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "widened_summaries",
-      "description": "A test verifies rollup, summary, or widening-style surfaces do not expand a caller's visibility to organisation-wide figures, internal metrics, or other teams' history."
+      "description": "A test verifies rollup, summary, or widening-style surfaces do not expand a caller's visibility to organisation-wide figures, internal metrics, or other teams' history.",
+      "justification": "Prevents privilege creep via summary or aggregation endpoints, ensuring callers only see data within their scope. The expected value is based on summary logic and access boundaries."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "role_scoped_boundaries",
-      "description": "A test verifies specialised roles with narrower read permissions remain confined to their documented visibility slice and do not become general cross-organisational readers."
+      "description": "A test verifies specialised roles with narrower read permissions remain confined to their documented visibility slice and do not become general cross-organisational readers.",
+      "justification": "Ensures least-privilege access for specialized roles, preventing accidental or malicious overreach. The expected value is determined by documented role boundaries."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "error_sanitization",
-      "description": "A test chain triggers malformed or failing requests and verifies error responses do not expose internal runtime details, filesystem hints, or executable command text."
+      "description": "A test chain triggers malformed or failing requests and verifies error responses do not expose internal runtime details, filesystem hints, or executable command text.",
+      "justification": "Prevents attackers from gaining insight into internal implementation or environment via error messages. The expected value is based on sanitized error output."
     },
     {
       "id": "RUB-013",
       "severity": "major",
       "category": "regression_guards",
-      "description": "Anti-overblock tests prove legitimate privileged and same-boundary flows remain available after fixes, including broader administrative visibility, same-team leadership actions, and ordinary participant work management."
+      "description": "Anti-overblock tests prove legitimate privileged and same-boundary flows remain available after fixes, including broader administrative visibility, same-team leadership actions, and ordinary participant work management.",
+      "justification": "Guards against regressions that would block legitimate use cases, ensuring fixes do not break intended functionality. The expected value is determined by successful privileged and same-boundary flows."
     },
     {
       "id": "RUB-014",
       "severity": "minor",
       "category": "repeatability",
-      "description": "Tests isolate state with fresh setup or unique markers so results are repeatable and not order-dependent."
+      "description": "Tests isolate state with fresh setup or unique markers so results are repeatable and not order-dependent.",
+      "justification": "Ensures tests are reliable and not affected by prior state, supporting reproducibility and accurate results. The expected value is based on test isolation and marker usage."
     },
     {
       "id": "RUB-015",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "Tests use body-level assertions with unique sentinel markers and reusable helpers, rather than relying only on status codes or field-key absence."
+      "description": "Tests use body-level assertions with unique sentinel markers and reusable helpers, rather than relying only on status codes or field-key absence.",
+      "justification": "Promotes robust, maintainable tests that catch subtle issues and avoid false positives. The expected value is determined by assertion depth and helper usage."
     }
   ],
   "rubric_max_score": 52,
