@@ -174,10 +174,17 @@ Each destination has four severity files: `critical.md`, `major.md`, `minor.md`,
 **Table format** (same for all files):
 For trimmed findings, no need to mention the rubric ID or exact test details — just a high-level description of the vulnerability/scenario type, and why it was removed. For kept findings, include the rubric ID and enough details to understand the discrimination signal.
 
+For success case:
 ```markdown
 | Sl.No | Task Title | Language | Framework | Task Details | Reason |
 |---|---|---|---|---|---|
 | 1 | Cross-team project list isolation | Python | Flask | RUB-003 from aspen__projhub_visibility_001 — non-admin listing cross-team projects | Both models failed; too ambiguous |
+```
+
+For failure case: (same thing without the RUB-ID )
+```markdown| Sl.No | Task Title | Language | Framework | Task Details | Reason |
+|---|---|---|---|---|---|
+| 1 | Cross-team project list isolation | Python | Flask | From aspen__projhub_visibility_001 — non-admin listing cross-team projects | Both models failed; too ambiguous |
 ```
 
 **Deduplication rule (IMPORTANT):** Before appending a new row, scan the target file for an existing row describing the same vulnerability/scenario type (e.g., SQL injection, IDOR, path traversal). If a matching row already exists from a different task:
