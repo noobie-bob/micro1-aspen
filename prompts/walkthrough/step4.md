@@ -57,6 +57,7 @@ docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v1 \
 ```
 
 Update `task_config.json`:
+
 ```json
 {
   "repo": {
@@ -209,12 +210,12 @@ docker run --rm -it -v $(pwd)/tests/exfiltration:/repo/tests/exfiltration \
 
 ### What to Expect
 
-| Test Category | Expected Result Against Buggy Code |
-|---------------|-----------------------------------|
-| Smoke tests | All PASS ✅ |
+| Test Category                           | Expected Result Against Buggy Code     |
+| --------------------------------------- | -------------------------------------- |
+| Smoke tests                             | All PASS ✅                            |
 | Direct coverage (IDOR, injection, etc.) | FAIL ❌ (bugs exist, tests catch them) |
-| Anti-overblock / regression guards | PASS ✅ (legitimate flows work) |
-| Test quality (sentinel markers) | FAIL ❌ (leaked data visible) |
+| Anti-overblock / regression guards      | PASS ✅ (legitimate flows work)        |
+| Test quality (sentinel markers)         | FAIL ❌ (leaked data visible)          |
 
 > **Important:** Direct-coverage tests **should FAIL** against the buggy code — that proves they catch the bugs. This is correct behavior.
 
@@ -225,13 +226,13 @@ docker run --rm -it -v $(pwd)/tests/exfiltration:/repo/tests/exfiltration \
 Team-facing status report with calibration data placeholders:
 
 ```markdown
-# aspen__{substrate}_{descriptor}_{NNN}
+# aspen\__{substrate}_{descriptor}\_{NNN}
 
 ## Tasks in this pack
 
-| Substrate | Rubric Items | Max Score | Status |
-|-----------|-------------|-----------|--------|
-| {substrate} ({framework}, ~{N}k LOC) | 16 (13 major + 2 minor + 1 nitpick) | 44 | PUSHED — awaiting calibration |
+| Substrate                            | Rubric Items                        | Max Score | Status                        |
+| ------------------------------------ | ----------------------------------- | --------- | ----------------------------- |
+| {substrate} ({framework}, ~{N}k LOC) | 16 (13 major + 2 minor + 1 nitpick) | 44        | PUSHED — awaiting calibration |
 
 ## Substrate Summary
 
@@ -250,17 +251,17 @@ Team-facing status report with calibration data placeholders:
 
 > **Status:** Pending — calibration runs have not been executed yet.
 
-| Model | N | Mean Reward | Saturation Rate | Pass Rate | Distribution |
-|-------|---|-------------|-----------------|-----------|--------------|
-| Claude Opus 4.7 | — | — | — | — | — |
-| Qwen 3.5 | — | — | — | — | — |
+| Model           | N   | Mean Reward | Saturation Rate | Pass Rate | Distribution |
+| --------------- | --- | ----------- | --------------- | --------- | ------------ |
+| Claude Opus 4.7 | —   | —           | —               | —         | —            |
+| Qwen 3.5        | —   | —           | —               | —         | —            |
 
 ### Per-rubric catch rates (N=12)
 
-| Rubric | Category | Severity | Opus Catch | Qwen Catch |
-|--------|----------|----------|------------|------------|
-| RUB-001 | access_control | major | — | — |
-| ... | ... | ... | — | — |
+| Rubric  | Category       | Severity | Opus Catch | Qwen Catch |
+| ------- | -------------- | -------- | ---------- | ---------- |
+| RUB-001 | access_control | major    | —          | —          |
+| ...     | ...            | ...      | —          | —          |
 
 ### Discrimination verdict
 
@@ -286,22 +287,27 @@ Outsider on-ramp document:
 # Deep Dive: {Service Name} {Task Title}
 
 ## Five-Second Summary
+
 {Service} is a {framework} {type} API with {N}+ endpoints managing {resources}.
 The service has seeded vulnerabilities spanning {N} classes. The agent must
 author a test suite that catches all of these without over-blocking legitimate flows.
 
 ## Why Test-Authoring Is the Right Shape
+
 {The dual-contract argument...}
 
 ## What the Agent Sees
+
 {Directory tree of /repo}
 {Auth model table}
 {Key code patterns to notice — show actual code snippets of bugs}
 
 ## How the Rubric Decomposes the Scenario
+
 {Table: category, item count, what it tests}
 
 ## How to Read the Calibration Numbers
+
 {Explain mean reward, saturation rate, catch rate, discrimination ladder}
 ```
 

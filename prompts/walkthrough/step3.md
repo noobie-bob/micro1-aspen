@@ -242,16 +242,16 @@ write the test suite that catches all of it.
 
 ### Rules for prompt.txt
 
-| Rule | Why |
-|------|-----|
-| Do NOT list rubric items | Agent must induce what to test from code |
-| Do NOT list structural axes | Eliminates the scenario-induction signal |
+| Rule                                                      | Why                                               |
+| --------------------------------------------------------- | ------------------------------------------------- |
+| Do NOT list rubric items                                  | Agent must induce what to test from code          |
+| Do NOT list structural axes                               | Eliminates the scenario-induction signal          |
 | Do NOT name every route family or module worth inspecting | Turns the prompt into a scavenger-hunt answer key |
-| DO mention the reported behavior conversationally | Gives direction without giving answers |
-| DO specify where to put tests | Agent needs to know `tests/exfiltration/` |
-| DO reference `test_smoke.py` | Agent needs the legitimate-flow reference |
-| DO forbid modifying the service source | Agent sometimes writes fixes instead of tests |
-| DO specify submission format | `submit_answer` as unified diff |
+| DO mention the reported behavior conversationally         | Gives direction without giving answers            |
+| DO specify where to put tests                             | Agent needs to know `tests/exfiltration/`         |
+| DO reference `test_smoke.py`                              | Agent needs the legitimate-flow reference         |
+| DO forbid modifying the service source                    | Agent sometimes writes fixes instead of tests     |
+| DO specify submission format                              | `submit_answer` as unified diff                   |
 
 ---
 
@@ -261,12 +261,12 @@ write the test suite that catches all of it.
 
 Decompose your scenario into **atomic, binary** rubric items along structural axes:
 
-| Structural Axis | Item Count | Purpose |
-|-----------------|-----------|---------|
-| Direct coverage (primary) | 6-8 items | Exercise the target scenario at its primary surfaces |
-| Direct coverage (secondary) | 2-4 items | Cover secondary/adjacent surfaces with different assertion shapes |
-| Anti-overblock / regression guards | 3-4 items | Legitimate flows must still work across more than one workflow |
-| Test quality | 1-2 items | Beyond-surface assertions (sentinel markers, side effects) |
+| Structural Axis                    | Item Count | Purpose                                                           |
+| ---------------------------------- | ---------- | ----------------------------------------------------------------- |
+| Direct coverage (primary)          | 6-8 items  | Exercise the target scenario at its primary surfaces              |
+| Direct coverage (secondary)        | 2-4 items  | Cover secondary/adjacent surfaces with different assertion shapes |
+| Anti-overblock / regression guards | 3-4 items  | Legitimate flows must still work across more than one workflow    |
+| Test quality                       | 1-2 items  | Beyond-surface assertions (sentinel markers, side effects)        |
 
 Avoid a rubric that is mostly the same test template copied across neighboring endpoints. You want some items that require list/detail comparison, body inspection, mutation followed by read-back, or alternate serialization paths.
 
@@ -274,12 +274,12 @@ Going above 18 items is reasonable only when those extra items bring real variet
 
 ### Severity Distribution
 
-| Severity | Weight | Target Count | Purpose |
-|----------|--------|-------------|---------|
-| critical | 4 | 0-1 | Reserved: missing = zero discrimination. Most tasks have 0. |
-| major | 3 | 10-13 | Standard weight for primary + anti-regression |
-| minor | 2 | 1-3 | Secondary coverage, peripheral checks |
-| nitpick | 1 | 1 | Test quality — sentinel markers, rigor |
+| Severity | Weight | Target Count | Purpose                                                     |
+| -------- | ------ | ------------ | ----------------------------------------------------------- |
+| critical | 4      | 0-1          | Reserved: missing = zero discrimination. Most tasks have 0. |
+| major    | 3      | 10-13        | Standard weight for primary + anti-regression               |
+| minor    | 2      | 1-3          | Secondary coverage, peripheral checks                       |
+| nitpick  | 1      | 1            | Test quality — sentinel markers, rigor                      |
 
 ### Rubric Arithmetic
 
@@ -306,6 +306,7 @@ Each item in `ground_truth_issues[]`:
 ```
 
 **Description Rules:**
+
 - Write as a precise specification: what endpoint, what role, what assertion
 - Start with "A test asserts that..." or "An anti-overblock test asserts that..."
 - Avoid vague phrasing like "the test should cover X"
@@ -403,10 +404,12 @@ rubric_max_score = 44
 Before moving on, mentally run the rubric against two hypothetical agents:
 
 ### Agent A: Minimal Tester (only checks status codes = 200)
+
 - Should **FAIL** at least: all redaction items, test quality items, and some access control items
 - If this agent passes most items → rubric is too weak
 
 ### Agent B: Over-Blocker (locks down everything, including legitimate flows)
+
 - Should **FAIL** at least: all regression guard items
 - If this agent passes all items → you're missing anti-overblock guards
 

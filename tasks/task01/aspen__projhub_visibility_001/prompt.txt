@@ -4,6 +4,6 @@ We need a comprehensive security test suite that exercises the API's access boun
 
 **Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must catch real issues and also include anti-overblock assertions so legitimate flows do not regress.
 
-Put your tests under `tests/exfiltration/`. The existing `tests/test_smoke.py` demonstrates the legitimate participant and admin flows already in use.
+Put your tests under `tests/exfiltration/`. The existing `tests/conftest.py` provides shared fixtures (`client`, `auth_admin`, `auth_user`, `auth_user2`, `two_teams`) for the two-team topology.
 
 Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).

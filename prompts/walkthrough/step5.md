@@ -8,14 +8,15 @@
 
 Aspen calibrates against specific models to ensure discrimination:
 
-| Model | Expected Score | Runs |
-|-------|---------------|------|
-| Claude Opus 4.7 | ~75-85% mean reward | N=12 |
-| Qwen 3.5 | ~20-50% mean reward | N=4 (run 4 times) |
+| Model           | Expected Score      | Runs              |
+| --------------- | ------------------- | ----------------- |
+| Claude Opus 4.7 | ~75-85% mean reward | N=12              |
+| Qwen 3.5        | ~20-50% mean reward | N=4 (run 4 times) |
 
 ### What "DISCRIMINATIVE" Means
 
 A task is **DISCRIMINATIVE** if:
+
 - Frontier model (Opus) clearly outscores mid-tier model (Qwen)
 - There's a spread of ~0.20 between models
 - No saturation (not all models score the same)
@@ -24,11 +25,11 @@ A task is **DISCRIMINATIVE** if:
 
 ### Verdicts
 
-| Verdict | Meaning | Action |
-|---------|---------|--------|
-| `DISCRIMINATIVE` | Clear separation between models ✅ | Ship it |
+| Verdict            | Meaning                                                         | Action                     |
+| ------------------ | --------------------------------------------------------------- | -------------------------- |
+| `DISCRIMINATIVE`   | Clear separation between models ✅                              | Ship it                    |
 | `UNDER-CALIBRATED` | All models score similarly or the smaller model scores too high | Increase rubric difficulty |
-| `FLAKY` | Scores vary wildly within same model | Fix rubric atomicity |
+| `FLAKY`            | Scores vary wildly within same model                            | Fix rubric atomicity       |
 
 ---
 
@@ -51,6 +52,7 @@ Upload the task to the Realm platform and trigger evaluation runs from the UI.
 ### Collect Results
 
 After each run, collect:
+
 - **Reward score** (0.0 to 1.0)
 - **Per-rubric MET/UNMET** for each criterion
 - **Agent's submitted diff** (for analysis)
@@ -62,24 +64,24 @@ After each run, collect:
 ### Per-Model Summary Table
 
 ```markdown
-| Model | N | Mean Reward | Saturation Rate | Pass Rate | Distribution |
-|-------|---|-------------|-----------------|-----------|--------------|
-| Claude Opus 4.7 | 12 | 0.79 | 0.08 | 0.92 | 0.62–0.92 |
-| Qwen 3.5 | 4 | 0.33 | 0.00 | 0.25 | 0.20–0.45 |
+| Model           | N   | Mean Reward | Saturation Rate | Pass Rate | Distribution |
+| --------------- | --- | ----------- | --------------- | --------- | ------------ |
+| Claude Opus 4.7 | 12  | 0.79        | 0.08            | 0.92      | 0.62–0.92    |
+| Qwen 3.5        | 4   | 0.33        | 0.00            | 0.25      | 0.20–0.45    |
 ```
 
 ### Per-Rubric Catch Rates
 
 ```markdown
-| Rubric | Category | Severity | Opus Catch | Qwen Catch |
-|--------|----------|----------|------------|------------|
-| RUB-001 | access_control | major | 12/12 (100%) | 3/4 (75%) |
-| RUB-002 | access_control | major | 11/12 (92%) | 2/4 (50%) |
-| RUB-003 | access_control | major | 10/12 (83%) | 1/4 (25%) |
-| RUB-004 | redaction | major | 9/12 (75%) | 1/4 (25%) |
-| RUB-005 | redaction | major | 8/12 (67%) | 0/4 (0%) |
-| ...     | ...      | ...    | ...         | ...        |
-| RUB-016 | test_quality | nitpick | 2/12 (17%) | 0/4 (0%) |
+| Rubric  | Category       | Severity | Opus Catch   | Qwen Catch |
+| ------- | -------------- | -------- | ------------ | ---------- |
+| RUB-001 | access_control | major    | 12/12 (100%) | 3/4 (75%)  |
+| RUB-002 | access_control | major    | 11/12 (92%)  | 2/4 (50%)  |
+| RUB-003 | access_control | major    | 10/12 (83%)  | 1/4 (25%)  |
+| RUB-004 | redaction      | major    | 9/12 (75%)   | 1/4 (25%)  |
+| RUB-005 | redaction      | major    | 8/12 (67%)   | 0/4 (0%)   |
+| ...     | ...            | ...      | ...          | ...        |
+| RUB-016 | test_quality   | nitpick  | 2/12 (17%)   | 0/4 (0%)   |
 ```
 
 ### Discrimination Ladder
@@ -87,39 +89,42 @@ After each run, collect:
 Map each rubric item to a rung based on catch rates:
 
 ```markdown
-| Rung | Description | Catch Rate | Rubric Items |
-|------|-------------|------------|--------------|
-| Floor (Frontier-saturated) | Any model catches | ≥ 58% | RUB-001, RUB-002, RUB-003 |
-| Mid-tier | Strong models catch | 42–58% | RUB-004, RUB-005, RUB-006, RUB-007 |
-| Hard rungs | Frontier-only | 25–42% | RUB-008, RUB-009, RUB-010, RUB-011 |
-| Top-of-frontier | Rarely caught | ≤ 10% | RUB-016 |
+| Rung                       | Description         | Catch Rate | Rubric Items                       |
+| -------------------------- | ------------------- | ---------- | ---------------------------------- |
+| Floor (Frontier-saturated) | Any model catches   | ≥ 58%      | RUB-001, RUB-002, RUB-003          |
+| Mid-tier                   | Strong models catch | 42–58%     | RUB-004, RUB-005, RUB-006, RUB-007 |
+| Hard rungs                 | Frontier-only       | 25–42%     | RUB-008, RUB-009, RUB-010, RUB-011 |
+| Top-of-frontier            | Rarely caught       | ≤ 10%      | RUB-016                            |
 ```
 
 ### Target Proportions
 
-| Rung | Target % |
-|------|----------|
+| Rung               | Target %      |
+| ------------------ | ------------- |
 | Frontier-saturated | ~30% of items |
-| Mid-tier | ~30% of items |
-| Hard rungs | ~25% of items |
-| Top-of-frontier | ≥ 1 item |
+| Mid-tier           | ~30% of items |
+| Hard rungs         | ~25% of items |
+| Top-of-frontier    | ≥ 1 item      |
 
 ---
 
 ## 5.4 Adjust Rubric Based on Calibration
 
 ### If Opus scores too high (>90% consistently)
+
 - Add harder rubric items (sentinel markers, chained flows)
 - Increase the anti-overblock coverage
 - Add items that require reasoning across multiple files or multiple retrieval paths
 - Remove prompt hints that name the suspicious surfaces too directly
 
 ### If Opus scores too low (<65%)
+
 - Simplify some rubric items
 - Make the prompt slightly more concrete about the reported symptoms, not the exact places to inspect
 - Ensure the smoke test adequately teaches the API surface
 
 ### If Qwen scores too high (>50% consistently)
+
 - Add items requiring deeper code analysis
 - Add items requiring multi-step reasoning
 - Increase the proportion of "hard rung" items
@@ -128,6 +133,7 @@ Map each rubric item to a rung based on catch rates:
 - If the rubric is already large, remove easy repetitive items instead of only adding more
 
 ### If results are FLAKY (high variance)
+
 - Check rubric items for ambiguity — make them more atomic
 - Ensure each item is truly binary (MET/UNMET, no interpretation needed)
 - Remove items that depend on the agent's specific coding style
@@ -135,6 +141,7 @@ Map each rubric item to a rung based on catch rates:
 ### Rubric Reduction Pattern (from task01 experience)
 
 > In task01, we started with **28 rubric items** and reduced to **16** after Opus 4.7 review. The reduction process:
+>
 > 1. Run initial calibration with all 28 items
 > 2. Identify items that are redundant (covered by other items)
 > 3. Identify items that are ambiguous (inconsistent MET/UNMET across runs)
@@ -221,27 +228,27 @@ A peer reviewer will audit before HDM/HDL sign-off:
 
 ### What They Check
 
-| Area | Verification |
-|------|-------------|
+| Area             | Verification                                             |
+| ---------------- | -------------------------------------------------------- |
 | Rubric atomicity | Each item is MET/UNMET without multi-part interpretation |
-| Dual contract | Both direct-coverage AND anti-overblock items present |
-| Severity weights | Calibrated and consistent |
-| Prompt integrity | No rubric enumeration, no structural axis listing |
-| Dockerfile | Anti-cheating (single commit, no remote, fresh git init) |
-| Smoke test | Encodes legitimate surface, doesn't prescribe scenario |
-| Calibration data | Spread ~0.20, no saturation, top-of-frontier exists |
-| Pipeline cleanup | No leftover `shield`/`sequoia`/`hornbeam` strings |
+| Dual contract    | Both direct-coverage AND anti-overblock items present    |
+| Severity weights | Calibrated and consistent                                |
+| Prompt integrity | No rubric enumeration, no structural axis listing        |
+| Dockerfile       | Anti-cheating (single commit, no remote, fresh git init) |
+| Smoke test       | Encodes legitimate surface, doesn't prescribe scenario   |
+| Calibration data | Spread ~0.20, no saturation, top-of-frontier exists      |
+| Pipeline cleanup | No leftover `shield`/`sequoia`/`hornbeam` strings        |
 
 ### Common Rejection Reasons
 
-| Reason | Fix |
-|--------|-----|
-| Single-contract rubric | Add anti-overblock guards |
-| Saturated frontier (Opus = 1.00 at n=1) | Add harder rubric items |
-| `rubric_max_score` arithmetic error | Recompute: Σ(weight × count) |
-| Pipeline-name leftover | Search & remove all references |
-| Smoke test missing or anemic | Add 15-25 legitimate-flow tests |
-| Prompt leaks the rubric | Rewrite without listing items |
+| Reason                                  | Fix                             |
+| --------------------------------------- | ------------------------------- |
+| Single-contract rubric                  | Add anti-overblock guards       |
+| Saturated frontier (Opus = 1.00 at n=1) | Add harder rubric items         |
+| `rubric_max_score` arithmetic error     | Recompute: Σ(weight × count)    |
+| Pipeline-name leftover                  | Search & remove all references  |
+| Smoke test missing or anemic            | Add 15-25 legitimate-flow tests |
+| Prompt leaks the rubric                 | Rewrite without listing items   |
 
 ---
 
@@ -260,14 +267,14 @@ After submission and sign-off:
 
 ## Quick Reference: Complete Project Timeline
 
-| Phase | Time | Key Actions |
-|-------|------|-------------|
-| **Step 1:** Substrate design & implementation | ~2-3 hrs | Choose service, implement ~300-500 LOC, seed bugs |
-| **Step 2:** Smoke tests & conftest | ~1-2 hrs | Write 15-25 legitimate-flow tests, shared fixtures |
-| **Step 3:** Docker + prompt + rubric | ~2-3 hrs | Dockerfile, prompt.txt, task_config.json, reasoning.txt |
-| **Step 4:** Push + docs + answer tests | ~1-2 hrs | Push image, README.md, DEEP_DIVE.md, gold-standard tests |
-| **Step 5:** Calibration + QC + submit | ~2-3 hrs | Run models, fill calibration data, pass QC, submit |
-| **Total** | ~8-13 hrs | End-to-end for one task |
+| Phase                                         | Time      | Key Actions                                              |
+| --------------------------------------------- | --------- | -------------------------------------------------------- |
+| **Step 1:** Substrate design & implementation | ~2-3 hrs  | Choose service, implement ~300-500 LOC, seed bugs        |
+| **Step 2:** Smoke tests & conftest            | ~1-2 hrs  | Write 15-25 legitimate-flow tests, shared fixtures       |
+| **Step 3:** Docker + prompt + rubric          | ~2-3 hrs  | Dockerfile, prompt.txt, task_config.json, reasoning.txt  |
+| **Step 4:** Push + docs + answer tests        | ~1-2 hrs  | Push image, README.md, DEEP_DIVE.md, gold-standard tests |
+| **Step 5:** Calibration + QC + submit         | ~2-3 hrs  | Run models, fill calibration data, pass QC, submit       |
+| **Total**                                     | ~8-13 hrs | End-to-end for one task                                  |
 
 ---
 

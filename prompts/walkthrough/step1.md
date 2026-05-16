@@ -10,25 +10,25 @@ Pick a **service type** and a **scenario** (vulnerability, feature, regression, 
 
 ### Supported Stacks (examples)
 
-| Stack | Framework | When to Use |
-|-------|-----------|-------------|
-| Python + Flask | `flask==3.1.0` | Security vulns, API testing, rapid prototyping |
-| Python + FastAPI | `fastapi`, `uvicorn` | Async APIs, type-checked routes |
-| Go | `net/http`, `chi`, `gin` | Systems-level bugs, concurrency issues |
-| Node.js + Express | `express` | JS ecosystem, middleware bugs |
-| Node.js + Bun | `bun serve` | Fast runtime, JS/TS edge cases |
-| Bash server | `socat`, `ncat` | Minimal surface, Unix-specific bugs |
-| Elastic | `elasticsearch` | Query injection, data exposure |
+| Stack             | Framework                | When to Use                                    |
+| ----------------- | ------------------------ | ---------------------------------------------- |
+| Python + Flask    | `flask==3.1.0`           | Security vulns, API testing, rapid prototyping |
+| Python + FastAPI  | `fastapi`, `uvicorn`     | Async APIs, type-checked routes                |
+| Go                | `net/http`, `chi`, `gin` | Systems-level bugs, concurrency issues         |
+| Node.js + Express | `express`                | JS ecosystem, middleware bugs                  |
+| Node.js + Bun     | `bun serve`              | Fast runtime, JS/TS edge cases                 |
+| Bash server       | `socat`, `ncat`          | Minimal surface, Unix-specific bugs            |
+| Elastic           | `elasticsearch`          | Query injection, data exposure                 |
 
 ### Scenario Examples
 
-| Scenario Type | Example | Categories |
-|---------------|---------|------------|
-| Security (IDOR/access control) | Cross-team data isolation failure | `access_control`, `ownership`, `redaction` |
-| Security (injection) | SQL injection, command injection | `sql_injection`, `command_injection` |
-| Feature coverage | New payment API contract | `happy_path`, `error_handling`, `edge_case` |
-| Regression guard | Date parsing bug in timezone conversion | `bug_reproduction`, `related_path` |
-| Edge case | Race condition in concurrent writes | `concurrency`, `data_integrity` |
+| Scenario Type                  | Example                                 | Categories                                  |
+| ------------------------------ | --------------------------------------- | ------------------------------------------- |
+| Security (IDOR/access control) | Cross-team data isolation failure       | `access_control`, `ownership`, `redaction`  |
+| Security (injection)           | SQL injection, command injection        | `sql_injection`, `command_injection`        |
+| Feature coverage               | New payment API contract                | `happy_path`, `error_handling`, `edge_case` |
+| Regression guard               | Date parsing bug in timezone conversion | `bug_reproduction`, `related_path`          |
+| Edge case                      | Race condition in concurrent writes     | `concurrency`, `data_integrity`             |
 
 ### Naming Convention
 
@@ -37,6 +37,7 @@ aspen__{substrate}_{vulnerability_class}_{NNN}
 ```
 
 Examples:
+
 - `aspen__projhub_visibility_001` — Flask project management, visibility vulns
 - `aspen__billing_sqli_001` — Billing API, SQL injection
 - `aspen__filestore_traversal_001` — File store, path traversal
@@ -90,6 +91,7 @@ micro1-aspen/tasks/task02/
 ### Example: Flask Service (from task01 — ProjHub)
 
 **`app.py`** — App factory with error handlers:
+
 ```python
 """Flask application factory for {ServiceName}."""
 import traceback
@@ -119,6 +121,7 @@ app = create_app()
 ```
 
 **`auth.py`** — Static bearer-token auth (3 roles minimum):
+
 ```python
 VALID_TOKENS = {
     "admin-key":  ("admin", "admin-uuid"),
@@ -128,6 +131,7 @@ VALID_TOKENS = {
 ```
 
 **`db.py`** — In-memory storage with `reset_state()`:
+
 ```python
 TEAMS: dict[str, dict] = {}
 PROJECTS: dict[str, dict] = {}
@@ -143,6 +147,7 @@ def reset_state() -> None:
 ### For Other Stacks
 
 **Go:**
+
 ```go
 // main.go
 package main
@@ -155,21 +160,27 @@ func main() {
 ```
 
 **Express.js:**
+
 ```javascript
 // app.js
-const express = require('express');
+const express = require("express");
 const app = express();
 app.use(express.json());
-app.get('/api/items', (req, res) => { /* ... */ });
+app.get("/api/items", (req, res) => {
+  /* ... */
+});
 module.exports = app;
 ```
 
 **Bun:**
+
 ```typescript
 // server.ts
 Bun.serve({
   port: 3000,
-  fetch(req) { /* ... */ }
+  fetch(req) {
+    /* ... */
+  },
 });
 ```
 
@@ -181,27 +192,27 @@ For a typical 11-18 item rubric, you usually need 4-6 distinct vulnerability cla
 
 ### Security Task Example (task01 pattern)
 
-| Vulnerability Class | Where to Seed | Rubric Items |
-|---------------------|---------------|--------------|
-| Access control (IDOR) | Read endpoints missing team checks | 3 items |
-| Field redaction | Admin-only fields not stripped | 3 items |
-| SQL injection | Raw string interpolation in search | 1 item |
-| Sensitive data exposure | Debug endpoints with no auth | 2 items |
-| Mass assignment | PATCH accepts admin-only fields | 2 items |
-| Information exposure | Error handler returns stack traces | 1 item |
-| Regression guards | Legitimate flows must still work | 2 items |
-| Test quality | Sentinel markers in assertions | 1 item |
+| Vulnerability Class     | Where to Seed                      | Rubric Items |
+| ----------------------- | ---------------------------------- | ------------ |
+| Access control (IDOR)   | Read endpoints missing team checks | 3 items      |
+| Field redaction         | Admin-only fields not stripped     | 3 items      |
+| SQL injection           | Raw string interpolation in search | 1 item       |
+| Sensitive data exposure | Debug endpoints with no auth       | 2 items      |
+| Mass assignment         | PATCH accepts admin-only fields    | 2 items      |
+| Information exposure    | Error handler returns stack traces | 1 item       |
+| Regression guards       | Legitimate flows must still work   | 2 items      |
+| Test quality            | Sentinel markers in assertions     | 1 item       |
 
 ### Feature Task Example
 
-| Scenario Axis | Where to Seed | Rubric Items |
-|---------------|---------------|--------------|
-| Happy path | Core API contract | 3 items |
-| Error handling | Invalid inputs, edge conditions | 3 items |
-| Side effects | DB state, events, downstream | 2 items |
-| Edge cases | Boundary values, empty inputs | 2 items |
-| Regression guards | Existing flows unbroken | 3 items |
-| Test quality | Observable behavior assertions | 2 items |
+| Scenario Axis     | Where to Seed                   | Rubric Items |
+| ----------------- | ------------------------------- | ------------ |
+| Happy path        | Core API contract               | 3 items      |
+| Error handling    | Invalid inputs, edge conditions | 3 items      |
+| Side effects      | DB state, events, downstream    | 2 items      |
+| Edge cases        | Boundary values, empty inputs   | 2 items      |
+| Regression guards | Existing flows unbroken         | 3 items      |
+| Test quality      | Observable behavior assertions  | 2 items      |
 
 ---
 
@@ -221,11 +232,11 @@ Before moving to Step 2, verify:
 
 ## Reference: ProjHub (task01) Stats
 
-| Metric | Value |
-|--------|-------|
-| Total LOC | ~1,500 (9 route modules) |
-| Endpoints | 25+ |
+| Metric                | Value                                                                     |
+| --------------------- | ------------------------------------------------------------------------- |
+| Total LOC             | ~1,500 (9 route modules)                                                  |
+| Endpoints             | 25+                                                                       |
 | Vulnerability classes | 6 (IDOR, redaction, SQLi, debug exposure, mass assignment, info exposure) |
-| Auth tokens | 3 (admin, alice/user, bob/user2) |
-| In-memory tables | 5 (teams, projects, tasks, comments, audit_log) |
-| Requirements | flask==3.1.0, werkzeug==3.1.3, pytest==8.3.3 |
+| Auth tokens           | 3 (admin, alice/user, bob/user2)                                          |
+| In-memory tables      | 5 (teams, projects, tasks, comments, audit_log)                           |
+| Requirements          | flask==3.1.0, werkzeug==3.1.3, pytest==8.3.3                              |

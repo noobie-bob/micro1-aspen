@@ -13,12 +13,14 @@ The smoke test file (`tests/test_smoke.py`) is the **single most important file*
 - The agent has no reference for what "normal" looks like vs. what's broken
 
 **The smoke test encodes:**
+
 - Which endpoints exist and what HTTP methods they use
 - The route-to-role mapping (which endpoints non-admin participants can call)
 - What a successful response looks like for each flow
 - The data setup required to exercise each flow
 
 **The smoke test does NOT:**
+
 - Test for any security issues or bugs
 - Hint at the rubric structure
 - Explicitly list what's broken
@@ -106,6 +108,7 @@ def two_teams(client, auth_admin):
 ### For Other Stacks
 
 **Go (testing):**
+
 ```go
 // testutil/setup.go
 func SetupTestServer(t *testing.T) *httptest.Server {
@@ -117,19 +120,27 @@ func SetupTestServer(t *testing.T) *httptest.Server {
 ```
 
 **Express.js (supertest):**
+
 ```javascript
 // tests/setup.js
-const request = require('supertest');
-const app = require('../app');
+const request = require("supertest");
+const app = require("../app");
 
-function getClient() { return request(app); }
-function adminHeaders() { return { Authorization: 'Bearer admin-key' }; }
-function userHeaders() { return { Authorization: 'Bearer user-key' }; }
+function getClient() {
+  return request(app);
+}
+function adminHeaders() {
+  return { Authorization: "Bearer admin-key" };
+}
+function userHeaders() {
+  return { Authorization: "Bearer user-key" };
+}
 
 module.exports = { getClient, adminHeaders, userHeaders };
 ```
 
 **Bun (bun:test):**
+
 ```typescript
 // tests/helpers.ts
 import { describe, expect, test } from "bun:test";
@@ -148,19 +159,19 @@ export function makeRequest(path: string, headers?: Record<string, string>) {
 
 Your smoke test must cover **every legitimate API surface** the agent will need to understand. Aim for **15-25 smoke tests** covering:
 
-| Category | What to Test | Example |
-|----------|-------------|---------|
-| Health / connectivity | Basic endpoint reachability | `test_health`, `test_unauthenticated_returns_401` |
-| CRUD (admin) | Admin can create/read/update/delete | `test_admin_creates_team` |
-| CRUD (user) | User can operate on own resources | `test_member_creates_project_in_own_team` |
-| Access control (legitimate) | User CANNOT create in other team | `test_member_cannot_create_project_in_other_team` |
-| Relationships | Creating child resources | `test_member_creates_task_in_own_project` |
-| Updates | Patching/transitioning resources | `test_member_updates_own_task` |
-| Comments | Adding comments (public + internal) | `test_member_adds_comment`, `test_admin_adds_internal_comment` |
-| File operations | Upload/download attachments | `test_member_uploads_attachment` |
-| Derived operations | Duplicate, share, export | `test_member_duplicates_project` |
-| Admin endpoints | Audit log, reports | `test_admin_views_audit_log` |
-| Search | Keyword search | `test_member_searches_tasks` |
+| Category                    | What to Test                        | Example                                                        |
+| --------------------------- | ----------------------------------- | -------------------------------------------------------------- |
+| Health / connectivity       | Basic endpoint reachability         | `test_health`, `test_unauthenticated_returns_401`              |
+| CRUD (admin)                | Admin can create/read/update/delete | `test_admin_creates_team`                                      |
+| CRUD (user)                 | User can operate on own resources   | `test_member_creates_project_in_own_team`                      |
+| Access control (legitimate) | User CANNOT create in other team    | `test_member_cannot_create_project_in_other_team`              |
+| Relationships               | Creating child resources            | `test_member_creates_task_in_own_project`                      |
+| Updates                     | Patching/transitioning resources    | `test_member_updates_own_task`                                 |
+| Comments                    | Adding comments (public + internal) | `test_member_adds_comment`, `test_admin_adds_internal_comment` |
+| File operations             | Upload/download attachments         | `test_member_uploads_attachment`                               |
+| Derived operations          | Duplicate, share, export            | `test_member_duplicates_project`                               |
+| Admin endpoints             | Audit log, reports                  | `test_admin_views_audit_log`                                   |
+| Search                      | Keyword search                      | `test_member_searches_tasks`                                   |
 
 ### Writing Style
 
@@ -257,11 +268,13 @@ addopts = -v -p no:pretty
 For other test runners:
 
 **Go:**
+
 ```bash
 # No config file needed, use `go test ./...`
 ```
 
 **Jest (Node.js):**
+
 ```json
 // jest.config.js or package.json > jest
 {
