@@ -4,7 +4,22 @@
 
 | Substrate | Stack | Rubric items | Max score | Status |
 |-----------|-------|--------------:|----------:|--------|
-| projecthub | Go `net/http` | 39 (8 critical, 20 major, 7 minor, 4 nitpick) | 110 | DRAFT |
+| projecthub | Go `net/http` | 15 (5 critical, 8 major, 1 minor, 1 nitpick) | 52 | REWRITTEN — local rebuild and calibration pending |
+
+## Substrate summary
+
+ProjectHub is a role-based Go HTTP service with teams, projects, tasks, comments, attachments, sharing, reports, and operational tooling. The seeded scenario is a visibility problem that spans core boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths rather than one isolated route bug.
+
+The service is intentionally small enough to read in one sitting, but wide enough to force real threat-model induction. The legitimate product contract includes same-team participant work, team-lead flows, delegated access, reporting, and broader admin visibility; the task only works if those positive flows stay intact while the leaks are pinned down.
+
+**Vulnerability classes:** CWE-284, CWE-639, CWE-200, CWE-862, CWE-915, CWE-22, CWE-78, CWE-918, CWE-328, CWE-209, CWE-1295.
+
+## Image
+
+- **Tag:** `micro1ai/aspen-projecthub:visibility-v4`
+- **Digest:** pending push
+- **Base commit:** `c57a586f6a98c94a366f0634385b693dd64577b2`
+- **Status:** production Dockerfile updated and locally rebuilt; push before submission to capture the digest
 
 ## Calibration results
 
@@ -36,69 +51,39 @@ Reward threshold >= 0.80
 
 | Rubric | Severity | Category | Opus Catch | Qwen Catch |
 |--------|----------|----------|-----------:|-----------:|
-| RUB-001 | critical | access_control_chain | TBD | TBD |
-| RUB-002 | critical | redaction_chain | TBD | TBD |
-| RUB-003 | critical | stateful_share_chain | TBD | TBD |
-| RUB-004 | critical | mass_assignment_chain | TBD | TBD |
-| RUB-005 | critical | debug_legacy_ops_chain | TBD | TBD |
-| RUB-006 | critical | injection_io_chain | TBD | TBD |
-| RUB-007 | critical | weak_token_chain | TBD | TBD |
-| RUB-008 | critical | error_exposure_chain | TBD | TBD |
-| RUB-009 | major | mirror_child_scope | TBD | TBD |
-| RUB-010 | major | archive_private_scope | TBD | TBD |
-| RUB-011 | major | audit_scope | TBD | TBD |
-| RUB-012 | major | report_scope | TBD | TBD |
-| RUB-013 | major | comment_internal_consistency | TBD | TBD |
-| RUB-014 | major | attachment_class_scope | TBD | TBD |
-| RUB-015 | major | search_debug_flag | TBD | TBD |
-| RUB-016 | major | legacy_auth | TBD | TBD |
-| RUB-017 | major | ops_cursor_replay | TBD | TBD |
-| RUB-018 | major | share_expiry_replay | TBD | TBD |
-| RUB-019 | major | assignee_owner_mixup | TBD | TBD |
-| RUB-020 | major | number_shadow_mixup | TBD | TBD |
-| RUB-021 | major | admin_positive_detail | TBD | TBD |
-| RUB-022 | major | lead_positive_detail | TBD | TBD |
-| RUB-023 | major | participant_positive_flow | TBD | TBD |
-| RUB-024 | major | auditor_boundaries | TBD | TBD |
-| RUB-025 | major | bundle_side_effects | TBD | TBD |
-| RUB-026 | major | mutation_readback | TBD | TBD |
-| RUB-027 | major | body_shape | TBD | TBD |
-| RUB-028 | major | table_variants | TBD | TBD |
-| RUB-029 | minor | pagination_boundary | TBD | TBD |
-| RUB-030 | minor | bad_json_boundary | TBD | TBD |
-| RUB-031 | minor | case_encoding_boundary | TBD | TBD |
-| RUB-032 | minor | token_length_boundary | TBD | TBD |
-| RUB-033 | minor | same_team_negative_control | TBD | TBD |
-| RUB-034 | minor | admin_negative_control | TBD | TBD |
-| RUB-035 | minor | repeatability | TBD | TBD |
-| RUB-036 | nitpick | sentinel_markers | TBD | TBD |
-| RUB-037 | nitpick | helper_quality | TBD | TBD |
-| RUB-038 | nitpick | merged_flow_quality | TBD | TBD |
-| RUB-039 | nitpick | diagnostic_messages | TBD | TBD |
+| RUB-001 | critical | boundary_journey | TBD | TBD |
+| RUB-002 | critical | response_shaping | TBD | TBD |
+| RUB-003 | critical | delegated_scope | TBD | TBD |
+| RUB-004 | critical | operational_surfaces | TBD | TBD |
+| RUB-005 | critical | unsafe_inputs | TBD | TBD |
+| RUB-006 | major | mutation_integrity | TBD | TBD |
+| RUB-007 | major | token_properties | TBD | TBD |
+| RUB-008 | major | special_visibility_scope | TBD | TBD |
+| RUB-009 | major | artifact_consistency | TBD | TBD |
+| RUB-010 | major | widened_summaries | TBD | TBD |
+| RUB-011 | major | role_scoped_boundaries | TBD | TBD |
+| RUB-012 | major | error_sanitization | TBD | TBD |
+| RUB-013 | major | regression_guards | TBD | TBD |
+| RUB-014 | minor | repeatability | TBD | TBD |
+| RUB-015 | nitpick | test_quality | TBD | TBD |
 
 ## Discrimination ladder rung breakdown
 
 | Rung | Intended role | Current count | Notes |
 |------|---------------|--------------:|-------|
-| Floor | Broadly catchable baseline items | TBD | Fill after calibration |
-| Mid-tier | Strong-model but not universal catches | TBD | Fill after calibration |
-| Hard rungs | Frontier-skewed items | TBD | Fill after calibration |
-| Top-of-frontier | Rare catches, ideally at least one item | TBD | Fill after calibration |
+| Floor | Baseline access and regression items | TBD | Likely to include `boundary_journey` and parts of `regression_guards` if the smoke surface is clear |
+| Mid-tier | Strong-model catches without saturation | TBD | Expected candidates: `response_shaping`, `special_visibility_scope`, `widened_summaries`, `error_sanitization` |
+| Hard rungs | Frontier-skewed multi-step reasoning | TBD | Expected candidates: `delegated_scope`, `operational_surfaces`, `mutation_integrity`, `role_scoped_boundaries` |
+| Top-of-frontier | Rare catches, at least one item preferred | TBD | Expected candidates: `token_properties` or `test_quality` |
 
 ## Discrimination verdict
 
-PENDING. The rubric is intentionally shaped as 8 merged critical chains plus supporting major, minor, and quality items, but the final verdict must wait for real calibration data. Mark it `DISCRIMINATIVE`, `UNDER-CALIBRATED`, or `FLAKY` only after the summary table, pass@k table, and per-rubric catch table are filled with observed results.
+PENDING. This rewrite intentionally trades a 39-item checklist for a 15-item journey-based rubric, but the final verdict must wait for real calibration data. Mark it `DISCRIMINATIVE`, `UNDER-CALIBRATED`, or `FLAKY` only after the summary table, pass@k table, and per-rubric catch table are filled with observed results.
 
-## Image
-
-- Tag: `micro1ai/aspen-projecthub:visibility-v3`
-- Digest: pending push or unavailable from current workspace context
-- Base commit: image-derived commit hash; refresh after the next image rebuild if the build context changes
-
-## Aspen pipeline gotchas
+## Aspen pipeline notes
 
 - The Docker image is the agent's working environment, not just a runtime artifact.
 - There is no in-sandbox verifier, so `task_config.json` and the rubric descriptions must be self-consistent.
-- `tests/smoke_test.go` is load-bearing and should ship in the image as the legitimate-flow reference.
 - Prompt-level instruction-following matters: the prompt should describe symptoms, not enumerate the audit plan or rubric.
-- The benchmark gets most of its difficulty from merged scenario chains, response-body assertions, and anti-overblock checks rather than raw endpoint count.
+- The task gets most of its difficulty from merged scenario chains, actor switching, readback assertions, and anti-overblock coverage rather than raw endpoint count.
+- Rebuild the production image and refresh `repo.base_commit` and `repo.image_digest` before platform submission.

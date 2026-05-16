@@ -1,8 +1,6 @@
 """Smoke tests for ProjHub MCP — legitimate participant + admin flows.
 
-These tests encode the codebase's normal-operation surface. They are
-load-bearing: the agent uses them to induce how the API behaves
-in legitimate use. They do NOT test for any security issues.
+These tests encode the codebase's normal-operation surface. They do NOT test for any security issues.
 """
 
 import pytest
