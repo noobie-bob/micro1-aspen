@@ -4,3 +4,4 @@ Items removed during calibration where severity is **nitpick** and both models f
 
 | Sl.No | Task Title | Language | Framework | Task Details | Reason |
 |---|---|---|---|---|---|
+| 1 | Sentinel marker assertion in non-privileged responses | Python | Flask | RUB-028 from aspen__projhub_visibility_001 — test_quality: verifying sentinel values absent from non-privileged bodies | Type C inhibitor — Opus failed, Qwen passed; inverted signal actively hurts spread |

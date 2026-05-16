@@ -4,3 +4,4 @@ Items removed during calibration where severity is **minor** and both models fai
 
 | Sl.No | Task Title | Language | Framework | Task Details | Reason |
 |---|---|---|---|---|---|
+| 1 | Path traversal via file download endpoint | Python | Flask | RUB-026 from aspen__projhub_visibility_001 — traversal: two traversal encoding methods plus cross-resource traversal must all be tested | Type A — both models failed; multi-encoding traversal coverage not reached |
