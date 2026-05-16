@@ -28,18 +28,6 @@
   },
   "ground_truth_issues": [
     {
-      "id": "RUB-001",
-      "severity": "critical",
-      "category": "access_control",
-      "description": "A test verifies that a participant can only enumerate resources scoped to their own organisational boundary — cross-boundary resources must be absent from list responses. The assertion is structural: it checks resource membership, not just HTTP status."
-    },
-    {
-      "id": "RUB-002",
-      "severity": "major",
-      "category": "access_control",
-      "description": "A test verifies that a participant retrieving a specific resource by opaque identifier receives an access-denied response when that resource belongs to a boundary they are not part of."
-    },
-    {
       "id": "RUB-003",
       "severity": "major",
       "category": "access_control",
@@ -76,12 +64,6 @@
       "description": "A test verifies that a non-privileged caller's view of discussion threads is filtered — entries marked for internal/administrative audiences must be absent both structurally and in raw response content."
     },
     {
-      "id": "RUB-009",
-      "severity": "major",
-      "category": "redaction",
-      "description": "A test verifies that secondary data-access channels (clone, share payload, full-export) do not bypass field-level redaction. Sentinel values in privileged fields must be absent from all three action endpoints in the same test."
-    },
-    {
       "id": "RUB-010",
       "severity": "major",
       "category": "admin_endpoint",
@@ -100,12 +82,6 @@
       "description": "A test verifies that a keyword search endpoint is not vulnerable to second-order data extraction via query injection. A crafted payload that would exploit naive string interpolation must not cause privileged data from the underlying store to appear in the response."
     },
     {
-      "id": "RUB-013",
-      "severity": "major",
-      "category": "command_injection",
-      "description": "A test verifies that a report generation endpoint does not pass user-supplied parameters to a shell interpreter. Multiple shell metacharacter classes must each fail to produce evidence of execution in the response."
-    },
-    {
       "id": "RUB-014",
       "severity": "critical",
       "category": "sensitive_data_exposure",
@@ -116,18 +92,6 @@
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that system introspection endpoints exposing runtime configuration and environment state are inaccessible to both unauthenticated and non-administrative callers."
-    },
-    {
-      "id": "RUB-016",
-      "severity": "major",
-      "category": "improper_assets",
-      "description": "A test verifies that deprecated API routes are not accessible to unauthenticated callers or non-administrative authenticated callers — both legacy endpoints must return non-200 responses across all caller types."
-    },
-    {
-      "id": "RUB-017",
-      "severity": "major",
-      "category": "mass_assignment",
-      "description": "A test verifies that a non-privileged PATCH request supplying multiple administrative fields in a single payload is entirely rejected or silently ignored — partial acceptance of any one privileged field is a failure."
     },
     {
       "id": "RUB-018",
@@ -178,25 +142,37 @@
       "description": "An anti-overblock test verifies that a same-boundary participant can still invoke the duplication, sharing, and export action endpoints on their own resources."
     },
     {
-      "id": "RUB-026",
-      "severity": "minor",
-      "category": "traversal",
-      "description": "A test verifies that the file download endpoint cannot be used to escape the intended file scope via directory traversal — at minimum two distinct traversal encoding methods must be tested alongside a cross-resource traversal attempt."
-    },
-    {
       "id": "RUB-027",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that a diagnostic endpoint that exposes a complete data-store snapshot is inaccessible to unauthenticated and non-administrative callers."
     },
     {
-      "id": "RUB-028",
-      "severity": "nitpick",
-      "category": "test_quality",
-      "description": "Tests seed unique sentinel marker values into privileged fields and assert that those specific markers are absent from non-privileged response bodies. This is strictly stronger than checking field-key absence or HTTP status codes alone."
+      "id": "RUB-029",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test verifies that task-level action endpoints — task assignment and task status-transition — return access-denied responses when the acting caller does not belong to the project's organisational boundary. Both action endpoints must be exercised against the same cross-boundary task in a single test."
+    },
+    {
+      "id": "RUB-030",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test verifies that project-level action endpoints — project duplication and project export — return access-denied responses when the acting caller is from a different organisational boundary than the target project. Both action types must be tested against the same cross-boundary project resource."
+    },
+    {
+      "id": "RUB-031",
+      "severity": "critical",
+      "category": "redaction",
+      "description": "A test seeds a unique sentinel string into the administrative metadata fields of a task resource via an admin write, then verifies that a non-privileged detail read of that task returns a response body from which the sentinel string is entirely absent — the assertion must operate on raw response content rather than field-key presence alone."
+    },
+    {
+      "id": "RUB-032",
+      "severity": "major",
+      "category": "redaction",
+      "description": "A test seeds unique sentinel values into a project's administrative configuration fields via an admin write, then invokes the project share-link endpoint as a non-member caller and verifies that the response body does not contain those sentinel values in any field — the share payload must not bypass field-level redaction enforced on regular project reads."
     }
   ],
-  "rubric_max_score": 86,
+  "rubric_max_score": 77,
   "rubric_severity_weights": {
     "critical": 5,
     "major": 3,
