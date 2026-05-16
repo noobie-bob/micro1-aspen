@@ -34,8 +34,7 @@ The agent lands in `/repo` with:
 │       ├── reports.py          # Report generation, webhooks, export-file
 │       └── debug.py            # Debug/diagnostic + legacy API endpoints
 ├── tests/
-│   ├── conftest.py             # Fixtures: client, auth headers, two_teams
-│   └── test_smoke.py           # 23 load-bearing legitimate-flow tests
+│   └── conftest.py             # Fixtures: client, auth headers, two_teams
 ├── requirements.txt
 └── pytest.ini
 ```

@@ -1,31 +1,37 @@
-The seeded vulnerabilities in this project-management API span multiple OWASP
-classes, all centered on a Flask service managing teams, projects, tasks,
-comments, and attachments:
+The seeded vulnerabilities in this project-management API span 12 OWASP classes,
+all centered on a Flask service (~1.5k LOC) managing teams, projects, tasks,
+comments, and attachments across 9 route modules and 25+ endpoints.
 
-1. Cross-team data isolation failure (BOLA/IDOR): most read/write endpoints
-   beyond creation lack team-membership checks.
-2. Missing field redaction: admin-only fields (internal_priority, reviewer_notes,
-   internal_metrics, admin_config, budget_allocation) are never stripped.
-3. SQL injection: search endpoints use raw string interpolation into SQLite queries.
-4. OS command injection: report generation passes user input to shell commands.
-5. Mass assignment: PATCH endpoints accept admin-only fields from non-admin callers.
-6. Sensitive data exposure: debug endpoints leak plaintext API tokens, environment
-   variables, and system configuration without authentication.
-7. Information exposure: error handler returns full Python stack traces and framework
-   version to callers.
-8. SSRF: webhook endpoint fetches user-supplied URLs server-side without validation.
-9. Weak cryptography: share-link token derived from MD5 of project ID.
-10. Path traversal: attachment download accepts path segments without sanitization.
-11. Admin endpoint access: admin endpoints use require_auth instead of require_admin.
-12. Deprecated APIs: legacy v1 endpoints serve data without any authentication.
+Vulnerability classes:
+1. Cross-team data isolation failure (BOLA/IDOR)
+2. Missing field redaction on admin-only metadata
+3. SQL injection via raw string interpolation
+4. OS command injection via shell=True
+5. Mass assignment on PATCH endpoints
+6. Sensitive data exposure via unauthenticated debug endpoints
+7. Information exposure via verbose error handlers
+8. SSRF via unvalidated webhook URLs
+9. Weak cryptography on share-link tokens
+10. Path traversal on attachment downloads
+11. Improper admin endpoint gating
+12. Deprecated/legacy API endpoints without authentication
 
-Test-authoring is the right shape because the threat surface spans 25+ endpoints
-across 9 route modules. The rubric decomposes along structural axes covering all
-vulnerability classes above.
+Test-authoring is the right shape because the threat surface is broad (25+
+endpoints, 9 modules) and requires multi-step reasoning to discover — the
+source code contains NO BUG annotations or vulnerability labels.
 
-Severity distribution: 24 major + 3 minor + 1 nitpick = 24×3 + 3×2 + 1×1 = 79
-rubric_max_score = 79
+Rubric design (v5):
+- 3 critical items (×5): cross-team list isolation, SQL injection, debug endpoint lockdown
+- 22 major items (×3): remaining direct-coverage + regression guards
+- 2 minor items (×2): path traversal, secondary coverage
+- 1 nitpick item (×1): test quality / sentinel markers
 
-Note: Source code has been de-annotated — no BUG comments or vulnerability labels
-exist in the codebase. The agent must read and reason about the code to discover
-the vulnerabilities.
+Severity distribution: 3×5 + 22×3 + 2×2 + 1×1 = 15 + 66 + 4 + 1 = 86
+rubric_max_score = 86
+
+Rubric descriptions are behaviourally abstract — they describe the observable
+behaviour the test should verify without naming specific fields, endpoints, or
+vulnerability mechanisms. This is critical because the agent reads task_config.json.
+
+Production image contains ONLY the substrate and conftest.py. The agent writes
+ALL test files from scratch, including smoke/regression tests.

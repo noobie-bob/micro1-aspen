@@ -13,11 +13,10 @@ WORKDIR /repo
 COPY requirements.txt /repo/requirements.txt
 RUN pip install -r /repo/requirements.txt
 
-# Copy the substrate and smoke tests only — do NOT copy gold-answer tests
+# Local testing Dockerfile — copies substrate + all tests.
+# The aspen__projhub_visibility_001/Dockerfile is the production image (no tests).
 COPY projhub/ /repo/projhub/
-COPY tests/__init__.py /repo/tests/__init__.py
-COPY tests/conftest.py /repo/tests/conftest.py
-COPY tests/test_smoke.py /repo/tests/test_smoke.py
+COPY tests/ /repo/tests/
 COPY pytest.ini /repo/pytest.ini
 
 # Anti-cheating: fresh git init, single commit, no remote

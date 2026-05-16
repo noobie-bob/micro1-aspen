@@ -25,7 +25,7 @@ Please always refer to the golden sample for a clear example of how a task shoul
 | `submission.presentation` | Literal value `"git_diff"` |
 | `ground_truth_issues` | Array of rubric items, each with `id`, `severity`, `category`, `description`. |
 | `rubric_max_score` | The weighted sum of all. Must equal Σ(severity_weight × count). |
-| `rubric_severity_weights` | Always `{critical:4, major:3, minor:2, nitpick:1}`. |
+| `rubric_severity_weights` | Always `{critical:5, major:3, minor:2, nitpick:1}`. |
 
 ## Substrate & Rubric Taxonomy
 
@@ -35,7 +35,7 @@ Aspen substrates fall into two shapes. Hand-authored is preferred for new tasks 
 
 | Substrate Type | When to use | Notes |
 |---|---|---|
-| Hand-authored service | Default. ~300–500 LOC, single carefully scoped target scenario, hand-authored conftest + smoke test. | Use FastAPI / Flask / similar minimal frameworks. |
+| Hand-authored service | Default. ~300–1500 LOC, single carefully scoped target scenario, hand-authored conftest. | Use Flask / FastAPI / Go / Express or similar minimal frameworks. |
 | Curated public subset | When a real-world scenario is best illustrated by code that already exists. | Strip git history, pin to a specific commit, verify a public test suite covering the same scenario isn't already searchable. |
 
 ### Concern Categories
@@ -47,7 +47,7 @@ Each ground-truth issue is tagged with a category. The category vocabulary is sc
 
 Beyond those two, your categories depend on the scenario. Pick what naturally decomposes your scenario; if a finding doesn't fit any of your categories, the rubric item is probably not atomic:
 
-- The gold sample (a security/access-control scenario) uses categories like `access_control`, `ownership`, `redaction`, `traversal`.
+- The gold sample (a security/access-control scenario) uses categories like `access_control`, `ownership`, `redaction`, `traversal`, `sql_injection`, `command_injection`, `ssrf`, `mass_assignment`, `sensitive_data_exposure`, `information_exposure`, `weak_crypto`, `improper_assets`.
 - A feature-coverage scenario might use `happy_path`, `error_handling`, `edge_case`.
 - A regression scenario might use `bug_reproduction`, `related_path`.
 
@@ -57,7 +57,7 @@ Each rubric item carries a severity. Use the standard weights and apply them as 
 
 | Severity | Weight | When to use |
 |---|---|---|
-| `critical` | 4 | Reserved for when missing this item means the rubric cannot discriminate threat understanding from null knowledge. Most Aspen tasks have zero critical items. |
+| `critical` | 5 | Items whose absence means the rubric cannot discriminate threat understanding from null knowledge. Use sparingly — 0-3 per task. Reserve for the most fundamental coverage checks (e.g., cross-team isolation, SQL injection detection). |
 | `major` | 3 | The standard weight for primary coverage and anti-regression guards. Default. |
 | `minor` | 2 | Secondary anti-overblock items, peripheral coverage, and adjacent-flow checks. |
 | `nitpick` | 1 | Test-quality items — assertion rigor, sentinel markers, and other items that reward going beyond surface-level checks. |
@@ -79,5 +79,21 @@ The shape of anti-overblock items is scenario-specific. For the gold sample's ac
 - **Admin still sees the full response.** Catches test suites that scrub responses unconditionally instead of role-conditionally.
 - **Non-admin can still call own-resource write endpoints.** Catches test suites that admin-gate the entire write surface.
 - **Public resources remain accessible to non-admin.** Catches test suites that over-deny on the public read surface.
+- **Same-team project actions (duplicate, share, export) still work.** Catches test suites that lock down action endpoints entirely.
 
 For other scenarios, the equivalent anti-overblock guards differ — for a regression test, it might be "the test fails on the buggy code AND passes on a known-good alternative implementation that fixes the bug differently than expected"; for feature coverage, it might be "the test asserts on the documented behavior, not on incidental implementation details that a refactor would change." The constant is: the rubric must include items that catch over-specification.
+
+### Rubric Description Rules (CRITICAL)
+
+**The agent reads `task_config.json`.** Rubric descriptions are visible to the model. This means descriptions must be **behaviourally abstract** — they must describe the observable behaviour the test should verify without revealing:
+
+- Specific field names (e.g., don't say "internal_priority" — say "privileged metadata")
+- Specific endpoint paths (e.g., don't say "GET /debug/users" — say "diagnostic endpoints")
+- Specific vulnerability mechanisms (e.g., don't say "SQL injection via UNION SELECT" — say "search queries must not return data outside the caller's scope")
+- Specific attack payloads or sentinel values
+
+**Good description:** "A test verifies that a participant can only enumerate resources scoped to their own organisational boundary — cross-boundary resources must be absent from list responses."
+
+**Bad description:** "A test asserts that GET /projects returns only projects where team_id matches the caller's team, and that projects from team-beta do not appear in Alice's response."
+
+The bad description tells the agent exactly which endpoint to test and what field to check. The good description forces the agent to reason about the codebase to determine which endpoints and fields are relevant.

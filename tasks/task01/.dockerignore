@@ -1,8 +1,10 @@
 # Exclude gold-answer test files from Docker context
 tests/exfiltration/
-__pycache__/
-*.pyc
-.pytest_cache/
+
+# Python artifacts
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
 
 # Exclude task config and supporting docs from container
 aspen__projhub_visibility_001/
