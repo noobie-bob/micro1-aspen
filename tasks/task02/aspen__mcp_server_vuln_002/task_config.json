@@ -1,162 +1,152 @@
 {
-  "instance_id": "aspen__mcp_server_vuln_002",
+  "instance_id": "aspen__mcp_server_vuln_002_v4_elite",
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
-    "source_url": "https://github.com/micro1-ai/aspen-test-tasks/tree/main/tasks/task02",
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task02",
     "base_commit": "e8ebcc47099853f75e992b19f23da5ba3cf15b36",
-    "image_name": "micro1ai/aspen-mcp_server:vuln_002-v2",
-    "image_digest": "sha256:1e43f656d4d73ffce19891df6644db5247e19b2af58ca1a0f1a7041fe717e3e9",
+    "image_name": "micro1ai/aspen-projhub:visibility-v5",
+    "image_digest": "sha256:6c134d171132ea8eb76134afbe44894b54f32d4b8a16c1ad52f45ad76dd287d8",
     "repo_dir": "/repo",
     "language": "python"
   },
-  "title": "Author tests for vulnerable FastMCP server",
-  "track": "Realm Aspen",
-  "cwe": [
-    "CWE-78",
-    "CWE-94",
-    "CWE-918",
-    "CWE-287",
-    "CWE-200"
-  ],
+  "title": "Author multi-step, cross-tool security & regression tests for FastMCP server (high reasoning required)",
   "severity": "critical",
-  "behavioral_prompt": "prompt.txt",
   "rubric_only": true,
-  "submission": {
-    "expected_diff_paths": [
-      "tests/exfiltration/"
-    ],
-    "presentation": "git_diff"
-  },
+  "instructions": [
+    "Tests MUST include multi-step flows (at least 2 tools combined).",
+    "Tests MUST validate BOTH: (a) failure security condition AND (b) legitimate regression case.",
+    "Tests MUST use content-level assertions (not just exceptions).",
+    "Tests MUST validate state (DB or output set changes).",
+    "Tests MUST cover cross-user AND cross-team behavior.",
+    "Tests MUST include at least one chained attack scenario.",
+    "Exception-only tests will score 0.",
+    "Single-tool tests without setup context will score 0."
+  ],
   "ground_truth_issues": [
     {
       "id": "RUB-001",
-      "severity": "major",
       "category": "command_injection",
-      "description": "A test asserts that passing shell metacharacters to the ping_team_server tool does not execute arbitrary OS commands.",
-      "metadata": {
-        "justification": "Ensures the system prevents command injection vulnerabilities from un-sanitized tool inputs."
-      }
+      "severity": "major",
+      "description": "ping_team_server must not execute shell metacharacters"
     },
     {
       "id": "RUB-002",
-      "severity": "major",
       "category": "code_injection",
-      "description": "A test asserts that passing arbitrary Python code to the calculate_budget tool does not execute it.",
-      "metadata": {
-        "justification": "Mitigates arbitrary code execution through evaluate-like features."
-      }
+      "severity": "critical",
+      "description": "calculate_budget must block python execution chains"
     },
     {
       "id": "RUB-003",
-      "severity": "major",
       "category": "ssrf",
-      "description": "A test asserts that the fetch_project_asset tool prevents fetching internal or restricted URLs.",
-      "metadata": {
-        "justification": "Ensures protection against SSRF attacks on internal network endpoints."
-      }
+      "severity": "critical",
+      "description": "fetch_project_asset must block internal URLs AND must not perform the request."
     },
     {
       "id": "RUB-004",
+      "category": "prompt_injection_direct",
       "severity": "major",
-      "category": "direct_prompt_injection",
-      "description": "A test asserts that the summarize_task tool sanitizes the custom instruction so it cannot override the system instruction.",
-      "metadata": {
-        "justification": "Guards against direct prompt injection bypassing system boundaries."
-      }
+      "description": "custom_instruction must not override system prompt or inject control instructions."
     },
     {
       "id": "RUB-005",
+      "category": "prompt_injection_indirect",
       "severity": "major",
-      "category": "indirect_prompt_injection",
-      "description": "A test asserts that the summarize_task tool sanitizes the task title before inclusion in the prompt.",
-      "metadata": {
-        "justification": "Prevents indirect prompt injection from externally provided content."
-      }
+      "description": "task title from DB must be treated as untrusted input in summarize_task."
     },
     {
       "id": "RUB-006",
+      "category": "auth_bypass",
       "severity": "major",
-      "category": "authentication",
-      "description": "A test asserts that passing a token starting with 'bypass-' does not grant access to authenticated tools.",
-      "metadata": {
-        "justification": "Validates that authentication mechanisms cannot be bypassed using weak logic."
-      }
+      "description": "tokens starting with bypass-, malformed, or case-modified must not authenticate."
     },
     {
       "id": "RUB-007",
-      "severity": "major",
-      "category": "assets_management",
-      "description": "A test asserts that the legacy_dump tool is inaccessible or removed.",
-      "metadata": {
-        "justification": "Ensures deprecated or dangerous debugging tools are not exposed."
-      }
+      "category": "credentials_exposure",
+      "severity": "critical",
+      "description": "legacy_dump must never expose secrets to any caller type."
     },
     {
       "id": "RUB-008",
+      "category": "traceback_leak",
       "severity": "minor",
-      "category": "credentials_exposure",
-      "description": "A test asserts that hardcoded credentials are not leaked through the legacy_dump tool.",
-      "metadata": {
-        "justification": "Prevents the exposure of sensitive hardcoded secrets."
-      }
+      "description": "no tool should return stack traces or file paths."
     },
     {
       "id": "RUB-009",
-      "severity": "minor",
-      "category": "sensitive_data_exposure",
-      "description": "A test asserts that unhandled exceptions in tools do not return full python tracebacks.",
-      "metadata": {
-        "justification": "Protects against information disclosure via detailed error messages."
-      }
+      "category": "untrusted_module_loading",
+      "severity": "major",
+      "description": "load_custom_formatter must not import arbitrary modules or paths."
     },
     {
       "id": "RUB-010",
-      "severity": "major",
-      "category": "access_control",
-      "description": "A test asserts that the admin_sysinfo tool is protected and cannot be accessed without an admin token.",
-      "metadata": {
-        "justification": "Verifies correct authorization controls for administrative endpoints."
-      }
+      "category": "multi_caller_enforcement",
+      "severity": "critical",
+      "description": "Endpoints like admin_sysinfo and legacy_dump must be validated across BOTH unauthenticated and non-admin callers WITH content checks."
     },
     {
       "id": "RUB-011",
-      "severity": "major",
-      "category": "untrusted_components",
-      "description": "A test asserts that the load_custom_formatter tool does not allow arbitrary loading of any python module.",
-      "metadata": {
-        "justification": "Prevents malicious module loading from untrusted user inputs."
-      }
+      "category": "cross_team_data_leak",
+      "severity": "critical",
+      "description": "search_tasks must not leak results across teams under any query input."
     },
     {
       "id": "RUB-012",
+      "category": "regression_legitimate_flows",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "An anti-overblock test asserts that legitimate uses of the ping_team_server tool (with a safe target) still succeed.",
-      "metadata": {
-        "justification": "Ensures security fixes do not break core functionality."
-      }
+      "description": "after security enforcement, legitimate user flows must still fully succeed (CRUD + comments)."
     },
     {
       "id": "RUB-013",
+      "category": "state_integrity",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "An anti-overblock test asserts that legitimate math expressions in the calculate_budget tool still execute properly.",
-      "metadata": {
-        "justification": "Ensures security fixes do not break core functionality."
-      }
+      "description": "failed operations must not modify DB state; tests must assert invariants."
     },
     {
       "id": "RUB-014",
+      "category": "content_assertion_quality",
       "severity": "nitpick",
-      "category": "test_quality",
-      "description": "A test uses strict, observable assertions rather than merely relying on exceptions to fail the test.",
-      "metadata": {
-        "justification": "Promotes robust test design that explicitly verifies state changes."
-      }
+      "description": "tests must assert on response content, not just status or exceptions."
+    },
+    {
+      "id": "RUB-015",
+      "category": "chained_ssrf",
+      "severity": "critical",
+      "description": "output of one tool must not be usable to perform SSRF via another tool."
+    },
+    {
+      "id": "RUB-016",
+      "category": "multi_hop_prompt_injection",
+      "severity": "critical",
+      "description": "malicious DB-stored task title combined with summarize_task must not inject prompt."
+    },
+    {
+      "id": "RUB-017",
+      "category": "eval_import_chain",
+      "severity": "critical",
+      "description": "expression using __import__ must not execute OS commands or return side effects."
+    },
+    {
+      "id": "RUB-018",
+      "category": "module_path_traversal",
+      "severity": "major",
+      "description": "formatter loader must reject path-based module tricks like '../', '~', or absolute paths."
+    },
+    {
+      "id": "RUB-019",
+      "category": "mixed_role_boundary",
+      "severity": "major",
+      "description": "multi-step sequence: create (admin) → access (user2) → mutate → must be denied consistently across endpoints."
     }
   ],
-  "rubric_max_score": 38,
+  "scoring_notes": [
+    "Tests that only check exceptions without validating output/state will receive low scores.",
+    "Tests must combine setup + action + verification steps.",
+    "Tests that reuse results across tools (chaining) score higher.",
+    "Tests must include both attacker and legitimate user flows.",
+    "Failure to include multi-caller scenarios results in major penalty."
+  ],
+  "rubric_max_score": 52,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
