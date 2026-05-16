@@ -13,9 +13,18 @@
   "title": "Author tests for cross-team data visibility and injection vulnerabilities in ProjHub API",
   "track": "Realm Aspen",
   "cwe": [
-    "CWE-284", "CWE-639", "CWE-200", "CWE-862",
-    "CWE-89", "CWE-78", "CWE-918", "CWE-915",
-    "CWE-22", "CWE-328", "CWE-209", "CWE-1295"
+    "CWE-284",
+    "CWE-639",
+    "CWE-200",
+    "CWE-862",
+    "CWE-89",
+    "CWE-78",
+    "CWE-918",
+    "CWE-915",
+    "CWE-22",
+    "CWE-328",
+    "CWE-209",
+    "CWE-1295"
   ],
   "severity": "critical",
   "behavioral_prompt": "prompt.txt",
@@ -30,149 +39,83 @@
     {
       "id": "RUB-001",
       "severity": "major",
-      "category": "access_control",
-      "description": "A test verifies that enumerating child resources of a cross-boundary parent is also denied — the access boundary must propagate through the resource hierarchy."
-    },
-    {
-      "id": "RUB-002",
-      "severity": "major",
-      "category": "access_control",
-      "description": "A test verifies that a participant cannot read a leaf resource by direct identifier when the parent resource belongs to a different organisational boundary."
-    },
-    {
-      "id": "RUB-003",
-      "severity": "major",
-      "category": "ownership",
-      "description": "A test verifies that write operations on cross-boundary resources are denied — a participant must not be able to modify state belonging to another boundary."
-    },
-    {
-      "id": "RUB-004",
-      "severity": "major",
       "category": "ownership",
       "description": "A test verifies that destructive operations on cross-boundary resources are denied — a participant must not be able to delete or remove state belonging to another boundary."
     },
     {
-      "id": "RUB-005",
+      "id": "RUB-002",
       "severity": "major",
       "category": "redaction",
       "description": "A test verifies that resource detail responses returned to non-privileged callers do not include fields that are reserved for administrative use. Sentinel values seeded into those fields must not appear anywhere in the response body."
     },
     {
-      "id": "RUB-006",
-      "severity": "major",
-      "category": "redaction",
-      "description": "A test verifies that a non-privileged caller's view of discussion threads is filtered — entries marked for internal/administrative audiences must be absent both structurally and in raw response content."
-    },
-    {
-      "id": "RUB-007",
+      "id": "RUB-003",
       "severity": "major",
       "category": "admin_endpoint",
       "description": "A test verifies that an administrative event log endpoint returns an access-denied response when called by a non-administrative caller."
     },
     {
-      "id": "RUB-008",
-      "severity": "major",
-      "category": "admin_endpoint",
-      "description": "A test verifies that an administrative aggregate reporting endpoint returns an access-denied response when called by a non-administrative caller."
-    },
-    {
-      "id": "RUB-009",
-      "severity": "critical",
-      "category": "sql_injection",
-      "description": "A test verifies that a keyword search endpoint is not vulnerable to second-order data extraction via query injection. A crafted payload that would exploit naive string interpolation must not cause privileged data from the underlying store to appear in the response."
-    },
-    {
-      "id": "RUB-010",
+      "id": "RUB-004",
       "severity": "critical",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that a diagnostic endpoint exposing credential information is inaccessible to both unauthenticated and non-administrative callers, and that known credential values do not appear in any response from that endpoint."
     },
     {
-      "id": "RUB-011",
+      "id": "RUB-005",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that system introspection endpoints exposing runtime configuration and environment state are inaccessible to both unauthenticated and non-administrative callers."
     },
     {
-      "id": "RUB-012",
-      "severity": "major",
-      "category": "mass_assignment",
-      "description": "A test verifies that a non-privileged PATCH request on a project-level resource cannot overwrite any of the administrative metadata fields — all fields in the payload must be rejected or silently ignored together."
-    },
-    {
-      "id": "RUB-013",
-      "severity": "major",
-      "category": "ssrf",
-      "description": "A test verifies that an outbound-request endpoint validates the target URL against private network ranges. Multiple address classes (loopback, link-local metadata, RFC-1918) must all be rejected without making a delivery attempt."
-    },
-    {
-      "id": "RUB-014",
-      "severity": "major",
-      "category": "information_exposure",
-      "description": "A test verifies that error responses from the application are sanitised — stack traces, server file-system paths, and runtime version strings must not appear in either 404 or 500 error response bodies."
-    },
-    {
-      "id": "RUB-015",
-      "severity": "major",
-      "category": "weak_crypto",
-      "description": "A test verifies that a token-generation endpoint produces values that are not derivable from the input resource identifier. Common deterministic derivation functions must be checked and ruled out; tokens for different inputs must also differ."
-    },
-    {
-      "id": "RUB-016",
+      "id": "RUB-006",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that an administrative caller retains full cross-boundary list visibility and that privileged metadata fields are present in administrative responses after any access-control fix is applied."
+      "description": "An anti-overblock test makes two simultaneous assertions using an admin-authenticated caller: (1) a project-list response contains resources from more than one organisational boundary; and (2) the raw response body contains the admin-only sentinel values seeded into at least one project's privileged metadata fields. Both assertions must pass within the same test, confirming that administrative list scope and privileged-field visibility are preserved independently of any access restrictions placed on non-admin callers."
     },
     {
-      "id": "RUB-017",
+      "id": "RUB-007",
       "severity": "major",
       "category": "regression_guard",
       "description": "An anti-overblock test verifies that a same-boundary non-admin participant can still read their own resources (list, detail, leaf) — returning 200 for all three access patterns after access-control fixes are applied."
     },
     {
-      "id": "RUB-018",
+      "id": "RUB-008",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a same-boundary participant can still perform create operations — task creation, comment posting, and attachment upload must all succeed in their own boundary after fixes."
+      "description": "An anti-overblock test makes three explicit 2xx-success assertions using a non-admin participant whose team matches the target project's team: (1) POST a new sub-task to a project in the participant's own boundary, (2) POST a comment to a task in that boundary, and (3) POST a file attachment to a task in that boundary. All three create operations must be individually exercised and must each return a 2xx response. A test covering only two of the three operations does not satisfy this criterion."
     },
     {
-      "id": "RUB-019",
+      "id": "RUB-009",
       "severity": "minor",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a same-boundary participant can still invoke the duplication, sharing, and export action endpoints on their own resources."
+      "description": "An anti-overblock test asserts that a same-boundary participant receives a 2xx success response from all three project action endpoints — duplication, share-link generation, and data export — when invoked against a project in the participant's own organisational boundary. The test must use positive success assertions on same-boundary resources; asserting that cross-boundary access is denied does not satisfy this criterion. All three endpoints must be individually exercised."
     },
     {
-      "id": "RUB-020",
+      "id": "RUB-010",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that a diagnostic endpoint that exposes a complete data-store snapshot is inaccessible to unauthenticated and non-administrative callers."
     },
     {
-      "id": "RUB-021",
-      "severity": "major",
-      "category": "access_control",
-      "description": "A test verifies that task-level action endpoints — task assignment and task status-transition — return access-denied responses when the acting caller does not belong to the project's organisational boundary. Both action endpoints must be exercised against the same cross-boundary task in a single test."
-    },
-    {
-      "id": "RUB-022",
+      "id": "RUB-011",
       "severity": "major",
       "category": "access_control",
       "description": "A test verifies that project-level action endpoints — project duplication and project export — return access-denied responses when the acting caller is from a different organisational boundary than the target project. Both action types must be tested against the same cross-boundary project resource."
     },
     {
-      "id": "RUB-023",
+      "id": "RUB-012",
       "severity": "critical",
       "category": "redaction",
       "description": "A test seeds a unique sentinel string into the administrative metadata fields of a task resource via an admin write, then verifies that a non-privileged detail read of that task returns a response body from which the sentinel string is entirely absent — the assertion must operate on raw response content rather than field-key presence alone."
     },
     {
-      "id": "RUB-024",
+      "id": "RUB-013",
       "severity": "major",
       "category": "redaction",
       "description": "A test seeds unique sentinel values into a project's administrative configuration fields via an admin write, then invokes the project share-link endpoint as a non-member caller and verifies that the response body does not contain those sentinel values in any field — the share payload must not bypass field-level redaction enforced on regular project reads."
     }
   ],
-  "rubric_max_score": 77,
+  "rubric_max_score": 42,
   "rubric_severity_weights": {
     "critical": 5,
     "major": 3,
