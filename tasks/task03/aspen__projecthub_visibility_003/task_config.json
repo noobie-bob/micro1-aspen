@@ -5,7 +5,7 @@
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task03",
     "base_commit": "fca9677ebb92c846157e522940f0796019704433",
-    "image_name": "micro1ai/aspen-projecthub:visibility-003-v1",
+    "image_name": "micro1ai/aspen-projecthub:visibility-v3",
     "image_digest": "sha256:6cb01e87be0db62be7c297b2d0acddb9763f9ad5502dbab26e36c3d459699fd4",
     "repo_dir": "/repo",
     "language": "go"
