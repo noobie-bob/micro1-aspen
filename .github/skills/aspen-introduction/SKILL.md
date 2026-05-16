@@ -1,6 +1,12 @@
+---
+name: aspen-introduction
+description: "Aspen project overview and core principles. Load when starting a new task, reviewing mission, understanding dual-contract reasoning, rubric-only scoring, calibration targets (Opus ~75-85%, Qwen ~20-50%), or E2B/Docker reproducibility requirements."
+user-invocable: false
+---
+
 # Realm Aspen: Expert Onboarding Guide
 
-Welcome to Realm Aspen! This pipeline evaluates an AI agent's ability to author comprehensive test suites. The model must read a codebase, deduce the required behavioral model (a new feature, a regression, or an edge case), and write a test suite that codifies the correct implementation parameters..
+Welcome to Realm Aspen! This pipeline evaluates an AI agent's ability to author comprehensive test suites. The model must read a codebase, deduce the required behavioral model (a new feature, a regression, or an edge case), and write a test suite that codifies the correct implementation parameters.
 
 Aspen is rubric-only. The agent delivers a test suite, and an LLM judge scores the agent's git diff against a weighted rubric.
 
@@ -34,16 +40,13 @@ Experts in this project will work with:
 
 ## Models & Calibration Targets
 
-Aspen calibrates against specific models to ensure task quality and discriminative signaling. A task is considered DISCRIMINATIVE when the frontier model clearly outperforms the smaller model without saturating the rubric.
+Aspen calibrates against two models. A task is considered DISCRIMINATIVE when the frontier model clearly outperforms the smaller model.
 
-- **Claude Opus 4.7:** Target mean reward roughly 75-85%. A single perfect run is acceptable, but repeated 95-100% runs usually mean the task is too easy or the prompt leaks too much.
-- **Qwen 3.5:** Run 4 times and target roughly 20-50%.
+- **Claude Opus 4.7:** Target ≥80% on a **single run**. One clean run is sufficient. Repeated 95-100% runs mean the task is too easy or the prompt leaks too much.
+- **Qwen (mid-tier):** Run **4 times**, target 20–50% mean. It should catch obvious behaviors but miss chained reasoning and hard rubric items.
 
-These are guide rails, not hard thresholds. The real goal is a clean separation curve: Opus should be strong but still miss the hardest rungs, while Qwen should catch only the more obvious or well-taught behaviors.
+The goal is a clean separation curve of ~0.20+ between models. Opus should be strong but still miss the hardest rungs; Qwen should catch only the well-taught or obvious behaviors.
 
-## Sample Task Reference
+## Language & Stack Strategy
 
-Before starting your first substrate, review these canonical references:
-
-- **gold-sample-aspen-main:** A FastAPI service, hand-authored with ~430-LOC and a seeded "broken-access-control" / "hidden-artifact-exfiltration" bug across eight endpoints. A `taskhub_idor` scored against a 13-item rubric (10 major + 2 minor + 1 nitpick, Max Score: 35).
-- **DEEP_DIVE.md:** The markdown that walks through grading and rubric structure.
+Prefer variety. **Less common languages** (Rust, Kotlin, Erlang, Swift) have less model training data, which gives more discrimination room and prevents pattern-matching on well-known frameworks. Actively choose unusual stacks when the scenario supports it.

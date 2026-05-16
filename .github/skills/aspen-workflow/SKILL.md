@@ -1,3 +1,9 @@
+---
+name: aspen-workflow
+description: "Aspen project directory layout, two-Dockerfile pattern (local vs production), chronological workflow phases (substrate, rubric, QC), what files ship to the agent vs stay local. Load when planning task structure, understanding which files go in which image, or reviewing the three workflow phases."
+user-invocable: false
+---
+
 # Realm Aspen: Workflow
 
 Tasks are built locally in an authoring folder and submitted as a bundled package. The folder must follow the naming convention: `aspen__{substrate}_{vulnerability_class}_{NNN}` (e.g., `aspen__taskhub_idor_001`).
@@ -45,8 +51,6 @@ micro1-aspen/tasks/taskNN/
 
 **Why separate?** The production image must contain NO pre-written tests. The agent writes ALL test files from scratch — including smoke tests and security tests. Only `conftest.py` ships because it provides shared fixtures (client, auth headers, data setup) that the agent's tests will import.
 
-The root `Dockerfile` copies everything so you can run the full gold-standard test suite inside a container to validate that all rubric items are exercisable.
-
 ### What Each File Is For
 
 | File | Shared with agent? | Purpose |
@@ -84,25 +88,21 @@ In addition, you must:
 ### Phase 1: Substrate & Image Construction (~3–4 hrs)
 
 1. **Substrate Construction:** Author or curate a small service (~300-1500 LOC) where the target test scenario is precisely scoped.
-   - Curated subsets of public repos are acceptable when the scenario is sharp and a public test suite for it isn't already searchable.
 2. **Write conftest.py:** Create the shared fixtures (client, auth headers, data topology setup) that both your tests and the agent's tests will use.
 3. **Write test_smoke.py (local only):** Encode the codebase's normal-operation surface. This stays local — the agent does NOT see it.
-4. **De-annotate source code:** Remove all `# BUG:` comments, vulnerability labels, and revealing docstrings from the substrate. The agent must reason about the code, not read labels.
-5. **Build the Dockerfile(s):** Create both the local Dockerfile (with tests) and the production Dockerfile (substrate + conftest only). Apply anti-cheating measures with E2B convention.
-6. **Validate locally:** Confirm that: conftest fixtures work, the scenario-under-test is observable from the agent's perspective, and there is no `.git` history beyond the single initial commit.
+4. **De-annotate source code:** Remove all `# BUG:` comments, vulnerability labels, and revealing docstrings from the substrate.
+5. **Build the Dockerfile(s):** Create both the local Dockerfile (with tests) and the production Dockerfile (substrate + conftest only).
+6. **Validate locally:** Confirm conftest fixtures work, the scenario is observable, and there is no `.git` history beyond the single initial commit.
 
 ### Phase 2: Rubric Construction & Calibration (~3–4 hrs)
 
-1. **Decompose the scenario:** Break the test scenario into atomic rubric items along structural axes (direct coverage and anti-overblock guards).
-   - Intentionally reserve some hard rungs for chained reasoning, secondary serialization paths, or subtle regression guards.
-   - As a default sizing rule, 11-28 substantive items is a healthy range. Go higher only when the extra items add real variety.
-2. **Write the prompt:** Frame the task as a peer-to-peer bug report asking the agent to write a test suite. Explicitly forbid code modifications outside the test directory. Reference `conftest.py` for available fixtures — NOT `test_smoke.py` (which doesn't exist in the production image).
-   - Describe symptoms, not the inspection plan. Do not name every route family, module, or bug class the agent should audit.
-3. **Write behaviourally abstract rubric descriptions:** The agent sees `task_config.json`. Rubric descriptions must NOT contain specific field names, endpoint paths, or vulnerability mechanisms. Describe the observable behaviour the test should verify, not how to find or exploit the bug.
-4. **Assign severities:** Use the standard weights `critical=5, major=3, minor=2, nitpick=1`.
-5. **Calibrate for separation:** Aim for Opus 4.7 to land around 75-85% on average and Qwen around 20-50%.
+1. **Decompose the scenario:** Break the test scenario into atomic rubric items along structural axes (direct coverage and anti-overblock guards). 11-28 substantive items is a healthy range.
+2. **Write the prompt:** Frame the task as a peer-to-peer bug report. Describe symptoms, not the inspection plan. Reference `conftest.py` for available fixtures — NOT `test_smoke.py`.
+3. **Write behaviourally abstract rubric descriptions:** Describe observable behaviour, not specific field names, endpoint paths, or vulnerability mechanisms.
+4. **Assign severities:** `critical=5, major=3, minor=2, nitpick=1`.
+5. **Calibrate for separation:** Opus 4.7 ~75-85%, Qwen ~20-50%.
 
 ### Phase 3: Quality Control (~1–2 hrs)
 
-1. **Peer review:** A second engineer verifies: rubric items are atomic and binary, prompt does not enumerate the rubric items or tell the agent where to look, conftest correctly provides the fixture surface, Dockerfile applies anti-cheating, and calibration data supports the DISCRIMINATIVE verdict.
+1. **Peer review:** Verifies rubric atomicity, prompt integrity, conftest fixture surface, anti-cheating Dockerfile, and calibration data.
 2. **HDM/HDL sign-off:** Final review for ground-truth coverage and ship-readiness.

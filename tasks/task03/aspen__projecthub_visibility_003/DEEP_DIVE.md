@@ -10,7 +10,7 @@ The right artifact here is a behavioural suite because the service exposes the s
 
 ## What the Agent Sees
 
-The agent lands in a small Go module. `projecthub/wire.go` registers the HTTP surface. `projecthub/common.go` contains almost all of the gate logic, projector functions, and handlers. `projecthub/types.go` defines users, teams, projects, tasks, comments, attachments, shares, and audit events. `projecthub/seed.go` populates a fixed set of actors and sentinel-rich records. `projecthub/paths.go` adds extra packet and weave helpers that increase code-reading surface without changing the external contract. `tests/smoke_test.go` shows the intended happy-path flows for participants, leads, admins, sharing, bundles, search, and reporting.
+The agent lands in a small Go module. `projecthub/wire.go` registers the HTTP surface. `projecthub/common.go` contains almost all of the gate logic, projector functions, and handlers. `projecthub/types.go` defines users, teams, projects, tasks, comments, attachments, shares, and audit events. `projecthub/seed.go` populates a fixed set of actors and sentinel-rich records. `projecthub/paths.go` adds extra packet and weave helpers that increase code-reading surface without changing the external contract.
 
 The seeded actors matter because the visibility model is role-based rather than anonymous-versus-authenticated. The service includes an org-wide admin, same-team participant and lead users, a participant from another team, an auditor-style user, and a child-team guest. The smoke suite demonstrates that ordinary same-team project and task work should continue to function even after the security gaps are closed.
 
