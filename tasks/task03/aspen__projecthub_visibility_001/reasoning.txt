@@ -1,9 +1,0 @@
-ProjectHub combines team-scoped projects, tasks, comments, attachments, and admin/debug surfaces in a compact Go HTTP service, making it suitable for visibility and data-exposure calibration.
-The revised rubric now stays compact: 15 major issues, 2 minor issues, and 1 nitpick for a total score of 50 points.
-The main change is reduction, not expansion: repetitive neighboring-surface items were regrouped into richer project-surface, task-surface, bundle-redaction, operational-surface, and workflow-preservation obligations.
-Major issues emphasize cross-team isolation, response-body redaction, admin/debug/legacy exposure, search/report utility hardening, mass assignment, SSRF-style URL validation, weak share tokens, and information disclosure.
-Minor issues are reserved for anti-overblock guards so the benchmark still rewards precision rather than broad denial.
-The nitpick rewards sentinel-marker assertions that prove body-level non-leakage instead of status-code-only checks.
-The task uses Go's standard testing package and net/http/httptest, so strong submissions need no external fixture layer beyond the service's seeded state.
-The smoke suite intentionally demonstrates legitimate flows without enumerating the rubric.
-Discrimination should separate basic IDOR detection from stronger response-body inspection, operational-surface hardening, and multi-step regression behavior.

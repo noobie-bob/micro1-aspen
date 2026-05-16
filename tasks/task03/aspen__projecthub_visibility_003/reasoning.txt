@@ -1,0 +1,18 @@
+ProjectHub seeds a visibility-and-exposure scenario rather than one isolated route bug.
+Non-admin actors can cross team boundaries through direct reads, share and mirror paths,
+legacy or operational endpoints, and input-driven surfaces; participant views also
+inconsistently expose privileged task, project, comment, and bundle data.
+
+Test-authoring is the right shape because the risk is fully observable at the HTTP
+boundary. The suite must enforce the dual contract: it must fail when cross-team data,
+privileged fields, predictable tokens, traversal or injection results, or verbose error
+payloads leak, and it must still preserve valid same-team, admin, lead, and auditor flows.
+
+Rubric decomposition: 8 critical merged scenario chains, 20 major supporting coverage
+items, 7 minor boundary and control items, and 4 nitpick quality items.
+Severity arithmetic: 8x4 + 20x3 + 7x2 + 4x1 = 110.
+
+The critical items deliberately require multiple actors, state transitions, endpoint
+comparisons, and body-level assertions. The supporting items keep narrower scope leaks,
+anti-overblock controls, repeatability, helpers, sentinel markers, and diagnostic quality
+visible to both reviewers and calibration runs.

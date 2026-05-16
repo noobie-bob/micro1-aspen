@@ -1,0 +1,10 @@
+A teammate reported that while using their regular participant API key they were able to see projects, tasks, and internal notes that belong to teams they are not a member of. They described discovering full project lists and task details while browsing the API with their normal key, and noticed some internal reviewer comments and attachments appearing in responses that should be restricted.
+
+Your job is to write a focused test suite that reliably detects cross-team visibility and related information leaks. Place your tests under `tests/exfiltration/`. Use `tests/test_smoke.py` as the definitive reference for legitimate participant and admin flows — your exfiltration tests must pin down buggy behavior without over-blocking normal usage.
+
+Write tests only. Do not modify any file under `projecthub/`. Submit your tests as a unified diff via `submit_answer` from the repository root. The tests should be precise, deterministic, and include anti-overblock assertions so legitimate same-team operations remain permitted.
+You are working in a tangled Go service called ProjectHub. Add a focused Go test suite using the standard testing package and Go HTTP testing patterns that captures important security and regression behavior without changing the implementation.
+
+Do not write one tiny test per route. The evaluation rewards merged, multi-step journeys: create or accept state, switch actors, compare same-team and cross-team behavior, call more than one endpoint, and inspect response bodies for sentinel leaks, nested fields, tokens, debug data, audit data, cursor/replay data, and error text. The service distinguishes administrators, leads, participants, auditors, guests, child-team users, shared users, task assignees, mirrored projects, and resource owners.
+
+Do not rewrite the application. Add deterministic Go tests inside the container workspace. Preserve positive flows while adding negative checks, critical multi-step checks, table-driven variants, and nitpick-quality assertions with clear failure messages.
