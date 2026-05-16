@@ -5,7 +5,7 @@
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
     "base_commit": "7d228305d9087ea8cb4784abd51784d687e44109",
-    "image_name": "micro1ai/aspen-projhub:visibility-v1",
+    "image_name": "micro1ai/aspen-yamn-projecthub-flask:v1",
     "image_digest": "sha256:278eb1fd14af9e82253636a61deee883fcce4d69fd086a83fb1d977d8a5bc414",
     "repo_dir": "/repo",
     "language": "python"
