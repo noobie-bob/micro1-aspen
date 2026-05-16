@@ -172,6 +172,7 @@ Each destination has four severity files: `critical.md`, `major.md`, `minor.md`,
 | Opus FAIL + hard rung (kept intentionally) | Record as success | `success/failure/{severity}.md` |
 
 **Table format** (same for all files):
+For trimmed findings, no need to mention the rubric ID or exact test details — just a high-level description of the vulnerability/scenario type, and why it was removed. For kept findings, include the rubric ID and enough details to understand the discrimination signal.
 
 ```markdown
 | Sl.No | Task Title | Language | Framework | Task Details | Reason |
