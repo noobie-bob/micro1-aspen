@@ -17,9 +17,9 @@ The service is intentionally small enough to read in one sitting, but wide enoug
 ## Image
 
 - **Tag:** `micro1ai/aspen-projecthub:visibility-v4`
-- **Digest:** pending push
-- **Base commit:** `c57a586f6a98c94a366f0634385b693dd64577b2`
-- **Status:** production Dockerfile updated and locally rebuilt; push before submission to capture the digest
+- **Digest:** `sha256:b312cfa2df697d39d5ced97700dc629990705459da32a4a1124332de2a3bdc66`
+- **Base commit:** `813e0a3dfd9df8d3aa5603d8588798c968427afd`
+- **Status:** published; image digest and base commit updated
 
 ## Calibration results
 
