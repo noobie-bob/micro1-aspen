@@ -3,10 +3,10 @@
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
-    "source_url": "local://projecthub_visibility_003",
-    "base_commit": "c57a586f6a98c94a366f0634385b693dd64577b2",
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task03",
+    "base_commit": "813e0a3dfd9df8d3aa5603d8588798c968427afd",
     "image_name": "micro1ai/aspen-projecthub:visibility-v4",
-    "image_digest": "",
+    "image_digest": "sha256:b312cfa2df697d39d5ced97700dc629990705459da32a4a1124332de2a3bdc66",
     "repo_dir": "/repo",
     "language": "go"
   },
