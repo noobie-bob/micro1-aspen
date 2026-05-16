@@ -1,0 +1,279 @@
+{
+  "instance_id": "aspen__projecthub_visibility_003",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "local://projecthub_visibility_003",
+    "base_commit": "fa276b100cd0d762f0006f2032d660ac224c14d8",
+    "image_name": "micro1ai/aspen-projecthub:visibility-v3",
+    "image_digest": "",
+    "repo_dir": "/repo",
+    "language": "go"
+  },
+  "title": "Author tests for ProjectHub visibility and unsafe auxiliary flows",
+  "track": "Realm Aspen",
+  "cwe": [
+    "CWE-284",
+    "CWE-639",
+    "CWE-200",
+    "CWE-862",
+    "CWE-915",
+    "CWE-22",
+    "CWE-78",
+    "CWE-918",
+    "CWE-328",
+    "CWE-209"
+  ],
+  "severity": "critical",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/exfiltration/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "critical",
+      "category": "access_control_chain",
+      "description": "A test chain proves a participant cannot discover, read, list tasks for, patch tasks in, or delete tasks from an unrelated team project, while same-team access still works in the same test."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "critical",
+      "category": "redaction_chain",
+      "description": "A test chain proves participant-visible task, project, comment, and bundle responses consistently redact privileged task secrets, project meta, internal comments, and sentinel markers across detail, list, export, share, duplicate, and snapshot flows."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "critical",
+      "category": "stateful_share_chain",
+      "description": "A test chain creates or accepts a share, verifies shared access is limited to the shared project, then verifies the shared actor cannot use that state to access unrelated tasks, exports, archive projects, or internal comments."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "critical",
+      "category": "mass_assignment_chain",
+      "description": "A test chain attempts mass assignment on project and task fields, then performs follow-up reads, list calls, search, export, and admin reads to prove team_id, project_id, owner_id, created_by, assignee_id, and privileged fields were not mutated by non-admins."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "critical",
+      "category": "debug_legacy_ops_chain",
+      "description": "A test chain verifies non-admins cannot use debug, legacy, replay, cursor, audit, or report endpoints to bypass normal authorization or expose tokens, config, env, audit, shadow maps, teams, or database-like data."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "critical",
+      "category": "injection_io_chain",
+      "description": "A table-driven test chain covers search injection, report command injection, webhook SSRF, and attachment traversal using multiple encoded and bypass variants, while also asserting benign variants still work."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "critical",
+      "category": "weak_token_chain",
+      "description": "A test chain verifies default share-link and share tokens are not predictable from project or user IDs, are not reused across actors or projects, and remain random-looking across repeated calls, while random-mode remains usable."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "critical",
+      "category": "error_exposure_chain",
+      "description": "A test chain triggers controlled server errors and malformed inputs, then verifies responses do not contain panic text, goroutine or runtime fragments, internal paths, source filenames, command strings, SQL-like config, or stack traces."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "major",
+      "category": "mirror_child_scope",
+      "description": "Child-team or guest users must not use mirrored project state to leak parent project meta, parent tasks, or parent comments unless explicitly authorized."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "archive_private_scope",
+      "description": "Archived or private projects and archive tasks must not appear through list, search, legacy, bundle, cursor, or replay endpoints for unrelated participants."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "major",
+      "category": "audit_scope",
+      "description": "Audit-log tests must verify non-admin scope cannot be widened by query parameters and cannot expose sentinel audit details for other teams."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "major",
+      "category": "report_scope",
+      "description": "Report-summary tests must verify non-admins cannot access org-wide budget totals or internal metrics through all=1 or similar widening controls."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "major",
+      "category": "comment_internal_consistency",
+      "description": "Internal and pinned comments must be hidden consistently for participants across task comments, bundles, exports, snapshots, and shares."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "major",
+      "category": "attachment_class_scope",
+      "description": "Attachment class, owner, and traversal tests must verify secret or internal attachments cannot be read by unrelated users or via parent-child task confusion."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "major",
+      "category": "search_debug_flag",
+      "description": "Search tests must verify debug=1 and empty-query behavior do not reveal all tasks, reviewer notes, admin config, or cost centers to participants."
+    },
+    {
+      "id": "RUB-016",
+      "severity": "major",
+      "category": "legacy_auth",
+      "description": "Legacy endpoint tests must verify authentication and authorization, not merely endpoint existence, and compare legacy output against modern scoped output."
+    },
+    {
+      "id": "RUB-017",
+      "severity": "major",
+      "category": "ops_cursor_replay",
+      "description": "Ops cursor and replay tests must verify cursor IDs, shadow maps, KV data, and team records are not exposed to non-admins."
+    },
+    {
+      "id": "RUB-018",
+      "severity": "major",
+      "category": "share_expiry_replay",
+      "description": "Expired or unaccepted shares must not grant access, and token replay by a different actor must not bypass user binding."
+    },
+    {
+      "id": "RUB-019",
+      "severity": "major",
+      "category": "assignee_owner_mixup",
+      "description": "Assignee and creator tests must verify personal task access does not grant project-wide or bundle-wide access to unrelated team data."
+    },
+    {
+      "id": "RUB-020",
+      "severity": "major",
+      "category": "number_shadow_mixup",
+      "description": "Tests must catch ID-collision bugs where team ID, project ID, task ID, or user ID equality accidentally grants access."
+    },
+    {
+      "id": "RUB-021",
+      "severity": "major",
+      "category": "admin_positive_detail",
+      "description": "Admin anti-overblock tests must prove admins can still list all projects and see privileged metadata while non-admins cannot."
+    },
+    {
+      "id": "RUB-022",
+      "severity": "major",
+      "category": "lead_positive_detail",
+      "description": "Lead anti-overblock tests must prove same-team leads can perform expected privileged team operations without opening cross-team data."
+    },
+    {
+      "id": "RUB-023",
+      "severity": "major",
+      "category": "participant_positive_flow",
+      "description": "Participant anti-overblock tests must preserve create project, create task, comment, attachment, task status update, and ordinary search flows."
+    },
+    {
+      "id": "RUB-024",
+      "severity": "major",
+      "category": "auditor_boundaries",
+      "description": "Auditor tests must distinguish permitted audit-visibility projects from unrelated team projects and ensure auditor views are redacted."
+    },
+    {
+      "id": "RUB-025",
+      "severity": "major",
+      "category": "bundle_side_effects",
+      "description": "Duplicate, snapshot, share, and export tests must verify side effects do not copy privileged ownership, team IDs, meta, or secrets into participant-controlled resources."
+    },
+    {
+      "id": "RUB-026",
+      "severity": "major",
+      "category": "mutation_readback",
+      "description": "Every mutation-security test must include readback through at least two endpoints to prove the server state did or did not change as expected."
+    },
+    {
+      "id": "RUB-027",
+      "severity": "major",
+      "category": "body_shape",
+      "description": "Tests must assert response shape and nested fields, not just status codes, especially for meta, secret, audit, KV, team, shadow, and token fields."
+    },
+    {
+      "id": "RUB-028",
+      "severity": "major",
+      "category": "table_variants",
+      "description": "Tests should use table-driven variants for roles, endpoints, query flags, and payload encodings rather than one hard-coded example."
+    },
+    {
+      "id": "RUB-029",
+      "severity": "minor",
+      "category": "pagination_boundary",
+      "description": "Boundary tests for query flags, cursors, and empty queries should not create broad data exposure or unstable output."
+    },
+    {
+      "id": "RUB-030",
+      "severity": "minor",
+      "category": "bad_json_boundary",
+      "description": "Malformed JSON and unknown-field tests should fail safely without stack traces or partial mutation."
+    },
+    {
+      "id": "RUB-031",
+      "severity": "minor",
+      "category": "case_encoding_boundary",
+      "description": "Case variants and encoded path variants should be covered for traversal, URL, and search payloads."
+    },
+    {
+      "id": "RUB-032",
+      "severity": "minor",
+      "category": "token_length_boundary",
+      "description": "Token tests should check length, character class, uniqueness, and non-reversibility."
+    },
+    {
+      "id": "RUB-033",
+      "severity": "minor",
+      "category": "same_team_negative_control",
+      "description": "Each access-control group should include same-team positive controls to avoid overblocking fixes."
+    },
+    {
+      "id": "RUB-034",
+      "severity": "minor",
+      "category": "admin_negative_control",
+      "description": "Each redaction or debug group should include admin controls where legitimate privileged access should remain available."
+    },
+    {
+      "id": "RUB-035",
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "Tests should isolate state by creating fresh servers or unique marker values to avoid order dependence."
+    },
+    {
+      "id": "RUB-036",
+      "severity": "nitpick",
+      "category": "sentinel_markers",
+      "description": "Tests assert specific sentinel marker strings are absent from all non-admin response bodies rather than only checking field names."
+    },
+    {
+      "id": "RUB-037",
+      "severity": "nitpick",
+      "category": "helper_quality",
+      "description": "Tests include reusable helpers for actors, JSON requests, body searching, and negative and positive controls."
+    },
+    {
+      "id": "RUB-038",
+      "severity": "nitpick",
+      "category": "merged_flow_quality",
+      "description": "Tests merge related rubric concerns into coherent journeys rather than one tiny test per endpoint."
+    },
+    {
+      "id": "RUB-039",
+      "severity": "nitpick",
+      "category": "diagnostic_messages",
+      "description": "Failure messages identify actor, endpoint, payload variant, and leaked marker or unexpected field."
+    }
+  ],
+  "rubric_max_score": 110,
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpick": 1
+  }
+}
