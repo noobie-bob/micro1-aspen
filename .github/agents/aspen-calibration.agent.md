@@ -1,7 +1,7 @@
 ---
 description: "Use when calibrating an Aspen task's rubric: analyzing pass/fail results from Opus 4.7 and Qwen runs, trimming rubric items to hit discrimination targets (Opus ≥80% one run, Qwen 20–50% across 4 runs), diagnosing overfitting, and tracking removed items in tasks/findings/. Trigger phrases: calibrate, calibration, rubric too high, rubric too low, opus score, qwen score, trim rubric, pass fail ratio, findings."
 name: "Aspen Calibration"
-tools: [read, edit, search, todo]
+tools: [read, edit, search, todo, run]
 argument-hint: "Specify the task folder (e.g. tasks/task04/) and provide the Opus/Qwen run results if available"
 ---
 
