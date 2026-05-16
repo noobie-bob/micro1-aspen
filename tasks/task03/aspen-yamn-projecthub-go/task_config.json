@@ -6,7 +6,7 @@
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task03",
     "base_commit": "fca9677ebb92c846157e522940f0796019704433",
     "image_name": "micro1ai/aspen-yamn-projecthub-go:v1",
-    "image_digest": "sha256:6cb01e87be0db62be7c297b2d0acddb9763f9ad5502dbab26e36c3d459699fd4",
+    "image_digest": "sha256:0e6b6d5e202e8d2cc1ee6f33edf3ab9eb8c4407e3a52176a6d78e7e37a705189",
     "repo_dir": "/repo",
     "language": "go"
   },
