@@ -25,175 +25,175 @@
   ],
   "ground_truth_issues": [
     {
-      "id": "RUB-001",
+        "id": "RUB-001",
       "category": "command_injection",
       "severity": "major",
       "description": "ping_team_server must not execute shell metacharacters"
     },
     {
-      "id": "RUB-002",
+        "id": "RUB-002",
       "category": "code_injection",
       "severity": "critical",
       "description": "calculate_budget must block python execution chains"
     },
     {
-      "id": "RUB-003",
+        "id": "RUB-003",
       "category": "ssrf",
       "severity": "critical",
       "description": "fetch_project_asset must block internal URLs AND must not perform the request."
     },
     {
-      "id": "RUB-004",
+        "id": "RUB-004",
       "category": "prompt_injection_direct",
       "severity": "major",
       "description": "custom_instruction must not override system prompt or inject control instructions."
     },
     {
-      "id": "RUB-005",
+        "id": "RUB-005",
       "category": "prompt_injection_indirect",
       "severity": "major",
       "description": "task title from DB must be treated as untrusted input in summarize_task."
     },
     {
-      "id": "RUB-006",
+        "id": "RUB-006",
       "category": "auth_bypass",
       "severity": "major",
       "description": "tokens starting with bypass-, malformed, or case-modified must not authenticate."
     },
     {
-      "id": "RUB-007",
+        "id": "RUB-007",
       "category": "credentials_exposure",
       "severity": "critical",
       "description": "legacy_dump must never expose secrets to any caller type."
     },
     {
-      "id": "RUB-008",
+        "id": "RUB-008",
       "category": "traceback_leak",
       "severity": "minor",
       "description": "no tool should return stack traces or file paths."
     },
     {
-      "id": "RUB-009",
+        "id": "RUB-009",
       "category": "untrusted_module_loading",
       "severity": "major",
       "description": "load_custom_formatter must not import arbitrary modules or paths."
     },
     {
-      "id": "RUB-010",
+        "id": "RUB-010",
       "category": "multi_caller_enforcement",
       "severity": "critical",
       "description": "Endpoints like admin_sysinfo and legacy_dump must be validated across BOTH unauthenticated and non-admin callers WITH content checks."
     },
     {
-      "id": "RUB-011",
+        "id": "RUB-011",
       "category": "cross_team_data_leak",
       "severity": "critical",
       "description": "search_tasks must not leak results across teams under any query input."
     },
     {
-      "id": "RUB-012",
+        "id": "RUB-012",
       "category": "regression_legitimate_flows",
       "severity": "major",
       "description": "after security enforcement, legitimate user flows must still fully succeed (CRUD + comments)."
     },
     {
-      "id": "RUB-013",
+        "id": "RUB-013",
       "category": "state_integrity",
       "severity": "major",
       "description": "failed operations must not modify DB state; tests must assert invariants."
     },
     {
-      "id": "RUB-014",
+        "id": "RUB-014",
       "category": "content_assertion_quality",
       "severity": "nitpick",
       "description": "tests must assert on response content, not just status or exceptions."
     },
     {
-      "id": "RUB-015",
+        "id": "RUB-015",
       "category": "chained_ssrf",
       "severity": "critical",
       "description": "output of one tool must not be usable to perform SSRF via another tool."
     },
     {
-      "id": "RUB-016",
+        "id": "RUB-016",
       "category": "multi_hop_prompt_injection",
       "severity": "critical",
       "description": "malicious DB-stored task title combined with summarize_task must not inject prompt."
     },
     {
-      "id": "RUB-017",
+        "id": "RUB-017",
       "category": "eval_import_chain",
       "severity": "critical",
       "description": "expression using __import__ must not execute OS commands or return side effects."
     },
     {
-      "id": "RUB-018",
+        "id": "RUB-018",
       "category": "credentials_multi_caller_content_check",
       "severity": "critical",
       "description": "credential-revealing diagnostic outputs must be denied for both unauthenticated and non-admin callers, and known secret markers must be absent from all returned content."
     },
     {
-      "id": "RUB-019",
+        "id": "RUB-019",
       "category": "admin_surface_multi_caller_denial",
       "severity": "critical",
       "description": "administrative system-information tools must be consistently denied across multiple caller classes, with body-level checks proving privileged fields are not returned."
     },
     {
-      "id": "RUB-020",
+        "id": "RUB-020",
       "category": "command_injection_with_positive_control",
       "severity": "critical",
       "description": "crafted shell-style payloads must not produce execution artifacts in network-tool output, while a benign target still returns expected success output in the same scenario."
     },
     {
-      "id": "RUB-021",
+        "id": "RUB-021",
       "category": "eval_chain_side_effect_block",
       "severity": "critical",
       "description": "expression-evaluation abuse attempts must not execute import or command side effects; assertions must verify absence of side-effect markers in returned content."
     },
     {
-      "id": "RUB-022",
+        "id": "RUB-022",
       "category": "ssrf_internal_target_nonfetch",
       "severity": "critical",
       "description": "internal-address outbound fetch attempts must be blocked with content-level proof that no protected internal payload was retrieved."
     },
     {
-      "id": "RUB-023",
+        "id": "RUB-023",
       "category": "cross_tool_chained_ssrf_guard",
       "severity": "critical",
       "description": "multi-step chaining where output from one tool is reused as a target in another network-capable tool must not permit internal-resource access."
     },
     {
-      "id": "RUB-024",
+        "id": "RUB-024",
       "category": "direct_prompt_injection_dual_case",
       "severity": "critical",
       "description": "instruction-injection attempts in summarization inputs must not override control context, and a benign instruction variant must still produce normal summarization behavior."
     },
     {
-      "id": "RUB-025",
+        "id": "RUB-025",
       "category": "indirect_prompt_injection_seeded_title",
       "severity": "critical",
       "description": "malicious control text seeded in persisted task titles must be treated as untrusted data in later summarization flows, with assertions on generated prompt content."
     },
     {
-      "id": "RUB-026",
+        "id": "RUB-026",
       "category": "safe_module_loading_with_controls",
       "severity": "critical",
       "description": "untrusted module-loading tricks (path, traversal, or dangerous module chains) must be rejected while safe built-in module loading remains functional."
     },
     {
-      "id": "RUB-027",
+        "id": "RUB-027",
       "category": "regression_same_team_lifecycle",
       "severity": "major",
       "description": "after security hardening, same-team non-admin lifecycle flows (create task, update task, add/list comment) must continue to succeed end-to-end."
     },
     {
-      "id": "RUB-028",
+        "id": "RUB-028",
       "category": "multi_failure_error_sanitization",
       "severity": "major",
       "description": "multiple failing tool paths must return sanitized errors without traceback text, filesystem paths, or command fragments leaking into response bodies."
     },
     {
-      "id": "RUB-029",
+        "id": "RUB-029",
       "category": "cross_team_search_isolation_with_control",
       "severity": "major",
       "description": "cross-boundary discovery attempts must not expose out-of-scope records while an in-scope control query in the same sequence still returns expected matches."
