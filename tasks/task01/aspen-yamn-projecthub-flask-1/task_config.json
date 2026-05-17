@@ -113,9 +113,39 @@
       "severity": "major",
       "category": "admin_endpoint",
       "description": "A test verifies that two distinct administrative management endpoints both return access-denied responses for a non-administrative caller, confirming that privileged reporting and audit surfaces are not exposed to participant-level users."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "major",
+      "category": "sql_injection",
+      "description": "A test verifies that crafted discovery queries across both resource-search surfaces do not expand a participant's visibility beyond their own organisational boundary, while benign queries still return same-boundary results."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "critical",
+      "category": "sql_injection",
+      "description": "A test verifies that crafted task-discovery queries cannot cause restricted metadata stored alongside searchable records to appear in participant-visible response bodies. Seeded marker values placed in those restricted fields must remain absent from the raw response while ordinary discovery still works."
+    },
+    {
+      "id": "RUB-016",
+      "severity": "critical",
+      "category": "command_injection",
+      "description": "A test verifies that report-generation input containing shell-control syntax does not execute arbitrary commands, while a benign report-generation request still returns expected content in the same flow."
+    },
+    {
+      "id": "RUB-017",
+      "severity": "major",
+      "category": "ownership",
+      "description": "A test verifies that legitimate same-boundary callers can still use secondary file-retrieval paths for their own attachments, while those same list, direct-download, and bundled-download paths do not disclose another boundary's filenames or bytes."
+    },
+    {
+      "id": "RUB-018",
+      "severity": "major",
+      "category": "ownership",
+      "description": "A test verifies that legitimate same-boundary workflow actions can still reassign and advance a task, while cross-boundary callers cannot use those mutation endpoints to alter another boundary's task. Follow-up reads must confirm the denied attempts left authoritative task state unchanged."
     }
   ],
-  "rubric_max_score": 41,
+  "rubric_max_score": 58,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,

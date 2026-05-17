@@ -1,37 +1,27 @@
-The seeded vulnerabilities in this project-management API span 12 OWASP classes,
-all centered on a Flask service (~1.5k LOC) managing teams, projects, tasks,
-comments, and attachments across 9 route modules and 25+ endpoints.
+ProjHub is a Flask project-management API with seeded failures across team
+scoping, privileged-field redaction, raw-query discovery, report generation,
+diagnostic surfaces, and secondary file / workflow paths.
 
-Vulnerability classes:
-1. Cross-team data isolation failure (BOLA/IDOR)
-2. Missing field redaction on admin-only metadata
-3. SQL injection via raw string interpolation
-4. OS command injection via shell=True
-5. Mass assignment on PATCH endpoints
-6. Sensitive data exposure via unauthenticated debug endpoints
-7. Information exposure via verbose error handlers
-8. SSRF via unvalidated webhook URLs
-9. Weak cryptography on share-link tokens
-10. Path traversal on attachment downloads
-11. Improper admin endpoint gating
-12. Deprecated/legacy API endpoints without authentication
+Test-authoring is still the correct task shape because the agent has to infer a
+multi-surface threat model from the codebase rather than patching one obvious
+endpoint. The substrate contains no bug annotations, and several rungs require
+positive controls plus read-back verification to distinguish secure hardening
+from simple breakage.
 
-Test-authoring is the right shape because the threat surface is broad (25+
-endpoints, 9 modules) and requires multi-step reasoning to discover — the
-source code contains NO BUG annotations or vulnerability labels.
+Current rubric design (post Type B expansion):
+- 5 critical items (×4): diagnostic exposure and the hardest query / command rungs
+- 12 major items (×3): ownership, redaction, admin gating, scoped discovery,
+  attachment-channel isolation, workflow-state invariants, and regression guards
+- 1 minor item (×2): same-boundary action-path usability guard
 
-Rubric design (v5):
-- 3 critical items (×4): cross-team list isolation, SQL injection, debug endpoint lockdown
-- 22 major items (×3): remaining direct-coverage + regression guards
-- 2 minor items (×2): path traversal, secondary coverage
-- 1 nitpick item (×1): test quality / sentinel markers
+Severity distribution: 5×4 + 12×3 + 1×2 = 20 + 36 + 2 = 58
+rubric_max_score = 58
 
-Severity distribution: 3×5 + 22×3 + 2×2 + 1×1 = 15 + 66 + 4 + 1 = 86
-rubric_max_score = 86
+The latest expansion adds five intended Type B items: crafted search visibility
+confinement, crafted search metadata non-leakage, shell-breakout denial with a
+benign control, secondary attachment-channel isolation, and workflow mutation
+denial with authoritative read-back.
 
-Rubric descriptions are behaviourally abstract — they describe the observable
-behaviour the test should verify without naming specific fields, endpoints, or
-vulnerability mechanisms. This is critical because the agent reads task_config.json.
-
-Production image contains ONLY the substrate and conftest.py. The agent writes
-ALL test files from scratch, including smoke/regression tests.
+Rubric descriptions remain behaviourally abstract and avoid naming concrete
+fields, endpoint paths, or payload strings because the agent reads
+task_config.json directly.

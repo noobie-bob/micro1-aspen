@@ -7,6 +7,8 @@ resources belonging to teams they are not members of.
 from __future__ import annotations
 
 import base64
+import io
+import zipfile
 
 
 def _create_project(client, auth_admin, team_id, name="proj", **extra):
@@ -23,6 +25,11 @@ def _create_task(client, headers, project_id, title="task", **extra):
     resp = client.post(f"/projects/{project_id}/tasks", headers=headers, json=payload)
     assert resp.status_code == 200
     return resp.get_json()
+
+
+def _zip_entries(payload: bytes) -> dict[str, bytes]:
+    with zipfile.ZipFile(io.BytesIO(payload)) as zip_file:
+        return {name: zip_file.read(name) for name in zip_file.namelist()}
 
 
 # ── Cross-team project listing ──────────────────────────────────────────────
@@ -107,3 +114,150 @@ def test_patch_and_delete_cross_team_forbidden(client, auth_admin, auth_user, tw
     assert delete_resp.status_code == 403, (
         f"cross-team DELETE must return 403, got {delete_resp.status_code}"
     )
+
+
+def test_attachment_channels_preserve_same_team_access_but_hide_cross_team_files(
+    client, auth_admin, auth_user, two_teams
+):
+    """Attachment channels must work same-team while hiding foreign filenames and bytes."""
+    alpha_proj = _create_project(client, auth_admin, two_teams["alpha"], name="alpha-files")
+    beta_proj = _create_project(client, auth_admin, two_teams["beta"], name="beta-files")
+    alpha_task = _create_task(client, auth_admin, alpha_proj["id"], title="alpha-files-task")
+    beta_task = _create_task(client, auth_admin, beta_proj["id"], title="beta-files-task")
+
+    own_name = "own-note.txt"
+    own_bytes = b"ALPHA_ATTACHMENT_OK"
+    foreign_name = "beta-secret.txt"
+    foreign_bytes = b"TYPEB_ATTACHMENT_SECRET"
+
+    own_upload = client.post(
+        f"/tasks/{alpha_task['id']}/attachments",
+        headers=auth_user,
+        json={
+            "filename": own_name,
+            "content_b64": base64.b64encode(own_bytes).decode(),
+        },
+    )
+    assert own_upload.status_code == 200
+
+    foreign_upload = client.post(
+        f"/tasks/{beta_task['id']}/attachments",
+        headers=auth_admin,
+        json={
+            "filename": foreign_name,
+            "content_b64": base64.b64encode(foreign_bytes).decode(),
+        },
+    )
+    assert foreign_upload.status_code == 200
+
+    own_list = client.get(f"/tasks/{alpha_task['id']}/attachments", headers=auth_user)
+    assert own_list.status_code == 200
+    assert own_name in own_list.get_json()
+
+    own_download = client.get(
+        f"/tasks/{alpha_task['id']}/attachments/{own_name}",
+        headers=auth_user,
+    )
+    assert own_download.status_code == 200
+    assert own_bytes == own_download.data
+
+    own_zip = client.get(f"/tasks/{alpha_task['id']}/attachments-zip", headers=auth_user)
+    assert own_zip.status_code == 200
+    own_entries = _zip_entries(own_zip.data)
+    assert own_name in own_entries
+    assert own_entries[own_name] == own_bytes
+
+    foreign_list = client.get(f"/tasks/{beta_task['id']}/attachments", headers=auth_user)
+    if foreign_list.status_code == 200:
+        assert foreign_name not in foreign_list.get_json(), (
+            "cross-team attachment list disclosed a foreign filename"
+        )
+    else:
+        assert foreign_list.status_code in (403, 404)
+
+    foreign_download = client.get(
+        f"/tasks/{beta_task['id']}/attachments/{foreign_name}",
+        headers=auth_user,
+    )
+    if foreign_download.status_code == 200:
+        assert foreign_bytes not in foreign_download.data, (
+            "cross-team attachment download disclosed foreign bytes"
+        )
+    else:
+        assert foreign_download.status_code in (403, 404)
+
+    foreign_zip = client.get(f"/tasks/{beta_task['id']}/attachments-zip", headers=auth_user)
+    if foreign_zip.status_code == 200:
+        foreign_entries = _zip_entries(foreign_zip.data)
+        assert foreign_name not in foreign_entries, (
+            "cross-team attachment bundle disclosed a foreign filename"
+        )
+        assert all(foreign_bytes not in body for body in foreign_entries.values()), (
+            "cross-team attachment bundle disclosed foreign file bytes"
+        )
+    else:
+        assert foreign_zip.status_code in (403, 404)
+
+
+def test_workflow_actions_allow_same_team_updates_but_leave_cross_team_state_unchanged(
+    client, auth_admin, auth_user, two_teams
+):
+    """Workflow actions must work same-team and leave foreign-task state unchanged."""
+    alpha_proj = _create_project(client, auth_admin, two_teams["alpha"], name="alpha-workflow")
+    beta_proj = _create_project(client, auth_admin, two_teams["beta"], name="beta-workflow")
+    alpha_task = _create_task(client, auth_admin, alpha_proj["id"], title="alpha-workflow-task")
+    beta_task = _create_task(client, auth_admin, beta_proj["id"], title="beta-workflow-task")
+
+    same_assign = client.post(
+        f"/tasks/{alpha_task['id']}/assign",
+        headers=auth_user,
+        json={"user_id": "alice-uuid"},
+    )
+    assert same_assign.status_code == 200
+
+    same_transition = client.post(
+        f"/tasks/{alpha_task['id']}/transition",
+        headers=auth_user,
+        json={"status": "review"},
+    )
+    assert same_transition.status_code == 200
+
+    same_state = client.get(f"/tasks/{alpha_task['id']}", headers=auth_admin)
+    assert same_state.status_code == 200
+    same_data = same_state.get_json()
+    assert same_data["assigned_to"] == "alice-uuid"
+    assert same_data["status"] == "review"
+
+    before = client.get(f"/tasks/{beta_task['id']}", headers=auth_admin)
+    assert before.status_code == 200
+    original = before.get_json()
+
+    cross_assign = client.post(
+        f"/tasks/{beta_task['id']}/assign",
+        headers=auth_user,
+        json={"user_id": "alice-uuid"},
+    )
+    if cross_assign.status_code == 200:
+        assert cross_assign.get_json().get("assigned_to") == original.get("assigned_to"), (
+            "cross-team assign mutated foreign task ownership state"
+        )
+    else:
+        assert cross_assign.status_code in (403, 404)
+
+    cross_transition = client.post(
+        f"/tasks/{beta_task['id']}/transition",
+        headers=auth_user,
+        json={"status": "done"},
+    )
+    if cross_transition.status_code == 200:
+        assert cross_transition.get_json().get("status") == original.get("status"), (
+            "cross-team transition mutated foreign task workflow state"
+        )
+    else:
+        assert cross_transition.status_code in (403, 404)
+
+    after = client.get(f"/tasks/{beta_task['id']}", headers=auth_admin)
+    assert after.status_code == 200
+    current = after.get_json()
+    assert current.get("assigned_to") == original.get("assigned_to")
+    assert current.get("status") == original.get("status")
