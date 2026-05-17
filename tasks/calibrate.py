@@ -312,6 +312,14 @@ def find_trim(items: list[dict]) -> tuple[list[dict], list[dict], bool]:
     if removable_count <= EXHAUSTIVE_LIMIT:
         subset, removed_ad, success = exhaustive_trim(pool)
     else:
+        print(
+            f"\n  ⚠ WARNING: {removable_count} removable items exceeds the exhaustive "
+            f"search limit ({EXHAUSTIVE_LIMIT}). Switching to greedy trim.\n"
+            f"  Greedy is a heuristic — it may report 'cannot reach targets' even when\n"
+            f"  a valid trim exists. If trim fails, try manually removing Type A/D items\n"
+            f"  before re-running, or reduce the rubric to fewer than "
+            f"{EXHAUSTIVE_LIMIT + 1} removable items."
+        )
         subset, removed_ad = greedy_trim(pool)
         o, q, _ = scores(subset)
         success = in_target(o, q, len(subset))
