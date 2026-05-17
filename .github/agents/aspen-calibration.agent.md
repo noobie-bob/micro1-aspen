@@ -68,8 +68,87 @@ Understand the effect of ADDING or REMOVING each item type before touching anyth
 
 ## ⚡ MANDATORY FIRST ACTION — Run the Calculator Script
 
-> **DO NOT read `tasks/calibrate.py`. DO NOT do any manual math. DO NOT build a discrimination matrix by hand.**
+> **DO NOT read `tasks/calibrate.py`. DO NOT do any manual math. DO NOT build a discrimination matrix by hand.**  
+> The full CLI reference and worked examples are in this section — you have everything you need here.  
 > Your first action on every calibration request — no exceptions — is to run the script below.
+
+---
+
+### Quick-reference CLI — copy-paste without reading the script
+
+```
+python3 tasks/calibrate.py [--opus-runs N] [--rg "IDS"] [--file FILE]
+```
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--opus-runs N` | `1` | How many leading result columns belong to Opus |
+| `--rg "IDS"` | interactive | Comma-separated regression-guard IDs; pass `""` when piping to suppress prompt |
+| `--file FILE` | stdin | Read rubric data from a file instead of a heredoc |
+
+**Input line format** (one item per line):
+```
+RUB-001,<severity>,<opus col 1>[,<opus col 2>...],<qwen col 1>[,<qwen col 2>...<qwen col 4>]
+```
+Severity values: `critical`, `major`, `minor`, `nitpick`. Result values: `p` or `f`.
+
+---
+
+### Worked examples — common scenarios
+
+**Scenario A — Standard calibration (1 Opus run, 4 Qwen runs, regression guards flagged):**
+```bash
+python3 tasks/calibrate.py --rg "RUB-001,RUB-015" << 'EOF'
+RUB-001,major,p,p,f,p,f
+RUB-002,critical,p,f,f,f,f
+RUB-003,major,p,f,f,p,f
+RUB-004,minor,f,f,f,f,f
+RUB-005,major,p,f,p,f,p
+RUB-006,critical,p,f,f,f,p
+RUB-007,major,f,p,p,p,p
+RUB-008,minor,p,p,p,p,p
+RUB-009,major,p,f,f,f,f
+RUB-010,nitpick,p,p,p,p,p
+RUB-011,major,p,f,f,f,p
+RUB-012,critical,p,f,p,f,f
+RUB-013,major,f,f,f,f,f
+RUB-014,minor,p,f,f,p,f
+RUB-015,major,p,p,p,p,p
+EOF
+```
+
+**Scenario B — 2 Opus runs, 3 Qwen runs, no regression guards:**
+```bash
+python3 tasks/calibrate.py --opus-runs 2 --rg "" << 'EOF'
+RUB-001,critical,p,p,f,f,p
+RUB-002,major,p,f,p,f,f
+RUB-003,major,f,f,p,p,f
+RUB-004,minor,p,p,p,p,p
+RUB-005,major,p,f,f,f,p
+EOF
+```
+
+**Scenario C — Minimal (1 Opus run, 1 Qwen run) when only partial data is available:**
+```bash
+python3 tasks/calibrate.py --rg "" << 'EOF'
+RUB-001,critical,p,f
+RUB-002,major,p,f
+RUB-003,major,f,p
+RUB-004,minor,p,p
+EOF
+```
+
+**Scenario D — Data in a file (useful for large rubrics):**
+```bash
+# Write data first
+cat > /tmp/rubric.csv << 'EOF'
+RUB-001,critical,p,f,f,p,f
+RUB-002,major,p,f,f,f,f
+EOF
+python3 tasks/calibrate.py --rg "RUB-001" --file /tmp/rubric.csv
+```
+
+---
 
 ### 1. Read `task_config.json` to get all RUB-IDs and severities
 
@@ -84,25 +163,38 @@ The user may give failed item numbers (e.g. "failed: 9, 13, 16"), model percenta
 
 ### 3. Pipe everything directly into the script
 
+**Classic (1 Opus run, up to 4 Qwen runs — default):**
 ```bash
 python3 tasks/calibrate.py --rg "" << 'EOF'
-RUB-001,critical,p,p,p
-RUB-002,major,p,f,f
-RUB-003,major,f,p,p
+RUB-001,critical,p,p,f,p,f
+RUB-002,major,p,f,f,f,p
+RUB-003,major,f,p,p,p,f
 EOF
 ```
 
-- Column order: `ID, severity, opus_result, qwen_r1[, qwen_r2, qwen_r3, qwen_r4]`
-- Use `p` = pass, `f` = fail
-- Use `--rg RUB-001,RUB-022` to flag regression-guard items, or `--rg ""` to skip the prompt (required when piping)
+**Multiple Opus runs (use `--opus-runs N`):**
+```bash
+python3 tasks/calibrate.py --opus-runs 2 --rg "" << 'EOF'
+RUB-001,critical,p,p,f,f,p
+RUB-002,major,p,f,p,f,f
+EOF
+```
+
+- **Column order:** `ID, severity, <N Opus cols>, <remaining Qwen cols>`  
+  With `--opus-runs 1` (default): first result col = Opus, rest = Qwen (1–4 runs).  
+  With `--opus-runs 2`: first 2 result cols = Opus, rest = Qwen.
+- Use `p` = pass, `f` = fail (prefix match: `pass`/`fail` also work)
+- Use `--rg RUB-001,RUB-022` to flag regression-guard items, or `--rg ""` to skip (required when piping)
 - Pass `--file data.csv` instead of a heredoc if the data is large
 
 ### What the script outputs (do not replicate this manually)
 
 - Full discrimination matrix with Type A/B/C/D classification for every item
-- Current Opus/Qwen scores and spread
+- Per-run breakdown (Opus run 1, Opus run 2, Qwen run 1…) for spotting outlier runs
+- Current Opus/Qwen scores (averaged across all runs of each model) and spread
 - Exact list of items to trim — and the findings file path for each
 - If trimming alone cannot reach targets: what new tests to write, with weight estimates
+- ⚠️ **Greedy-trim warning:** if there are more than 22 removable (Type A/D, non-RG) items, the script switches from exhaustive search to a greedy heuristic and prints a warning. Greedy trim may report "cannot reach targets" even when a valid trim exists. If you see this warning and trim fails, manually remove a few Type A/D items first, then re-run.
 
 **Only after reading the script's output, proceed to Steps 1–5 below.**
 
@@ -113,7 +205,7 @@ EOF
 **Do not proceed until the user has provided all of the following.** Ask for them explicitly if missing:
 
 1. **Task folder** — e.g. `tasks/task04/`
-2. **Opus run (N=1):** the exact list of RUB-IDs (or item numbers) that passed and failed
+2. **Opus runs (N=1 or more):** the exact list of RUB-IDs (or item numbers) that passed and failed, for each run. Most tasks use a single Opus run. If the user provides multiple Opus runs, pass `--opus-runs N` to the script.
 3. **Qwen runs (N=1–4):** for each run, the exact list that passed and failed
 
 Acceptable input formats (accept any, parse them yourself):
@@ -144,6 +236,15 @@ Work iteratively — one item type at a time:
 ### Step 3 — Update task_config.json
 
 Remove the trimmed items from `ground_truth_issues[]`. Recalculate and update `rubric_max_score`.
+
+**Renumber all remaining items sequentially (MANDATORY after every add or remove):**
+After any modification to `ground_truth_issues[]` — whether trimming items, adding new ones, or both — renumber every item's `id` field from `RUB-001` through `RUB-{N:03d}` in the order they appear in the array. Never leave gaps or duplicate numbers. Update any `--rg` references in your calibration notes and the findings files to match the new IDs.
+
+Example renumbering after removing items 5 and 9 from a 12-item rubric:
+```
+Before: RUB-001, RUB-002, RUB-003, RUB-004, RUB-006, RUB-007, RUB-008, RUB-010, RUB-011, RUB-012
+After:  RUB-001, RUB-002, RUB-003, RUB-004, RUB-005, RUB-006, RUB-007, RUB-008, RUB-009, RUB-010
+```
 
 ### Step 4 — Record all items in tasks/findings/
 
@@ -230,5 +331,7 @@ Report your diagnosis to the user before making changes to the substrate or prom
 - **DO NOT remove `regression_guard` items** — they are required for dual-contract integrity.
 - **DO NOT trim below 11 rubric items** — that is the minimum for meaningful signal.
 - **Always recalculate `rubric_max_score`** after every trim.
+- **Always renumber `ground_truth_issues[]` from `RUB-001` to `RUB-{N:03d}`** after any add or remove — no gaps, no duplicates.
 - **Always record every removed item** in `tasks/findings/` before updating `task_config.json`.
 - When the user provides run data as text, parse it yourself — do not ask them to reformat it.
+- When the script emits a greedy-trim warning (>22 removable items), do not treat a failed trim as final — manually remove a few Type A/D items first, then re-run the script.
