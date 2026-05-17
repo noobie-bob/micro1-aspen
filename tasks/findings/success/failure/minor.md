@@ -4,3 +4,4 @@ Rubric items of **minor** severity that were KEPT after calibration. Models are 
 
 | Sl.No | Task Title | Language | Framework | Task Details | Reason |
 |---|---|---|---|---|---|
+| 1 | Same-boundary action endpoint usability regression guard | Python | Flask | RUB-009 from aspen__test_authoring_projhub_visibility_001 — regression_guard: same-boundary participant must receive 2xx from duplication, share-link generation, and export endpoints | Kept as a hard rung under minimum-item and dual-contract constraints; both models frequently failed to keep all three success-path assertions together |
