@@ -4,7 +4,7 @@
 
 | Substrate | Rubric Items | Max Score | Status |
 |-----------|-------------|-----------|--------|
-| projhub (Flask, ~1.5k LOC) | 18 (5 critical + 12 major + 1 minor) | 58 | Type B expansion added — recalibration pending |
+| projhub (Flask, ~1.5k LOC) | 17 (3 critical + 13 major + 1 minor) | 53 | Safe trim applied, 3 intended Type B additions queued — recalibration pending |
 
 ## Substrate Summary
 
@@ -14,30 +14,29 @@ ProjHub is a Flask project-management API with teams, projects, tasks, comments,
 
 | Category | Items | Notes |
 |----------|-------|-------|
-| ownership | RUB-001, RUB-017, RUB-018 | destructive cross-boundary operations, secondary file channels, workflow mutation invariants |
-| redaction | RUB-002 | admin-only field absence in non-privileged detail views |
-| admin_endpoint | RUB-003, RUB-013 | audit and reporting surfaces denied to non-admin callers |
-| sensitive_data_exposure | RUB-004, RUB-005, RUB-010, RUB-011, RUB-012 | credential and introspection diagnostics denied across caller classes |
-| sql_injection | RUB-014, RUB-015 | crafted discovery-query visibility widening and restricted-marker extraction |
-| command_injection | RUB-016 | shell-breakout denial with benign report-generation control |
-| regression_guard | RUB-006, RUB-007, RUB-008, RUB-009 | admin visibility plus same-boundary read, write, and action-path usability |
+| ownership | RUB-001 | destructive cross-boundary operations |
+| redaction | RUB-002, RUB-015 | admin-only field absence in resource detail views and discussion-thread internal marker filtering |
+| admin_endpoint | RUB-003, RUB-012 | audit and reporting surfaces denied to non-admin callers |
+| sensitive_data_exposure | RUB-004, RUB-005, RUB-010, RUB-011 | credential and introspection diagnostics denied across caller classes |
+| sql_injection | RUB-013, RUB-014 | crafted discovery-query visibility widening and restricted-marker extraction |
+| improper_assets | RUB-016 | legacy identity-discovery surface must not permit privilege or existence enumeration |
+| regression_guard | RUB-006, RUB-007, RUB-008, RUB-009, RUB-017 | admin visibility plus same-boundary read, write, action-path usability, and admin-positive-control diagnostics |
 
-Severity math: `5×4 + 12×3 + 1×2 = 58`.
+Severity math: `3×4 + 13×3 + 1×2 = 53`.
 
 ## Latest Status
 
 - The prior 13-item trimmed rubric could not reach the target range by trimming alone.
 - Based on the latest supplied run set, the pre-expansion rubric sat at Opus `50.6%`, Qwen `47.5%`, spread `3.1%`.
-- This update adds five intended Type B rungs: RUB-014 through RUB-018.
-- Recalibration is required before any discrimination verdict can be claimed for the expanded rubric.
+- The safe trim candidate removes former RUB-010, RUB-016, RUB-017, and RUB-018.
+- This revision adds three intended Type B rungs at RUB-015 through RUB-017.
+- Recalibration is required before any discrimination verdict can be claimed for the updated 17-item rubric.
 
-## Gold-Test Additions In This Revision
+## Intended Type B Additions In This Revision
 
-- Crafted search queries across both discovery surfaces must not widen cross-boundary visibility.
-- Crafted task-search queries must not surface restricted indexed markers while benign search remains functional.
-- Report generation must resist real shell-breakout payloads while a benign report request still works.
-- Attachment list, direct download, and bundled download must preserve same-team access without leaking foreign filenames or bytes.
-- Task assignment and transition endpoints must preserve same-team workflow changes while leaving foreign task state unchanged after denied attempts.
+- Discussion-thread filtering now has an intended positive-control rung: ordinary same-boundary comments stay visible while internal-only marker text remains absent.
+- A legacy identity-discovery surface is now explicitly in scope for non-enumeration coverage.
+- Operator-only diagnostics now have an intended admin-positive-control regression guard so fixes do not over-block admin access.
 
 ## Image
 
@@ -47,4 +46,4 @@ Severity math: `5×4 + 12×3 + 1×2 = 58`.
 
 ## Calibration Results
 
-Pending rerun after the Type B expansion. Do not treat any earlier 28-item or 13-item calibration notes as current for this task revision.
+Pending rerun after the safe trim plus three intended Type B additions. Do not treat earlier 18-item calibration notes as current for this task revision.
