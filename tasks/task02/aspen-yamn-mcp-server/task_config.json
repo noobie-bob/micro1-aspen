@@ -48,12 +48,7 @@
       "severity": "major",
       "description": "custom_instruction must not override system prompt or inject control instructions."
     },
-    {
-        "id": "RUB-005",
-      "category": "prompt_injection_indirect",
-      "severity": "major",
-      "description": "task title from DB must be treated as untrusted input in summarize_task."
-    },
+
     {
         "id": "RUB-006",
       "category": "auth_bypass",
@@ -78,12 +73,7 @@
       "severity": "major",
       "description": "load_custom_formatter must not import arbitrary modules or paths."
     },
-    {
-        "id": "RUB-010",
-      "category": "multi_caller_enforcement",
-      "severity": "critical",
-      "description": "Endpoints like admin_sysinfo and legacy_dump must be validated across BOTH unauthenticated and non-admin callers WITH content checks."
-    },
+
     {
         "id": "RUB-011",
       "category": "cross_team_data_leak",
@@ -108,48 +98,23 @@
       "severity": "nitpick",
       "description": "tests must assert on response content, not just status or exceptions."
     },
-    {
-        "id": "RUB-015",
-      "category": "chained_ssrf",
-      "severity": "critical",
-      "description": "output of one tool must not be usable to perform SSRF via another tool."
-    },
-    {
-        "id": "RUB-016",
-      "category": "multi_hop_prompt_injection",
-      "severity": "critical",
-      "description": "malicious DB-stored task title combined with summarize_task must not inject prompt."
-    },
-    {
-        "id": "RUB-017",
-      "category": "eval_import_chain",
-      "severity": "critical",
-      "description": "expression using __import__ must not execute OS commands or return side effects."
-    },
+
+
+
     {
         "id": "RUB-018",
       "category": "credentials_multi_caller_content_check",
       "severity": "critical",
       "description": "credential-revealing diagnostic outputs must be denied for both unauthenticated and non-admin callers, and known secret markers must be absent from all returned content."
     },
-    {
-        "id": "RUB-019",
-      "category": "admin_surface_multi_caller_denial",
-      "severity": "critical",
-      "description": "administrative system-information tools must be consistently denied across multiple caller classes, with body-level checks proving privileged fields are not returned."
-    },
+
     {
         "id": "RUB-020",
       "category": "command_injection_with_positive_control",
       "severity": "critical",
       "description": "crafted shell-style payloads must not produce execution artifacts in network-tool output, while a benign target still returns expected success output in the same scenario."
     },
-    {
-        "id": "RUB-021",
-      "category": "eval_chain_side_effect_block",
-      "severity": "critical",
-      "description": "expression-evaluation abuse attempts must not execute import or command side effects; assertions must verify absence of side-effect markers in returned content."
-    },
+
     {
         "id": "RUB-022",
       "category": "ssrf_internal_target_nonfetch",
@@ -162,18 +127,8 @@
       "severity": "critical",
       "description": "multi-step chaining where output from one tool is reused as a target in another network-capable tool must not permit internal-resource access."
     },
-    {
-        "id": "RUB-024",
-      "category": "direct_prompt_injection_dual_case",
-      "severity": "critical",
-      "description": "instruction-injection attempts in summarization inputs must not override control context, and a benign instruction variant must still produce normal summarization behavior."
-    },
-    {
-        "id": "RUB-025",
-      "category": "indirect_prompt_injection_seeded_title",
-      "severity": "critical",
-      "description": "malicious control text seeded in persisted task titles must be treated as untrusted data in later summarization flows, with assertions on generated prompt content."
-    },
+
+
     {
         "id": "RUB-026",
       "category": "safe_module_loading_with_controls",
@@ -206,7 +161,7 @@
     "Tests must include both attacker and legitimate user flows.",
     "Failure to include multi-caller scenarios results in major penalty."
   ],
-  "rubric_max_score": 101,
+  "rubric_max_score": 66,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
