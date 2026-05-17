@@ -502,7 +502,7 @@ def print_run_summary(items: list[dict], opus_runs: int) -> None:
     if W_total == 0:
         return
 
-    print(f"\n  Per-run breakdown (weighted):")
+    print("\n  Per-run breakdown (weighted):")
 
     # Opus runs
     for r in range(opus_runs):
@@ -570,10 +570,10 @@ def main():
             print(f"  Error reading {args.file}: {e}")
             sys.exit(1)
     elif sys.stdin.isatty():
-        print(f"  Paste rubric data below. One item per line.")
+        print("  Paste rubric data below. One item per line.")
         print(f"  Format: RUB-001,major,<{args.opus_runs} Opus col(s)>,<Qwen cols...>")
         print(f"  Opus runs expected: {args.opus_runs}  (set with --opus-runs N)")
-        print(f"  Type END on a new line when done.\n")
+        print("  Type END on a new line when done.\n")
         lines = []
         try:
             while True:
