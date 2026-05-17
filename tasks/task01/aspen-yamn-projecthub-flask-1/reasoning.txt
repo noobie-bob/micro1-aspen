@@ -1,6 +1,6 @@
 ProjHub is a Flask project-management API with seeded failures across team
-scoping, privileged-field redaction, raw-query discovery, report generation,
-diagnostic surfaces, and secondary file / workflow paths.
+scoping, privileged-field redaction, raw-query discovery, diagnostic surfaces,
+and legacy or discussion-oriented side channels.
 
 Test-authoring is still the correct task shape because the agent has to infer a
 multi-surface threat model from the codebase rather than patching one obvious
@@ -8,19 +8,19 @@ endpoint. The substrate contains no bug annotations, and several rungs require
 positive controls plus read-back verification to distinguish secure hardening
 from simple breakage.
 
-Current rubric design (post Type B expansion):
-- 5 critical items (×4): diagnostic exposure and the hardest query / command rungs
-- 12 major items (×3): ownership, redaction, admin gating, scoped discovery,
-  attachment-channel isolation, workflow-state invariants, and regression guards
+Current rubric design (post safe trim + intended Type B additions):
+- 3 critical items (×4): credential/configuration exposure and restricted-search leakage
+- 13 major items (×3): ownership, redaction, admin gating, scoped discovery,
+  legacy-side-channel checks, discussion filtering, and regression guards
 - 1 minor item (×2): same-boundary action-path usability guard
 
-Severity distribution: 5×4 + 12×3 + 1×2 = 20 + 36 + 2 = 58
-rubric_max_score = 58
+Severity distribution: 3×4 + 13×3 + 1×2 = 12 + 39 + 2 = 53
+rubric_max_score = 53
 
-The latest expansion adds five intended Type B items: crafted search visibility
-confinement, crafted search metadata non-leakage, shell-breakout denial with a
-benign control, secondary attachment-channel isolation, and workflow mutation
-denial with authoritative read-back.
+This revision removes the safe trim set (former RUB-010, RUB-016, RUB-017,
+RUB-018) and adds three intended Type B items: discussion-thread visibility
+filtering with a positive control, legacy identity-surface non-enumeration,
+and admin-positive-control runtime diagnostics.
 
 Rubric descriptions remain behaviourally abstract and avoid naming concrete
 fields, endpoint paths, or payload strings because the agent reads

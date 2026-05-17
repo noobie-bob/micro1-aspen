@@ -94,58 +94,52 @@
       "id": "RUB-010",
       "severity": "critical",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to both unauthenticated and non-administrative callers, and that known token values are absent from raw response content for each denied caller path."
-    },
-    {
-      "id": "RUB-011",
-      "severity": "critical",
-      "category": "sensitive_data_exposure",
       "description": "A test verifies that runtime introspection endpoints exposing configuration and environment state are denied to unauthenticated and non-administrative callers across both endpoint surfaces, with explicit assertions for each caller class."
     },
     {
-      "id": "RUB-012",
+      "id": "RUB-011",
       "severity": "major",
       "category": "sensitive_data_exposure",
       "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to unauthenticated and non-administrative callers, and that known token values do not appear in response content for those callers."
     },
     {
-      "id": "RUB-013",
+      "id": "RUB-012",
       "severity": "major",
       "category": "admin_endpoint",
       "description": "A test verifies that two distinct administrative management endpoints both return access-denied responses for a non-administrative caller, confirming that privileged reporting and audit surfaces are not exposed to participant-level users."
     },
     {
-      "id": "RUB-014",
+      "id": "RUB-013",
       "severity": "major",
       "category": "sql_injection",
       "description": "A test verifies that crafted discovery queries across both resource-search surfaces do not expand a participant's visibility beyond their own organisational boundary, while benign queries still return same-boundary results."
     },
     {
-      "id": "RUB-015",
+      "id": "RUB-014",
       "severity": "critical",
       "category": "sql_injection",
       "description": "A test verifies that crafted task-discovery queries cannot cause restricted metadata stored alongside searchable records to appear in participant-visible response bodies. Seeded marker values placed in those restricted fields must remain absent from the raw response while ordinary discovery still works."
     },
     {
+      "id": "RUB-015",
+      "severity": "major",
+      "category": "redaction",
+      "description": "A test verifies that participant-visible discussion responses preserve ordinary same-boundary commentary while filtering entries reserved for internal operator use. Seeded internal marker text must remain absent from both structured data and raw response content."
+    },
+    {
       "id": "RUB-016",
-      "severity": "critical",
-      "category": "command_injection",
-      "description": "A test verifies that report-generation input containing shell-control syntax does not execute arbitrary commands, while a benign report-generation request still returns expected content in the same flow."
+      "severity": "major",
+      "category": "improper_assets",
+      "description": "A test verifies that a legacy identity-discovery surface does not allow unauthenticated or participant-level callers to confirm whether arbitrary users exist or infer their privilege class from the response body."
     },
     {
       "id": "RUB-017",
       "severity": "major",
-      "category": "ownership",
-      "description": "A test verifies that legitimate same-boundary callers can still use secondary file-retrieval paths for their own attachments, while those same list, direct-download, and bundled-download paths do not disclose another boundary's filenames or bytes."
-    },
-    {
-      "id": "RUB-018",
-      "severity": "major",
-      "category": "ownership",
-      "description": "A test verifies that legitimate same-boundary workflow actions can still reassign and advance a task, while cross-boundary callers cannot use those mutation endpoints to alter another boundary's task. Follow-up reads must confirm the denied attempts left authoritative task state unchanged."
+      "category": "regression_guard",
+      "description": "An anti-overblock test verifies that an administrative caller can still read operator-only runtime diagnostics after protections are applied for other caller classes, and that the successful admin response retains expected configuration and environment metadata."
     }
   ],
-  "rubric_max_score": 58,
+  "rubric_max_score": 53,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
