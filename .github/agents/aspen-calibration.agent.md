@@ -20,7 +20,7 @@ A task is **DISCRIMINATIVE** when the spread between models is ≥ 0.20. That ga
 
 Scores are computed as: `points_scored / rubric_max_score` (weighted by severity).
 
-Each item has a weight (critical=5, major=3, minor=2, nitpick=1). A model scores the item's weight when it passes, 0 when it fails.
+Each item has a weight (critical=4, major=3, minor=2, nitpick=1). A model scores the item's weight when it passes, 0 when it fails.
 
 **Always compute:**
 - `opus_score = Σ(weight of items Opus passed) / rubric_max_score`

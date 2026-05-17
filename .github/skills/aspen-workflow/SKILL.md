@@ -99,7 +99,7 @@ In addition, you must:
 1. **Decompose the scenario:** Break the test scenario into atomic rubric items along structural axes (direct coverage and anti-overblock guards). 11-28 substantive items is a healthy range.
 2. **Write the prompt:** Frame the task as a peer-to-peer bug report. Describe symptoms, not the inspection plan. Reference `conftest.py` for available fixtures — NOT `test_smoke.py`.
 3. **Write behaviourally abstract rubric descriptions:** Describe observable behaviour, not specific field names, endpoint paths, or vulnerability mechanisms.
-4. **Assign severities:** `critical=5, major=3, minor=2, nitpick=1`.
+4. **Assign severities:** `critical=4, major=3, minor=2, nitpick=1`.
 5. **Calibrate for separation:** Opus 4.7 ~75-85%, Qwen ~20-50%.
 
 ### Phase 3: Quality Control (~1–2 hrs)

@@ -141,9 +141,9 @@
       "justification": "Promotes robust, maintainable tests that catch subtle issues and avoid false positives. The expected value is determined by assertion depth and helper usage."
     }
   ],
-  "rubric_max_score": 52,
+  "rubric_max_score": 47,
   "rubric_severity_weights": {
-    "critical": 5,
+    "critical": 4,
     "major": 3,
     "minor": 2,
     "nitpick": 1
