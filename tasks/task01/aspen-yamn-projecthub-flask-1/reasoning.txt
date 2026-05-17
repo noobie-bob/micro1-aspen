@@ -1,27 +1,17 @@
-ProjHub is a Flask project-management API with seeded failures across team
-scoping, privileged-field redaction, raw-query discovery, diagnostic surfaces,
-and legacy or discussion-oriented side channels.
-
-Test-authoring is still the correct task shape because the agent has to infer a
-multi-surface threat model from the codebase rather than patching one obvious
-endpoint. The substrate contains no bug annotations, and several rungs require
-positive controls plus read-back verification to distinguish secure hardening
-from simple breakage.
-
-Current rubric design (post safe trim + intended Type B additions):
-- 3 critical items (×4): credential/configuration exposure and restricted-search leakage
-- 13 major items (×3): ownership, redaction, admin gating, scoped discovery,
-  legacy-side-channel checks, discussion filtering, and regression guards
-- 1 minor item (×2): same-boundary action-path usability guard
-
-Severity distribution: 3×4 + 13×3 + 1×2 = 12 + 39 + 2 = 53
-rubric_max_score = 53
-
-This revision removes the safe trim set (former RUB-010, RUB-016, RUB-017,
-RUB-018) and adds three intended Type B items: discussion-thread visibility
-filtering with a positive control, legacy identity-surface non-enumeration,
-and admin-positive-control runtime diagnostics.
-
-Rubric descriptions remain behaviourally abstract and avoid naming concrete
-fields, endpoint paths, or payload strings because the agent reads
-task_config.json directly.
+ProjHub is a Flask project-management API where participant callers can reach
+data and diagnostic surfaces that should stay scoped to their own team or
+reserved for operators.
+The core risk is a repeated pattern of cross-boundary visibility, privileged
+metadata leakage, and overly exposed diagnostics alongside legitimate same-team
+and admin workflows that must continue to work.
+Test-authoring is the right task shape because the engineer has to infer that
+multi-surface threat model from the code and encode it as durable assertions,
+rather than patching one obvious endpoint.
+The rubric decomposes into 1 ownership item, 2 redaction items, 2
+admin-endpoint items, 6 sensitive-data-exposure items, and 8 regression-guard
+items.
+Those axes separate direct security coverage from anti-overblock coverage so a
+submission cannot pass by writing only denial checks.
+The weighted severity plan is 18 major items and 1 minor item.
+Using the standard Aspen weights, that yields 18×3 + 1×2 = 56.
+rubric_max_score = 56

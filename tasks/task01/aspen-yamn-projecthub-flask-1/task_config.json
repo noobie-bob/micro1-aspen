@@ -40,49 +40,49 @@
       "id": "RUB-001",
       "severity": "major",
       "category": "ownership",
-      "description": "A test verifies that destructive operations on cross-boundary resources are denied — a participant must not be able to delete or remove state belonging to another boundary."
+      "description": "A test verifies that a participant-level caller cannot perform a destructive change against a resource outside their organisational boundary, and that a follow-up authorised read confirms the targeted resource and its dependent workflow state remain unchanged after the denied attempt. The same test must also prove the destructive flow still succeeds for an authorised caller on an in-boundary resource."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "redaction",
-      "description": "A test verifies that resource detail responses returned to non-privileged callers do not include fields that are reserved for administrative use. Sentinel values seeded into those fields must not appear anywhere in the response body."
+      "description": "A test verifies that privileged metadata seeded into a resource remains absent from a participant-level detail response and from at least one secondary representation derived from that same resource, while an administrative caller can still observe the seeded markers. Passing requires both the negative non-privileged checks and the positive privileged control."
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "admin_endpoint",
-      "description": "A test verifies that an administrative event log endpoint returns an access-denied response when called by a non-administrative caller."
+      "description": "A test verifies that an operator-only activity surface is inaccessible to both unauthenticated and participant-level callers, while an administrative caller still receives ordinary operator data from that same surface. The denial and positive-control assertions must be exercised within the same test."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that system introspection endpoints exposing runtime configuration and environment state are inaccessible to both unauthenticated and non-administrative callers."
+      "description": "A test verifies that one runtime-introspection surface exposing configuration-like state and another exposing environment-like state both deny unauthenticated and participant-level callers, and that known operator markers remain absent from any returned body for those callers. A test covering only one caller class or one surface does not satisfy this criterion."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test makes two simultaneous assertions using an admin-authenticated caller: (1) a project-list response contains resources from more than one organisational boundary; and (2) the raw response body contains the admin-only sentinel values seeded into at least one project's privileged metadata fields. Both assertions must pass within the same test, confirming that administrative list scope and privileged-field visibility are preserved independently of any access restrictions placed on non-admin callers."
+      "description": "An anti-overblock test verifies that an administrative caller can enumerate resources from more than one organisational boundary and can still observe seeded privileged metadata in the same response, while a participant-level caller reading the corresponding resources does not receive those markers. Both the admin positive control and the participant non-leak comparison must be exercised within one test."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a same-boundary non-admin participant can still read their own resources (list, detail, leaf) — returning 200 for all three access patterns after access-control fixes are applied."
+      "description": "An anti-overblock test verifies that a participant-level caller can traverse their own boundary successfully across list, detail, and leaf-resource reads, and that the three successful responses refer to a consistent same-boundary resource lineage. A test that checks only success status without matching the linked resources does not satisfy this criterion."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test makes three explicit 2xx-success assertions using a non-admin participant whose team matches the target project's team: (1) POST a new sub-task to a project in the participant's own boundary, (2) POST a comment to a task in that boundary, and (3) POST a file attachment to a task in that boundary. All three create operations must be individually exercised and must each return a 2xx response. A test covering only two of the three operations does not satisfy this criterion."
+      "description": "An anti-overblock test makes a same-boundary participant perform a three-step create chain: create a child work item, add commentary to that item, and attach a file-like artifact. The test must then read back the resulting data and confirm that all three artifacts persist and remain scoped to the participant's own boundary."
     },
     {
       "id": "RUB-008",
       "severity": "minor",
       "category": "regression_guard",
-      "description": "An anti-overblock test asserts that a same-boundary participant receives a 2xx success response from all three project action endpoints — duplication, share-link generation, and data export — when invoked against a project in the participant's own organisational boundary. The test must use positive success assertions on same-boundary resources; asserting that cross-boundary access is denied does not satisfy this criterion. All three endpoints must be individually exercised."
+      "description": "An anti-overblock test verifies that a same-boundary participant can trigger three distinct project action flows and that each action produces its expected observable effect: a duplicated resource becomes discoverable, an access-sharing artifact is returned without privileged markers, and an exported representation contains ordinary project content. All three outcomes must be asserted in one test."
     },
     {
       "id": "RUB-009",
@@ -94,34 +94,32 @@
       "id": "RUB-010",
       "severity": "major",
       "category": "admin_endpoint",
-      "description": "A test verifies that two distinct administrative management endpoints both return access-denied responses for a non-administrative caller, confirming that privileged reporting and audit surfaces are not exposed to participant-level users."
+      "description": "A test verifies that two distinct operator-only management surfaces both deny participant-level callers, and that an administrative caller can still successfully access at least one of those surfaces to retrieve ordinary management data. A single-surface denial test does not satisfy this criterion."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "redaction",
-      "description": "A test verifies that participant-visible discussion responses preserve ordinary same-boundary commentary while filtering entries reserved for internal operator use. Seeded internal marker text must remain absent from both structured data and raw response content."
+      "description": "A test verifies that participant-visible discussion responses preserve ordinary same-boundary commentary while suppressing operator-only entries, and that seeded internal marker text remains absent from both structured comment data and the raw response body. The same scenario must include at least one visible ordinary comment as a positive control."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that an administrative caller can still read operator-only runtime diagnostics after protections are applied for other caller classes, and that the successful admin response retains expected configuration and environment metadata."
-    }
-    ,
+      "description": "An anti-overblock test verifies that, after protections for lower-privilege callers are in place, an administrative caller can still retrieve operator diagnostics from one privileged surface and that the successful response retains both configuration-like and environment-like information. The test must pair the positive control with a denied lower-privilege probe in the same flow."
+    },
     {
       "id": "RUB-013",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A test verifies that a same-boundary participant can create a sub-task under a project belonging to their team and receives a 2xx success response."
+      "description": "A test verifies that a same-boundary participant can create a child work item beneath an in-boundary parent, that the new item is visible on follow-up reads performed by its owner, and that an out-of-boundary caller does not gain equivalent visibility into that new item."
     },
     {
       "id": "RUB-014",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A test verifies that a same-boundary participant can post a comment to a task within their team and receives a 2xx success response."
-    }
-    ,
+      "description": "A test verifies that a same-boundary participant can post an ordinary comment to an in-boundary work item, that the comment is visible to same-boundary readers on follow-up list retrieval, and that an out-of-boundary caller cannot use the same path to observe or infer that comment."
+    },
     {
       "id": "RUB-015",
       "severity": "major",
@@ -131,17 +129,29 @@
     {
       "id": "RUB-016",
       "severity": "major",
-      "category": "improper_assets",
-      "description": "A test verifies that legacy identity-discovery endpoints do not allow unauthenticated or participant-level callers to confirm arbitrary user existence or to infer privilege class from response content."
+      "category": "regression_guard",
+      "description": "A test verifies that an administrative caller can still access more than one privileged runtime-diagnostic surface after protections are applied to other caller classes, and that seeded operator markers remain present in successful admin responses across those surfaces. Passing requires multi-surface admin-positive-control coverage rather than a single successful request."
     },
     {
       "id": "RUB-017",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "A test verifies that administrative runtime diagnostics remain accessible to administrative callers after protections are applied to other caller classes, and that expected configuration and environment metadata are retained in successful admin responses."
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that a credential-oriented diagnostic surface denies both unauthenticated and participant-level callers, and that known credential markers remain absent from any returned body for those callers. The access-control and body-level non-leak assertions must be exercised together."
+    },
+    {
+      "id": "RUB-018",
+      "severity": "major",
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that configuration-like and environment-like runtime diagnostics deny lower-privilege callers across more than one operator surface, and that seeded secret markers remain absent from the content returned to those callers. A test covering only one surface does not satisfy this criterion."
+    },
+    {
+      "id": "RUB-019",
+      "severity": "major",
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that operator diagnostics intended for trusted callers do not disclose credential-like or environment-derived markers to unauthenticated or participant-level callers across multiple diagnostic paths, even when a response body is returned for denied requests."
     }
   ],
-  "rubric_max_score": 50,
+  "rubric_max_score": 56,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
