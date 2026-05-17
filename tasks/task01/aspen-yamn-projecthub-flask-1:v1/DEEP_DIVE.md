@@ -71,7 +71,7 @@ The agent reads `prompt.txt` (which mentions access boundary concerns but does N
 | traversal (1) | RUB-026 | minor | Path traversal blocked across classic, URL-encoded, and cross-resource vectors |
 | test_quality (1) | RUB-028 | nitpick | Sentinel marker content-level assertions in addition to status-code checks |
 
-**Total: 28 items.** 3 critical (×5) + 22 major (×3) + 2 minor (×2) + 1 nitpick (×1) = **86 points.** rubric_max_score = 86.
+**Total: 28 items.** 3 critical (×4) + 22 major (×3) + 2 minor (×2) + 1 nitpick (×1) = **81 points.** rubric_max_score = 81.
 
 ## How to Read the Calibration Numbers
 

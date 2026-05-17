@@ -128,15 +128,75 @@
     },
     {
       "id": "RUB-018",
-      "category": "module_path_traversal",
-      "severity": "major",
-      "description": "formatter loader must reject path-based module tricks like '../', '~', or absolute paths."
+      "category": "credentials_multi_caller_content_check",
+      "severity": "critical",
+      "description": "credential-revealing diagnostic outputs must be denied for both unauthenticated and non-admin callers, and known secret markers must be absent from all returned content."
     },
     {
       "id": "RUB-019",
-      "category": "mixed_role_boundary",
+      "category": "admin_surface_multi_caller_denial",
+      "severity": "critical",
+      "description": "administrative system-information tools must be consistently denied across multiple caller classes, with body-level checks proving privileged fields are not returned."
+    },
+    {
+      "id": "RUB-020",
+      "category": "command_injection_with_positive_control",
+      "severity": "critical",
+      "description": "crafted shell-style payloads must not produce execution artifacts in network-tool output, while a benign target still returns expected success output in the same scenario."
+    },
+    {
+      "id": "RUB-021",
+      "category": "eval_chain_side_effect_block",
+      "severity": "critical",
+      "description": "expression-evaluation abuse attempts must not execute import or command side effects; assertions must verify absence of side-effect markers in returned content."
+    },
+    {
+      "id": "RUB-022",
+      "category": "ssrf_internal_target_nonfetch",
+      "severity": "critical",
+      "description": "internal-address outbound fetch attempts must be blocked with content-level proof that no protected internal payload was retrieved."
+    },
+    {
+      "id": "RUB-023",
+      "category": "cross_tool_chained_ssrf_guard",
+      "severity": "critical",
+      "description": "multi-step chaining where output from one tool is reused as a target in another network-capable tool must not permit internal-resource access."
+    },
+    {
+      "id": "RUB-024",
+      "category": "direct_prompt_injection_dual_case",
+      "severity": "critical",
+      "description": "instruction-injection attempts in summarization inputs must not override control context, and a benign instruction variant must still produce normal summarization behavior."
+    },
+    {
+      "id": "RUB-025",
+      "category": "indirect_prompt_injection_seeded_title",
+      "severity": "critical",
+      "description": "malicious control text seeded in persisted task titles must be treated as untrusted data in later summarization flows, with assertions on generated prompt content."
+    },
+    {
+      "id": "RUB-026",
+      "category": "safe_module_loading_with_controls",
+      "severity": "critical",
+      "description": "untrusted module-loading tricks (path, traversal, or dangerous module chains) must be rejected while safe built-in module loading remains functional."
+    },
+    {
+      "id": "RUB-027",
+      "category": "regression_same_team_lifecycle",
       "severity": "major",
-      "description": "multi-step sequence: create (admin) → access (user2) → mutate → must be denied consistently across endpoints."
+      "description": "after security hardening, same-team non-admin lifecycle flows (create task, update task, add/list comment) must continue to succeed end-to-end."
+    },
+    {
+      "id": "RUB-028",
+      "category": "multi_failure_error_sanitization",
+      "severity": "major",
+      "description": "multiple failing tool paths must return sanitized errors without traceback text, filesystem paths, or command fragments leaking into response bodies."
+    },
+    {
+      "id": "RUB-029",
+      "category": "cross_team_search_isolation_with_control",
+      "severity": "major",
+      "description": "cross-boundary discovery attempts must not expose out-of-scope records while an in-scope control query in the same sequence still returns expected matches."
     }
   ],
   "scoring_notes": [
@@ -146,7 +206,7 @@
     "Tests must include both attacker and legitimate user flows.",
     "Failure to include multi-caller scenarios results in major penalty."
   ],
-  "rubric_max_score": 52,
+  "rubric_max_score": 101,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,

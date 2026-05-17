@@ -17,7 +17,7 @@ A Flask-based project management API ("ProjHub") with cross-team data isolation 
 - **Source code de-annotated**: All `# BUG:` comments and vulnerability-revealing docstrings stripped from all route modules. Vulnerable code logic is unchanged — bugs must be induced from reading the code, not from labels.
 - **Prompt reduced**: `prompt.txt` no longer enumerates vulnerability categories or references example tests. It only hints that "data scoping feels off" and points the agent to `tests/conftest.py` for fixtures.
 - **No tests in image**: Only `conftest.py` ships in the image — the agent writes ALL test files from scratch, including smoke/regression tests.
-- **Rubric rebalanced**: 3 critical (×5) + 22 major (×3) + 2 minor (×2) + 1 nitpick (×1) = 86 points. Rubric descriptions are behaviourally abstract — no field names, endpoint paths, or vulnerability mechanisms leaked.
+- **Rubric rebalanced**: 3 critical (×4) + 22 major (×3) + 2 minor (×2) + 1 nitpick (×1) = 86 points. Rubric descriptions are behaviourally abstract — no field names, endpoint paths, or vulnerability mechanisms leaked.
 - **Tests consolidated**: Gold test suite reduced from 90 → 28 tests by merging near-duplicate variants (e.g., 3 command injection → 1 loop, 7 mass assignment → 2 multi-field). Each test requires fixing ALL sub-cases to pass.
 
 ## Image

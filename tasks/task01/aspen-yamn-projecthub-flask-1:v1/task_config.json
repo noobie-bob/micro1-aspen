@@ -121,9 +121,9 @@
       "description": "A test verifies mutation integrity by attempting a non-privileged update that includes administrative project or task fields, then performing a follow-up read to confirm those privileged fields were not overwritten by the attempted write."
     }
   ],
-  "rubric_max_score": 47,
+  "rubric_max_score": 44,
   "rubric_severity_weights": {
-    "critical": 5,
+    "critical": 4,
     "major": 3,
     "minor": 2,
     "nitpick": 1

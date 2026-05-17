@@ -14,7 +14,7 @@ Input format (one item per line, paste then Ctrl-D / type END):
   opus:  p = pass, f = fail
   qwen:  p/f for each run (1-4 runs, comma-separated after opus)
 
-Severity weights: critical=5, major=3, minor=2, nitpick=1
+Severity weights: critical=4, major=3, minor=2, nitpick=1
 
 Targets:  Opus ≥ 80% (1 run)   Qwen 20-50% (avg of provided runs)
           Spread ≥ 0.20         Minimum 11 items after trim
@@ -30,7 +30,7 @@ import argparse
 from collections import Counter
 
 # ── Constants ──────────────────────────────────────────────────────────────
-WEIGHTS = {"critical": 5, "major": 3, "minor": 2, "nitpick": 1}
+WEIGHTS = {"critical": 4, "major": 3, "minor": 2, "nitpick": 1}
 OPUS_MIN = 0.80
 QWEN_MIN = 0.20
 QWEN_MAX = 0.50
@@ -287,7 +287,7 @@ def advise_new_tests(
         print("  ► Write TYPE B tests (Opus PASS, Qwen FAIL)")
         print("    These are hard, multi-step tests that only frontier models solve.")
         print(f"    Opus gap: {gap_o:.1%} → need ≈{need_w} weight pts")
-        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 5 + 1} critical  items\n")
+        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 4 + 1} critical  items\n")
 
     elif o < OPUS_MIN and q < QWEN_MIN:
         # Both too low → Type D to lift both, then Type B to widen gap
@@ -296,7 +296,7 @@ def advise_new_tests(
         print("  ► Write TYPE D tests (both PASS — happy-path / regression-guard)")
         print("    Lifts both models. Then widen gap with Type B tests.")
         print(f"    Opus gap: {gap_o:.1%} → need ≈{need_w} weight pts of Type D")
-        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 5 + 1} critical  items\n")
+        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 4 + 1} critical  items\n")
         print("  ► Then also write TYPE B tests to separate Opus from Qwen.\n")
 
     elif o >= OPUS_MIN and q > QWEN_MAX:
@@ -307,7 +307,7 @@ def advise_new_tests(
         print("  ► Write TYPE A tests (both FAIL — hard edge cases both models miss)")
         print("    Pulls Qwen below 50% while keeping Opus above 80%.")
         print(f"    Qwen overshoot: {gap_q:.1%} → need ≈{need_w} weight pts of Type A")
-        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 5 + 1} critical  items\n")
+        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 4 + 1} critical  items\n")
 
     elif o >= OPUS_MIN and q < QWEN_MIN:
         # Qwen floor too low → Type D to lift Qwen
@@ -316,7 +316,7 @@ def advise_new_tests(
         need_w = round(gap_q * w / (1 - QWEN_MIN)) + 2
         print("  ► Write TYPE D tests (both PASS) — Qwen floor too low")
         print(f"    Qwen floor gap: {gap_q:.1%} → need ≈{need_w} weight pts of Type D")
-        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 5 + 1} critical  items\n")
+        print(f"    ≈ {need_w // 3 + 1} major  or  {need_w // 4 + 1} critical  items\n")
 
     else:
         spread = o - q

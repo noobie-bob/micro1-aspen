@@ -139,7 +139,7 @@ After each run, collect:
 - [ ] Prompt does NOT enumerate rubric items or structural axes
 - [ ] Calibration data shows DISCRIMINATIVE verdict
 - [ ] Top-of-frontier rung exists (≥1 item caught <10% of the time)
-- [ ] Severity weights: `critical=5, major=3, minor=2, nitpick=1`
+- [ ] Severity weights: `critical=4, major=3, minor=2, nitpick=1`
 
 ### Smoke Test Quality
 

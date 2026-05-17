@@ -21,7 +21,7 @@ endpoints, 9 modules) and requires multi-step reasoning to discover — the
 source code contains NO BUG annotations or vulnerability labels.
 
 Rubric design (v5):
-- 3 critical items (×5): cross-team list isolation, SQL injection, debug endpoint lockdown
+- 3 critical items (×4): cross-team list isolation, SQL injection, debug endpoint lockdown
 - 22 major items (×3): remaining direct-coverage + regression guards
 - 2 minor items (×2): path traversal, secondary coverage
 - 1 nitpick item (×1): test quality / sentinel markers

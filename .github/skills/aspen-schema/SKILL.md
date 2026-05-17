@@ -29,7 +29,7 @@ user-invocable: false
 | `submission.presentation` | Literal value `"git_diff"` |
 | `ground_truth_issues` | Array of rubric items, each with `id`, `severity`, `category`, `description`. |
 | `rubric_max_score` | The weighted sum of all items. Must equal Σ(severity_weight × count). |
-| `rubric_severity_weights` | Always `{critical:5, major:3, minor:2, nitpick:1}`. |
+| `rubric_severity_weights` | Always `{critical:4, major:3, minor:2, nitpick:1}`. |
 
 ## Substrate & Rubric Taxonomy
 
@@ -57,7 +57,7 @@ Scenario-dependent categories (pick what naturally decomposes your scenario):
 
 | Severity | Weight | When to use |
 |---|---|---|
-| `critical` | 5 | Items whose absence means the rubric cannot discriminate threat understanding from null knowledge. Use sparingly — 0-3 per task. |
+| `critical` | 4 | Items whose absence means the rubric cannot discriminate threat understanding from null knowledge. Use sparingly — 0-3 per task. |
 | `major` | 3 | The standard weight for primary coverage and anti-regression guards. Default. |
 | `minor` | 2 | Secondary anti-overblock items, peripheral coverage, and adjacent-flow checks. |
 | `nitpick` | 1 | Test-quality items — assertion rigor, sentinel markers, and items that reward going beyond surface-level checks. |

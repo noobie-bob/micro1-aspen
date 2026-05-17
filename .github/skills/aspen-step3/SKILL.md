@@ -102,7 +102,7 @@ Submit your work as a unified diff via `submit_answer`.
 
 | Severity | Weight | Typical count |
 |---|---|---|
-| `critical` | 5 | 0-3 items (reserve for fundamental discrimination) |
+| `critical` | 4 | 0-3 items (reserve for fundamental discrimination) |
 | `major` | 3 | Most items — primary coverage + anti-overblock guards |
 | `minor` | 2 | Peripheral coverage, secondary anti-overblock |
 | `nitpick` | 1 | Assertion rigor, sentinel markers |
@@ -113,7 +113,7 @@ Submit your work as a unified diff via `submit_answer`.
 rubric_max_score = Σ(severity_weight × item_count_per_severity)
 ```
 
-Example: 2 critical + 8 major + 3 minor + 2 nitpick = (2×5) + (8×3) + (3×2) + (2×1) = 10 + 24 + 6 + 2 = **42**
+Example: 2 critical + 8 major + 3 minor + 2 nitpick = (2×4) + (8×3) + (3×2) + (2×1) = 8 + 24 + 6 + 2 = **40**
 
 ### Description Writing Rules
 
