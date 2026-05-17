@@ -93,14 +93,14 @@
     {
       "id": "RUB-010",
       "severity": "critical",
-      "category": "redaction",
-      "description": "A test seeds a unique sentinel string into the administrative metadata fields of a task resource via an admin write, then verifies that a non-privileged detail read of that task returns a response body from which the sentinel string is entirely absent — the assertion must operate on raw response content rather than field-key presence alone."
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to both unauthenticated and non-administrative callers, and that known token values are absent from raw response content for each denied caller path."
     },
     {
       "id": "RUB-011",
       "severity": "critical",
-      "category": "injection",
-      "description": "A test verifies that a crafted UNION-style search payload cannot exfiltrate privileged task metadata into response content. The assertion must validate raw response-body absence of seeded privileged sentinel values rather than relying on status code alone."
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that runtime introspection endpoints exposing configuration and environment state are denied to unauthenticated and non-administrative callers across both endpoint surfaces, with explicit assertions for each caller class."
     },
     {
       "id": "RUB-012",
@@ -112,7 +112,7 @@
       "id": "RUB-013",
       "severity": "major",
       "category": "redaction",
-      "description": "A test verifies that when both public and internal comments exist on the same task, a non-privileged caller listing comments receives no entries flagged internal and no internal sentinel text in the raw response body."
+      "description": "A test verifies that non-privileged resource-detail responses redact administrative fields after privileged writes by asserting that seeded admin-only sentinel values do not appear anywhere in raw response content."
     },
     {
       "id": "RUB-014",
