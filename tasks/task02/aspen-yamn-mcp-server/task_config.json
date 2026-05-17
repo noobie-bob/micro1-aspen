@@ -25,207 +25,139 @@
   ],
   "ground_truth_issues": [
     {
-        "id": "RUB-001",
+      "id": "RUB-001",
       "category": "command_injection",
       "severity": "major",
       "description": "ping_team_server must not execute shell metacharacters"
     },
     {
-        "id": "RUB-002",
+      "id": "RUB-002",
       "category": "code_injection",
       "severity": "critical",
       "description": "calculate_budget must block python execution chains"
     },
     {
-        "id": "RUB-003",
+      "id": "RUB-003",
       "category": "ssrf",
       "severity": "critical",
       "description": "fetch_project_asset must block internal URLs AND must not perform the request."
     },
     {
-        "id": "RUB-006",
+      "id": "RUB-004",
       "category": "auth_bypass",
       "severity": "major",
       "description": "tokens starting with bypass-, malformed, or case-modified must not authenticate."
     },
     {
-        "id": "RUB-007",
+      "id": "RUB-005",
       "category": "credentials_exposure",
       "severity": "critical",
       "description": "legacy_dump must never expose secrets to any caller type."
     },
     {
-        "id": "RUB-008",
-      "category": "traceback_leak",
-      "severity": "minor",
-      "description": "no tool should return stack traces or file paths."
-    },
-    {
-        "id": "RUB-009",
+      "id": "RUB-006",
       "category": "untrusted_module_loading",
       "severity": "major",
       "description": "load_custom_formatter must not import arbitrary modules or paths."
     },
-
     {
-        "id": "RUB-011",
+      "id": "RUB-007",
       "category": "cross_team_data_leak",
       "severity": "critical",
       "description": "search_tasks must not leak results across teams under any query input."
     },
     {
-        "id": "RUB-012",
+      "id": "RUB-008",
       "category": "regression_legitimate_flows",
       "severity": "major",
       "description": "after security enforcement, legitimate user flows must still fully succeed (CRUD + comments)."
     },
     {
-        "id": "RUB-013",
-      "category": "state_integrity",
-      "severity": "major",
-      "description": "failed operations must not modify DB state; tests must assert invariants."
-    },
-    {
-        "id": "RUB-014",
+      "id": "RUB-009",
       "category": "content_assertion_quality",
       "severity": "nitpick",
       "description": "tests must assert on response content, not just status or exceptions."
     },
-
-
-
     {
-        "id": "RUB-018",
+      "id": "RUB-010",
       "category": "credentials_multi_caller_content_check",
       "severity": "critical",
       "description": "credential-revealing diagnostic outputs must be denied for both unauthenticated and non-admin callers, and known secret markers must be absent from all returned content."
     },
-
     {
-        "id": "RUB-020",
+      "id": "RUB-011",
       "category": "command_injection_with_positive_control",
       "severity": "critical",
       "description": "crafted shell-style payloads must not produce execution artifacts in network-tool output, while a benign target still returns expected success output in the same scenario."
     },
-
     {
-        "id": "RUB-022",
+      "id": "RUB-012",
       "category": "ssrf_internal_target_nonfetch",
       "severity": "critical",
       "description": "internal-address outbound fetch attempts must be blocked with content-level proof that no protected internal payload was retrieved."
     },
     {
-        "id": "RUB-023",
+      "id": "RUB-013",
       "category": "cross_tool_chained_ssrf_guard",
       "severity": "critical",
       "description": "multi-step chaining where output from one tool is reused as a target in another network-capable tool must not permit internal-resource access."
     },
-
-
     {
-        "id": "RUB-026",
+      "id": "RUB-014",
       "category": "safe_module_loading_with_controls",
       "severity": "critical",
       "description": "untrusted module-loading tricks (path, traversal, or dangerous module chains) must be rejected while safe built-in module loading remains functional."
     },
     {
-        "id": "RUB-027",
+      "id": "RUB-015",
       "category": "regression_same_team_lifecycle",
       "severity": "major",
       "description": "after security hardening, same-team non-admin lifecycle flows (create task, update task, add/list comment) must continue to succeed end-to-end."
     },
     {
-        "id": "RUB-028",
+      "id": "RUB-016",
       "category": "multi_failure_error_sanitization",
       "severity": "major",
       "description": "multiple failing tool paths must return sanitized errors without traceback text, filesystem paths, or command fragments leaking into response bodies."
     },
     {
-        "id": "RUB-029",
+      "id": "RUB-017",
       "category": "cross_team_search_isolation_with_control",
       "severity": "major",
       "description": "cross-boundary discovery attempts must not expose out-of-scope records while an in-scope control query in the same sequence still returns expected matches."
     },
     {
-      "id": "RUB-030",
+      "id": "RUB-018",
       "category": "internal_comment_caller_visibility",
       "severity": "critical",
       "description": "internal comments created by admin must be absent from non-admin list responses while public comments remain visible to both caller types in the same task context; dual-caller assertions required."
     },
     {
-      "id": "RUB-031",
-      "category": "bypass_token_team_gated_denial",
-      "severity": "critical",
-      "description": "a token that passes authentication but belongs to a user with no team memberships must still be denied on all team-gated resource accesses; the response body must not contain resource fields."
-    },
-    {
-      "id": "RUB-032",
+      "id": "RUB-019",
       "category": "eval_result_field_clean_with_arithmetic_control",
       "severity": "critical",
       "description": "code-injection expressions must not produce execution output in the computed-result field; a benign arithmetic expression in the same test must return the correct numeric value."
     },
     {
-      "id": "RUB-033",
+      "id": "RUB-020",
       "category": "multi_tool_attack_then_recovery",
       "severity": "critical",
       "description": "after a sequence of multi-tool injection and SSRF attempts that are all denied, a legitimate resource-creation and discovery workflow must still complete successfully in the same test."
     },
     {
-      "id": "RUB-034",
-      "category": "summarize_prompt_boundary_assertion",
-      "severity": "critical",
-      "description": "the assembled prompt returned by the summarization tool must not allow untrusted custom input to precede the system boundary; a benign instruction must still appear in the assembled output after the boundary."
-    },
-    {
-      "id": "RUB-035",
-      "category": "cross_team_mutation_denied_state_unchanged",
-      "severity": "critical",
-      "description": "a cross-team mutation attempt must be denied and the target resource must remain unchanged on readback by the legitimate owner within the same test sequence."
-    },
-    {
-      "id": "RUB-036",
+      "id": "RUB-021",
       "category": "comment_list_cross_team_content_denial",
       "severity": "critical",
       "description": "listing comments on a task the caller's team does not own must be denied; the response body must not leak comment content from that task; a same-team control list must return expected comments."
     },
     {
-      "id": "RUB-037",
-      "category": "delete_then_search_and_update_not_found",
-      "severity": "critical",
-      "description": "after a task is deleted, discovery queries using the exact identifying attribute must return empty and mutation attempts must return not-found; both verified in the same test."
-    },
-    {
-      "id": "RUB-038",
-      "category": "failed_creation_leaves_no_partial_state",
-      "severity": "critical",
-      "description": "a failed resource-creation attempt due to insufficient permissions must leave the resource count unchanged; a subsequent authorized creation must succeed and be reflected in state."
-    },
-    {
-      "id": "RUB-039",
-      "category": "no_auth_tool_access_denied_content_checked",
-      "severity": "critical",
-      "description": "privileged introspection tools that lack authentication must be treated as inaccessible; tests must assert that privileged system-info fields are absent from all caller responses."
-    },
-    {
-      "id": "RUB-040",
-      "category": "module_loader_dangerous_variants_all_blocked",
-      "severity": "critical",
-      "description": "multiple path-traversal and dangerous-module name variants must each be rejected by the module loader while a safe standard-library module loads successfully in the same test."
-    },
-    {
-      "id": "RUB-041",
-      "category": "ping_injection_output_no_execution_artifact",
-      "severity": "critical",
-      "description": "multiple shell-injection payload variants in the network-ping tool must each produce output with no command-execution artifacts; a benign safe-target invocation must still return expected output in the same test."
-    },
-    {
-      "id": "RUB-042",
+      "id": "RUB-022",
       "category": "fetch_asset_internal_address_variants_all_blocked",
       "severity": "critical",
       "description": "multiple internal-network address variants must each be rejected by the asset-fetcher with content-level proof that no internal page content was returned in any of the attempts."
     },
     {
-      "id": "RUB-043",
+      "id": "RUB-023",
       "category": "create_then_search_owner_vs_cross_team",
       "severity": "critical",
       "description": "after creating a resource with a unique discoverable attribute, the creator's own discovery query must find it while an out-of-scope caller using the same query must not; both asserted in the same test."
@@ -238,7 +170,7 @@
     "Tests must include both attacker and legitimate user flows.",
     "Failure to include multi-caller scenarios results in major penalty."
   ],
-  "rubric_max_score": 119,
+  "rubric_max_score": 82,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
