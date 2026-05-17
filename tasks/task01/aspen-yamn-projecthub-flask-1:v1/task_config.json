@@ -92,30 +92,36 @@
     },
     {
       "id": "RUB-010",
-      "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "A test verifies that a diagnostic endpoint that exposes a complete data-store snapshot is inaccessible to unauthenticated and non-administrative callers."
-    },
-    {
-      "id": "RUB-011",
-      "severity": "major",
-      "category": "access_control",
-      "description": "A test verifies that project-level action endpoints — project duplication and project export — return access-denied responses when the acting caller is from a different organisational boundary than the target project. Both action types must be tested against the same cross-boundary project resource."
-    },
-    {
-      "id": "RUB-012",
       "severity": "critical",
       "category": "redaction",
       "description": "A test seeds a unique sentinel string into the administrative metadata fields of a task resource via an admin write, then verifies that a non-privileged detail read of that task returns a response body from which the sentinel string is entirely absent — the assertion must operate on raw response content rather than field-key presence alone."
     },
     {
+      "id": "RUB-011",
+      "severity": "critical",
+      "category": "injection",
+      "description": "A test verifies that a crafted UNION-style search payload cannot exfiltrate privileged task metadata into response content. The assertion must validate raw response-body absence of seeded privileged sentinel values rather than relying on status code alone."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "major",
+      "category": "sensitive_data_exposure",
+      "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to unauthenticated and non-administrative callers, and that known token values do not appear in response content for those callers."
+    },
+    {
       "id": "RUB-013",
       "severity": "major",
       "category": "redaction",
-      "description": "A test seeds unique sentinel values into a project's administrative configuration fields via an admin write, then invokes the project share-link endpoint as a non-member caller and verifies that the response body does not contain those sentinel values in any field — the share payload must not bypass field-level redaction enforced on regular project reads."
+      "description": "A test verifies that when both public and internal comments exist on the same task, a non-privileged caller listing comments receives no entries flagged internal and no internal sentinel text in the raw response body."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "major",
+      "category": "mass_assignment",
+      "description": "A test verifies mutation integrity by attempting a non-privileged update that includes administrative project or task fields, then performing a follow-up read to confirm those privileged fields were not overwritten by the attempted write."
     }
   ],
-  "rubric_max_score": 42,
+  "rubric_max_score": 47,
   "rubric_severity_weights": {
     "critical": 5,
     "major": 3,
