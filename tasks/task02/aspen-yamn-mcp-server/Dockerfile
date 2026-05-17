@@ -15,15 +15,14 @@ RUN pip install -r /repo/requirements.txt
 
 # Copy the buggy substrate, smoke test, and pytest config
 COPY mcp_server/ /repo/mcp_server/
-COPY tests/ /repo/tests/
-COPY pytest.ini /repo/pytest.ini
+COPY conftest.py /repo/conftest.py
 
 # Anti-cheating: fresh git init, single commit, no remote
 RUN git init -q \
     && git config user.email build@aspen.local \
     && git config user.name build \
     && git add -A \
-    && git commit -q -m "buggy starter (fastmcp v1)"
+    && git commit -q -m "starter (fastmcp v1)"
 
 RUN chown -R user:user /repo
 USER user

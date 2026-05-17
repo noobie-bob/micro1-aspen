@@ -1,0 +1,7 @@
+A teammate on the platform noticed some unexpected behaviour while testing the ProjHub MCP tools through their local client. They mentioned that some of the tool responses seemed off — in some cases returning more than expected, in others not enforcing the access boundaries they anticipated.
+
+We need a proper security test suite for the MCP server. Your job is to write the tests.
+
+**Write tests only. Do not modify any file under `mcp_server/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch real security issues in the server tools, and (2) catch a fix that over-blocks legitimate flows. Put your tests under `tests/exfiltration/`. 
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
