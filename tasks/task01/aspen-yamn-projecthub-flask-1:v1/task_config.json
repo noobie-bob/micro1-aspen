@@ -109,7 +109,7 @@
       "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to unauthenticated and non-administrative callers, and that known token values do not appear in response content for those callers."
     },
     {
-      "id": "RUB-014",
+      "id": "RUB-013",
       "severity": "major",
       "category": "admin_endpoint",
       "description": "A test verifies that two distinct administrative management endpoints both return access-denied responses for a non-administrative caller, confirming that privileged reporting and audit surfaces are not exposed to participant-level users."
