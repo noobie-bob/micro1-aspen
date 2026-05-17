@@ -109,19 +109,13 @@
       "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to unauthenticated and non-administrative callers, and that known token values do not appear in response content for those callers."
     },
     {
-      "id": "RUB-013",
-      "severity": "major",
-      "category": "redaction",
-      "description": "A test verifies that non-privileged resource-detail responses redact administrative fields after privileged writes by asserting that seeded admin-only sentinel values do not appear anywhere in raw response content."
-    },
-    {
       "id": "RUB-014",
       "severity": "major",
-      "category": "mass_assignment",
-      "description": "A test verifies mutation integrity by attempting a non-privileged update that includes administrative project or task fields, then performing a follow-up read to confirm those privileged fields were not overwritten by the attempted write."
+      "category": "admin_endpoint",
+      "description": "A test verifies that two distinct administrative management endpoints both return access-denied responses for a non-administrative caller, confirming that privileged reporting and audit surfaces are not exposed to participant-level users."
     }
   ],
-  "rubric_max_score": 44,
+  "rubric_max_score": 41,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
