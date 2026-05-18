@@ -40,7 +40,7 @@
       "id": "RUB-001",
       "severity": "major",
       "category": "ownership",
-      "description": "A test verifies that a participant-level caller cannot perform a destructive change against a resource outside their organisational boundary, and that a follow-up authorised read confirms the targeted resource and its dependent workflow state remain unchanged after the denied attempt. The same test must also prove the destructive flow still succeeds for an authorised caller on an in-boundary resource."
+      "description": "A test verifies that a participant-level caller cannot perform a destructive change against a resource outside their organisational boundary, and that a follow-up authorised read confirms the targeted resource and its dependent workflow state remain unchanged after the denied attempt. The same test must also prove the destructive flow still succeeds for an authorised caller on an in-boundary resource. (Hint: include an authoritative owner read-back as the positive control.)"
     },
     {
       "id": "RUB-002",
@@ -52,19 +52,19 @@
       "id": "RUB-003",
       "severity": "major",
       "category": "admin_endpoint",
-      "description": "A test verifies that an operator-only activity surface is inaccessible to both unauthenticated and participant-level callers, while an administrative caller still receives ordinary operator data from that same surface. The denial and positive-control assertions must be exercised within the same test."
+      "description": "A test verifies that an operator-only activity surface is inaccessible to both unauthenticated and participant-level callers, while an administrative caller still receives ordinary operator data from that same surface. The denial and positive-control assertions must be exercised within the same test. (Hint: pair denial probes with an admin positive-control in the same flow.)"
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that one runtime-introspection surface exposing configuration-like state and another exposing environment-like state both deny unauthenticated and participant-level callers, and that known operator markers remain absent from any returned body for those callers. A test covering only one caller class or one surface does not satisfy this criterion."
+      "description": "A test verifies that one runtime-introspection surface exposing configuration-like state and another exposing environment-like state both deny unauthenticated and participant-level callers, and that known operator markers remain absent from any returned body for those callers. A test covering only one caller class or one surface does not satisfy this criterion. (Hint: assert marker absence in raw response bodies across both surfaces.)"
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that an administrative caller can enumerate resources from more than one organisational boundary and can still observe seeded privileged metadata in the same response, while a participant-level caller reading the corresponding resources does not receive those markers. Both the admin positive control and the participant non-leak comparison must be exercised within one test."
+      "description": "An anti-overblock test verifies that an administrative caller can enumerate resources from more than one organisational boundary and can still observe seeded privileged metadata in the same response, while a participant-level caller reading the corresponding resources does not receive those markers. Both the admin positive control and the participant non-leak comparison must be exercised within one test. (Hint: seed privileged markers and compare admin vs participant output.)"
     },
     {
       "id": "RUB-006",
