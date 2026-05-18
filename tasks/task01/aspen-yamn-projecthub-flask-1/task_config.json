@@ -1,5 +1,5 @@
 {
-  "instance_id": "aspen__test_authoring_projhub_visibility_001",
+  "instance_id": "aspen__projhub_balanced_frontier_015",
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
@@ -10,22 +10,8 @@
     "repo_dir": "/repo",
     "language": "python"
   },
-  "title": "Author tests for cross-team data visibility and injection vulnerabilities in ProjHub API",
+  "title": "Author balanced security and regression tests for ProjHub multi-surface behavior",
   "track": "Realm Aspen",
-  "cwe": [
-    "CWE-284",
-    "CWE-639",
-    "CWE-200",
-    "CWE-862",
-    "CWE-89",
-    "CWE-78",
-    "CWE-918",
-    "CWE-915",
-    "CWE-22",
-    "CWE-328",
-    "CWE-209",
-    "CWE-1295"
-  ],
   "severity": "critical",
   "behavioral_prompt": "prompt.txt",
   "rubric_only": true,
@@ -35,85 +21,103 @@
     ],
     "presentation": "git_diff"
   },
+  "rubric_max_score": 45,
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpicking": 1
+  },
   "ground_truth_issues": [
     {
       "id": "RUB-001",
       "severity": "major",
-      "category": "redaction",
-      "description": "A test verifies that privileged metadata seeded into a resource remains absent from a participant-level detail response and from at least one secondary representation derived from that same resource, while an administrative caller can still observe the seeded markers. Passing requires both the negative non-privileged checks and the positive privileged control."
+      "category": "sensitive_data_exposure",
+      "description": "GET /debug/env without Authorization returns HTTP 200 and response contains at least one environment variable."
     },
     {
       "id": "RUB-002",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "Anti-overblock: admin lists projects from multiple teams in one response. Use bearer \"admin-key\". Seed two teams via POST /teams, create one project per team via POST /projects. GET /projects and assert at least two distinct \"team_id\" values appear and \"admin_config\" is present in each project object. Must return 200."
+      "category": "broken_access_control",
+      "description": "GET /projects with user-key returns projects belonging to multiple teams."
     },
     {
       "id": "RUB-003",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "Anti-overblock: participant traverses same-team resources with consistent IDs. As admin (bearer \"admin-key\"): POST /teams with member_ids [\"alice-uuid\"], POST /projects under that team, POST /projects/{id}/tasks. Then as bearer \"user-key\": GET /projects → GET /projects/{id} (assert team_id matches) → GET /projects/{id}/tasks (assert task's project_id matches). All three return 200."
+      "category": "injection",
+      "description": "GET /search/projects?q=' OR '1'='1 returns more results than a benign query."
     },
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "A regression-guard test verifies that an authenticated caller can list all projects and receive a well-formed response. With bearer \"user-key\": GET /projects — assert HTTP 200 and the response body is a JSON array."
+      "category": "sensitive_data_exposure",
+      "description": "Call GET /debug/users with no Authorization and with user-key. Assert both return HTTP 200 and responses contain api_token fields."
     },
     {
       "id": "RUB-005",
-      "severity": "minor",
-      "category": "regression_guard",
-      "description": "A regression-guard test verifies that POST /projects/{project_id}/share returns a usable sharing artifact. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/share — assert HTTP 200, response contains a non-empty \"share_id\" string, and \"url\" starts with \"/shared/\"."
+      "severity": "critical",
+      "category": "injection",
+      "description": "Call GET /search/projects with a benign query and an injection payload and assert that the injection returns a larger result set."
     },
     {
       "id": "RUB-006",
       "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "GET /debug/users has no authentication check. Call it with no Authorization header — assert HTTP 200 (not 401 or 403) and assert the JSON list body contains at least one object with an \"api_token\" key holding a non-empty string. Then call GET /debug/users with \"Authorization: Bearer user-key\" — assert HTTP 200 and the same \"api_token\" exposure. The test must assert 200 in both cases. Never assert 401 or 403 for this endpoint."
+      "category": "state_integrity",
+      "description": "PATCH a project using user-key, then GET the same project and assert the updated field persists."
     },
     {
       "id": "RUB-007",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "A regression-guard test verifies that an admin caller can read system configuration from a diagnostic surface. With bearer \"admin-key\": GET /debug/config — assert HTTP 200 and response body contains \"python_version\" as a non-empty string."
+      "category": "cross_surface",
+      "description": "Retrieve a project via GET /projects/{id} and via POST /projects/{id}/share and assert admin_config is present in both responses."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "regression_guard",
-      "description": "With bearer \"user-key\" (alice, member of team-A): POST /projects/{project_id}/tasks under a team-A project — assert 200, capture the returned task_id. GET /tasks/{task_id} with bearer \"user-key\" — assert 200 and task id matches. GET /tasks/{task_id} with bearer \"user2-key\" (bob, member of team-B, not team-A) — assert 403 or 404. All three steps must use the same task_id created within the test."
+      "category": "visibility",
+      "description": "Access a task using GET /tasks/{id} and GET /projects/{id}/tasks and assert the same task appears in both responses."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A regression-guard test verifies that a created task persists and appears in the project task list. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/tasks with {\"title\": \"test task\"} — assert 200 and capture task_id; GET /projects/{project_id}/tasks — assert 200 and the list contains an object whose \"id\" matches the captured task_id."
+      "description": "Admin can create and list a team successfully."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A regression-guard test verifies that an admin can create a team and retrieve it with privileged fields visible. With bearer \"admin-key\": POST /teams with {\"name\": \"test-team\", \"admin_notes\": \"secret-notes\"} — assert 200; GET /teams — assert 200 and the response list contains the created team with \"admin_notes\" field present and non-empty."
+      "description": "Admin can create and retrieve a project under a team."
     },
     {
       "id": "RUB-011",
       "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "In test setup, assign os.environ[\"RUB011_SECRET\"] = \"sentinel-rub011\". With bearer \"user-key\": GET /debug/env — assert HTTP 200, then assert \"sentinel-rub011\" does NOT appear in the response body (as a key or value). With bearer \"user-key\": GET /debug/config — assert HTTP 200, then assert \"sentinel-rub011\" does NOT appear in the response body. Both surfaces must be covered in the same test; covering only one does not satisfy this criterion."
+      "category": "regression_guard",
+      "description": "User can create a task within their team project."
     },
     {
       "id": "RUB-012",
       "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "GET /debug/env and GET /debug/config have no authentication guard. Call GET /debug/env with no Authorization header — assert HTTP 200 (not 4xx). Call GET /debug/env with \"Authorization: Bearer user-key\" — assert HTTP 200. Call GET /debug/config with no Authorization header — assert HTTP 200. Call GET /debug/config with bearer \"user-key\" — assert HTTP 200. All four must return 200. Never assert 4xx for these endpoints."
+      "category": "regression_guard",
+      "description": "GET /projects returns HTTP 200 and a JSON array."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "POST /projects/{id}/share returns share_id and a URL starting with /shared/."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "POST /tasks/{id}/assign updates assigned_to field."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "POST /tasks/{id}/transition updates status to a valid state."
     }
-  ],
-  "rubric_max_score": 35,
-  "rubric_severity_weights": {
-    "critical": 4,
-    "major": 3,
-    "minor": 2,
-    "nitpicking":1
-  }
+  ]
 }
