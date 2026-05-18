@@ -13,7 +13,7 @@ WORKDIR /repo
 COPY requirements.txt /repo/requirements.txt
 RUN pip install -r /repo/requirements.txt
 
-# Copy only the substrate — the agent writes ALL test files.
+# Copy only the conftest.py — the agent writes ALL test files.
 # conftest.py provides shared fixtures (client, auth headers, two_teams).
 COPY projhub/ /repo/projhub/
 COPY tests/conftest.py /repo/tests/conftest.py

@@ -1,6 +1,6 @@
 The seeded vulnerabilities in this FastMCP server span multiple OWASP classes
-including 13 specific security gaps (Command Injection, SSRF, Prompt Injection, etc.)
-all contextualized within a ProjHub-like domain:
+including specific security gaps (Command Injection, SSRF, Prompt Injection, etc.)
+all contextualized within a MCP-like domain:
 
 1. Tools endpoints suffer from OS command injection (ping_team_server) and unsafe eval() (calculate_budget)
 2. Resources endpoints blindly fetch external URLs (SSRF) and load untrusted plugins (load_custom_formatter)
@@ -10,6 +10,3 @@ all contextualized within a ProjHub-like domain:
 
 Test-authoring is the right shape because the threat surface is spread across multiple FastMCP tools,
 requiring careful testing to patch without breaking valid domain tools.
-
-Severity distribution: 11 major + 2 minor + 1 nitpick = 11x3 + 2x2 + 1x1 = 38
-rubric_max_score = 38
