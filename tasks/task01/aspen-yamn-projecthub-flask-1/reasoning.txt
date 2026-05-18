@@ -7,12 +7,16 @@ and admin workflows that must continue to work.
 Test-authoring is the right task shape because the engineer has to infer that
 multi-surface threat model from the code and encode it as durable assertions,
 rather than patching one obvious endpoint.
-The rubric now decomposes into 1 redaction item, 3
-sensitive-data-exposure items, and 8 regression-guard items.
+The rubric decomposes into 1 redaction item, 3 sensitive-data-exposure items,
+and 8 regression-guard items.
+The regression-guard items range from simple single-call happy-path checks
+(authenticated project list, admin config read, project share artifact) to
+two-step create-then-read-back flows and one harder cross-boundary denial check.
+The sensitive-data-exposure items cover credential exposure via an unauthenticated
+diagnostic endpoint, reachability of runtime diagnostics without authorization,
+and seeded-marker absence from config and environment surfaces for lower-privilege callers.
 Those axes separate direct security coverage from anti-overblock coverage so a
 submission cannot pass by writing only denial checks.
-The calibration trim lands on a 12-item shape with two hard-fail rungs, four
-separation rungs, and six floor or happy-path rungs.
 The weighted severity plan is 11 major items and 1 minor item.
 Using the standard Aspen weights, that yields 11×3 + 1×2 = 35.
 rubric_max_score = 35

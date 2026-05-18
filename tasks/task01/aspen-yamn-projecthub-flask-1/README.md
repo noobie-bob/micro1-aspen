@@ -8,17 +8,18 @@ ProjHub is a Flask project-management API with teams, projects, tasks, comments,
 
 | Category | Items | Notes |
 |----------|-------|-------|
-| redaction | RUB-001 | privileged field suppression in detail and derived views with an admin positive control |
-| sensitive_data_exposure | RUB-006, RUB-011, RUB-012 | credential and runtime-diagnostic surfaces denied across caller classes with body-level non-leak assertions |
-| regression_guard | RUB-002, RUB-003, RUB-004, RUB-005, RUB-007, RUB-008, RUB-009, RUB-010 | admin cross-boundary visibility, same-boundary read/write/action continuity, and admin-positive-control diagnostics |
+| redaction | RUB-001 | Privileged field suppression in detail and derived views with an admin positive control |
+| sensitive_data_exposure | RUB-006, RUB-011, RUB-012 | Credential exposure via unauthenticated debug/users; seeded-marker absence from config/env surfaces; reachability of debug/env and debug/config without auth |
+| regression_guard | RUB-002, RUB-003, RUB-004, RUB-005, RUB-007, RUB-008, RUB-009, RUB-010 | Admin cross-boundary project listing; participant same-team ID traversal; authenticated project list; project share artifact; admin config read; task creation + list read-back; team creation with admin_notes; participant task create + cross-boundary denial |
 
 Severity math: `11×3 + 1×2 = 35`.
 
 ## Current Calibration Target
 
-- The rubric is deliberately trimmed to the 12-item guide row: two hard-fail rungs, four discrimination rungs, and six floor/regression rungs.
-- All regression-guard coverage is retained; the trim removes non-regression denominator weight and recasts selected guard items into explicit happy-path floors.
-- The target composition for reruns is `A2 / B4 / D6`, which is the closest guide-row fit available without trimming regression guards.
+- After rubric redesign, five multi-step regression guards (RUB-004, 005, 007, 009, 010) were replaced with simpler single- or two-call tests that both models should write naturally.
+- RUB-008 and RUB-011 are kept as harder items targeting Opus-only passage (Type B).
+- Target composition after next evaluation run: `B2 / D10` — ten floor/regression items both models pass, two separation items only Opus passes.
+- Projected Opus: ~(10×avg_weight + 2×B_weight) / 35 ≥ 80%; Qwen: ~(10×avg_weight) / 35 in 20–50% band.
 
 ## Image
 
