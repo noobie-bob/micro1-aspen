@@ -46,31 +46,31 @@
       "id": "RUB-002",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that an administrative caller can enumerate resources from more than one organisational boundary in a single successful response and that seeded privileged markers remain visible in that ordinary admin listing. Hint: seed a distinct admin-visible marker in each boundary and assert both markers appear together in one admin listing response."
+      "description": "Anti-overblock: admin lists projects from multiple teams in one response. Use bearer \"admin-key\". Seed two teams via POST /teams, create one project per team via POST /projects. GET /projects and assert at least two distinct \"team_id\" values appear and \"admin_config\" is present in each project object. Must return 200."
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a participant-level caller can traverse their own boundary successfully across list, detail, and leaf-resource reads, and that the linked identifiers remain consistent across those successful same-boundary reads. Hint: start from a same-boundary list result, follow it to a detail view, then fetch a related leaf resource and compare the identifiers across all three reads."
+      "description": "Anti-overblock: participant traverses same-team resources with consistent IDs. As admin (bearer \"admin-key\"): POST /teams with member_ids [\"alice-uuid\"], POST /projects under that team, POST /projects/{id}/tasks. Then as bearer \"user-key\": GET /projects → GET /projects/{id} (assert team_id matches) → GET /projects/{id}/tasks (assert task's project_id matches). All three return 200."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A test verifies that a legitimate multi-step workflow spanning child-object creation, follow-up annotation, and attached artifact persistence preserves a coherent lineage across all newly created objects. Passing requires full-chain read-back validation of the created objects, their parent-child relationships, and their final persisted state rather than status-code-only checks."
+      "description": "Test a multi-step workflow: task creation → comment → read-back with consistent IDs. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/tasks → capture task_id; POST /tasks/{task_id}/comments with body {\"body\": \"test note\"} → capture comment_id; GET /tasks/{task_id}/comments → assert the list contains the comment with matching id and body. All three calls return 200."
     },
     {
       "id": "RUB-005",
       "severity": "minor",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a same-boundary participant can trigger at least two ordinary project action flows and observe the expected non-privileged outputs from each successful action, such as a discoverable duplicate, a usable sharing artifact, or an export containing ordinary project content. Hint: use any two of duplicate, share, or export, then assert the returned artifact is usable and does not expose privileged-only markers."
+      "description": "Anti-overblock: participant runs two project action flows. With bearer \"user-key\": POST /projects/{id}/duplicate → assert response has a new \"id\" different from the source and name ending in \"-copy\"; POST /projects/{id}/share → assert response contains \"share_id\" and \"url\" starting with \"/shared/\". Both return 200."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that a credential-revealing diagnostic users endpoint is inaccessible to unauthenticated and non-administrative callers, and that known token values do not appear in response content for those callers."
+      "description": "Test that GET /debug/users exposes raw credentials to any caller. The endpoint has no auth guard and returns a list of objects each with \"user_id\", \"role\", and \"api_token\" (literal token strings like \"user-key\"). Send GET /debug/users with no Authorization header; assert HTTP 200 and at least one object contains \"api_token\". Repeat with bearer \"user-key\" and assert the same exposure."
     },
     {
       "id": "RUB-007",
@@ -94,7 +94,7 @@
       "id": "RUB-010",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that an administrative caller can still access more than one privileged runtime-diagnostic surface and receive ordinary operator data from each successful response. Hint: issue admin requests to at least two diagnostic surfaces and assert each successful body contains ordinary operator-facing keys or sections."
+      "description": "Anti-overblock: admin can access two runtime-diagnostic surfaces. With bearer \"admin-key\": GET /debug/config → assert HTTP 200 and body contains \"python_version\" and \"pid\" keys; GET /debug/env → assert HTTP 200 and body is a non-empty JSON object. Both must succeed."
     },
     {
       "id": "RUB-011",
@@ -106,7 +106,7 @@
       "id": "RUB-012",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that operator diagnostics intended for trusted callers do not disclose credential-like or environment-derived markers to unauthenticated or participant-level callers across multiple diagnostic paths, even when a response body is returned for denied requests."
+      "description": "Test that GET /debug/env and GET /debug/config are reachable without authorization. Call both with no Authorization header and with bearer \"user-key\"; assert all four requests return HTTP 200, confirming environment and config data is exposed to unprivileged callers."
     }
   ],
   "rubric_max_score": 35,
