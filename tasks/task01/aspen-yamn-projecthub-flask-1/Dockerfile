@@ -24,7 +24,7 @@ RUN git init -q \
     && git config user.email build@aspen.local \
     && git config user.name build \
     && git add -A \
-    && git commit -q -m "starter (projhub-visibility v1)"
+    && git commit -q -m "starter (projhub-flask)"
 
 RUN chown -R user:user /repo
 USER user
