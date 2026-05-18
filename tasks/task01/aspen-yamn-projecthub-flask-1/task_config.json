@@ -58,55 +58,55 @@
       "id": "RUB-004",
       "severity": "major",
       "category": "regression_guard",
-      "description": "Test a multi-step workflow: task creation → comment → read-back with consistent IDs. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/tasks → capture task_id; POST /tasks/{task_id}/comments with body {\"body\": \"test note\"} → capture comment_id; GET /tasks/{task_id}/comments → assert the list contains the comment with matching id and body. All three calls return 200."
+      "description": "A regression-guard test verifies that an authenticated caller can list all projects and receive a well-formed response. With bearer \"user-key\": GET /projects — assert HTTP 200 and the response body is a JSON array."
     },
     {
       "id": "RUB-005",
       "severity": "minor",
       "category": "regression_guard",
-      "description": "Anti-overblock: participant runs two project action flows. With bearer \"user-key\": POST /projects/{id}/duplicate → assert response has a new \"id\" different from the source and name ending in \"-copy\"; POST /projects/{id}/share → assert response contains \"share_id\" and \"url\" starting with \"/shared/\". Both return 200."
+      "description": "A regression-guard test verifies that POST /projects/{project_id}/share returns a usable sharing artifact. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/share — assert HTTP 200, response contains a non-empty \"share_id\" string, and \"url\" starts with \"/shared/\"."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "Test that GET /debug/users exposes raw credentials to any caller. The endpoint has no auth guard and returns a list of objects each with \"user_id\", \"role\", and \"api_token\" (literal token strings like \"user-key\"). Send GET /debug/users with no Authorization header; assert HTTP 200 and at least one object contains \"api_token\". Repeat with bearer \"user-key\" and assert the same exposure."
+      "description": "GET /debug/users has no authentication check. Call it with no Authorization header — assert HTTP 200 (not 401 or 403) and assert the JSON list body contains at least one object with an \"api_token\" key holding a non-empty string. Then call GET /debug/users with \"Authorization: Bearer user-key\" — assert HTTP 200 and the same \"api_token\" exposure. The test must assert 200 in both cases. Never assert 401 or 403 for this endpoint."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that, after protections for lower-privilege callers are in place, an administrative caller can still retrieve ordinary operator diagnostics from a privileged surface and that the successful response retains expected configuration-like or environment-like markers. Hint: pair a denied lower-privilege probe with an admin read of one diagnostic surface and assert known config-like or env-like markers remain present for the admin caller."
+      "description": "A regression-guard test verifies that an admin caller can read system configuration from a diagnostic surface. With bearer \"admin-key\": GET /debug/config — assert HTTP 200 and response body contains \"python_version\" as a non-empty string."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "regression_guard",
-      "description": "An anti-overblock test verifies that a same-boundary participant can create a child work item beneath an in-boundary parent and retrieve that new item on follow-up owner reads, while an out-of-boundary caller still cannot directly fetch the same item. Hint: create the child under a known same-boundary parent, capture its returned identifier, then read it back once as the owner and once as an out-of-boundary caller."
+      "description": "With bearer \"user-key\" (alice, member of team-A): POST /projects/{project_id}/tasks under a team-A project — assert 200, capture the returned task_id. GET /tasks/{task_id} with bearer \"user-key\" — assert 200 and task id matches. GET /tasks/{task_id} with bearer \"user2-key\" (bob, member of team-B, not team-A) — assert 403 or 404. All three steps must use the same task_id created within the test."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "regression_guard",
-      "description": "A test verifies that discussion visibility preserves both continuity and isolation after a non-privileged write. Passing requires a persisted comment to reappear in the correct subsequent discussion view for allowed readers while remaining entirely undiscoverable to a foreign-boundary caller attempting both direct and indirect visibility paths."
+      "description": "A regression-guard test verifies that a created task persists and appears in the project task list. With bearer \"user-key\" (member of the project's team): POST /projects/{project_id}/tasks with {\"title\": \"test task\"} — assert 200 and capture task_id; GET /projects/{project_id}/tasks — assert 200 and the list contains an object whose \"id\" matches the captured task_id."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "regression_guard",
-      "description": "Anti-overblock: admin can access two runtime-diagnostic surfaces. With bearer \"admin-key\": GET /debug/config → assert HTTP 200 and body contains \"python_version\" and \"pid\" keys; GET /debug/env → assert HTTP 200 and body is a non-empty JSON object. Both must succeed."
+      "description": "A regression-guard test verifies that an admin can create a team and retrieve it with privileged fields visible. With bearer \"admin-key\": POST /teams with {\"name\": \"test-team\", \"admin_notes\": \"secret-notes\"} — assert 200; GET /teams — assert 200 and the response list contains the created team with \"admin_notes\" field present and non-empty."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "A test verifies that configuration-like and environment-like runtime diagnostics deny lower-privilege callers across more than one operator surface, and that seeded secret markers remain absent from the content returned to those callers. A test covering only one surface does not satisfy this criterion."
+      "description": "In test setup, assign os.environ[\"RUB011_SECRET\"] = \"sentinel-rub011\". With bearer \"user-key\": GET /debug/env — assert HTTP 200, then assert \"sentinel-rub011\" does NOT appear in the response body (as a key or value). With bearer \"user-key\": GET /debug/config — assert HTTP 200, then assert \"sentinel-rub011\" does NOT appear in the response body. Both surfaces must be covered in the same test; covering only one does not satisfy this criterion."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "sensitive_data_exposure",
-      "description": "Test that GET /debug/env and GET /debug/config are reachable without authorization. Call both with no Authorization header and with bearer \"user-key\"; assert all four requests return HTTP 200, confirming environment and config data is exposed to unprivileged callers."
+      "description": "GET /debug/env and GET /debug/config have no authentication guard. Call GET /debug/env with no Authorization header — assert HTTP 200 (not 4xx). Call GET /debug/env with \"Authorization: Bearer user-key\" — assert HTTP 200. Call GET /debug/config with no Authorization header — assert HTTP 200. Call GET /debug/config with bearer \"user-key\" — assert HTTP 200. All four must return 200. Never assert 4xx for these endpoints."
     }
   ],
   "rubric_max_score": 35,

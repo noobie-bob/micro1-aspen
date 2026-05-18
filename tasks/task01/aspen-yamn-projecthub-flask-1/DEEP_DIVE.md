@@ -56,19 +56,15 @@ The agent reads `prompt.txt` (which mentions access boundary concerns but does N
 | Category | Items | Severity | What It Tests |
 |----------|-------|----------|---------------|
 | redaction (1) | RUB-001 | major | Privileged field suppression in detail and derived responses with an admin positive control |
-| sensitive_data_exposure (3) | RUB-006, RUB-011, RUB-012 | major | Credential-oriented and runtime-diagnostic surfaces denied across caller classes with content-level non-leak checks |
-| regression_guard (8) | RUB-002–005, RUB-007–010 | major / minor | Admin cross-boundary visibility plus same-boundary read, write, action-path usability, and admin-positive-control diagnostics |
+| sensitive_data_exposure (3) | RUB-006, RUB-011, RUB-012 | major | GET /debug/users exposes api_token to unauthenticated callers; seeded sentinel absent from /debug/env and /debug/config for lower-privilege callers; both debug endpoints reachable (HTTP 200) without any auth |
+| regression_guard (8) | RUB-002–005, RUB-007–010 | major / minor | Admin cross-boundary project listing; participant same-team ID traversal; authenticated project list (GET /projects → 200); POST /projects/{id}/share returns share_id + url; GET /debug/config admin read → python_version present; task create + list read-back; admin team create + GET /teams with admin_notes; participant task create + cross-boundary denial |
 
 **Total: 12 items.** 11 major (×3) + 1 minor (×2) = **35 points.** rubric_max_score = 35.
 
 ## How to Read the Calibration Numbers
 
-This trim is aimed at the Aspen guide row for a 12-item rubric: two hard-fail items, four discrimination items, and six floor items. Because regression guards were kept intact, the calibration work removed non-regression denominator weight and softened selected guard rows into explicit happy-path checks.
-
-For the updated 12-item rubric, read calibration the usual Aspen way:
+Five multi-step regression guards that were causing consistent model failure were replaced with simpler single- or two-call tests after calibration analysis. The two harder items (RUB-008, RUB-011) are retained as separation rungs — they require chained create-then-read-back-then-deny flows or seeded-marker absence checks that mid-tier models miss.
 
 - **Mean Reward** — Weighted score as a fraction of `35`.
-- **Catch Rate per rubric** — The retained hard items should stay difficult while the floor items verify that fixes do not over-block legitimate admin or same-boundary flows.
-- **Spread** — The meaningful target is still `>= 0.20` between frontier and mid-tier means.
-
-The intended composition is `A2 / B4 / D6`, which maps to the Aspen guidance row that keeps Opus above `80%` while leaving Qwen in-band once the refreshed model runs are collected.
+- **Target composition** — 10 floor items both models pass (Type D) + 2 separation items only the frontier model passes (Type B).
+- **Spread** — Meaningful target is `>= 0.20` between frontier and mid-tier means.
