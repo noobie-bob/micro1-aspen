@@ -1,11 +1,5 @@
 # aspen__mcp_server_vuln_002
 
-## Tasks in this pack
-
-| Substrate | Rubric Items | Max Score | Status |
-|-----------|-------------|-----------|--------|
-| mcp_server (FastMCP, Python) | 14 (11 major + 2 minor + 1 nitpick) | 38 | PUSHED — awaiting calibration |
-
 ## Substrate Summary
 
 A FastMCP-based Model Context Protocol (MCP) server for "ProjHub" with multiple critical security vulnerabilities including command injection, code injection (eval), SSRF, prompt injection, and authentication bypass. The server exposes tools for project management, budget calculation, and asset fetching, many of which lack proper input sanitization and authorization.

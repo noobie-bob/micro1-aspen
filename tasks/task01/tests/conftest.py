@@ -8,7 +8,7 @@ all smoke and exfiltration tests.
 import pytest
 
 from projhub.app import create_app
-from projhub.db import TEAM_MEMBERS, reset_state
+from projhub.db import reset_state
 
 
 @pytest.fixture()

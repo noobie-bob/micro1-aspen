@@ -7,11 +7,12 @@ and admin workflows that must continue to work.
 Test-authoring is the right task shape because the engineer has to infer that
 multi-surface threat model from the code and encode it as durable assertions,
 rather than patching one obvious endpoint.
-The rubric decomposes into 1 ownership item, 2 redaction items, 2
-admin-endpoint items, 6 sensitive-data-exposure items, and 8 regression-guard
-items.
+The rubric now decomposes into 1 redaction item, 3
+sensitive-data-exposure items, and 8 regression-guard items.
 Those axes separate direct security coverage from anti-overblock coverage so a
 submission cannot pass by writing only denial checks.
-The weighted severity plan is 18 major items and 1 minor item.
-Using the standard Aspen weights, that yields 18×3 + 1×2 = 56.
-rubric_max_score = 56
+The calibration trim lands on a 12-item shape with two hard-fail rungs, four
+separation rungs, and six floor or happy-path rungs.
+The weighted severity plan is 11 major items and 1 minor item.
+Using the standard Aspen weights, that yields 11×3 + 1×2 = 35.
+rubric_max_score = 35
