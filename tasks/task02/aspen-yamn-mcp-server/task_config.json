@@ -46,7 +46,7 @@
       "id": "RUB-004",
       "category": "untrusted_module_loading",
       "severity": "major",
-      "description": "load_custom_formatter must reject arbitrary module names that rely on filesystem paths, traversal syntax, or non-module locations."
+      "description": "call load_custom_formatter with path-style module_name values such as '../secrets', '/tmp/x.py', and './foo' and assert each JSON response does not contain a 'Loaded ...' status string — these path-based or traversal-syntax inputs must be treated as invalid non-module locations; immediately follow with a call using module_name 'json' and assert the response contains status 'Loaded json', confirming legitimate importable module names are not blocked."
     },
     {
       "id": "RUB-005",
