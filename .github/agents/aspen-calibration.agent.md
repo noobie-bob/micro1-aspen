@@ -26,19 +26,7 @@ Every file inside the `aspen__{name}_{class}_{NNN}/` folder is uploaded to both 
 - Describe the service, its purpose, and the threat model
 - Summarise the rubric design in human terms (severity counts, category names such as "ownership", "admin gating", "redaction", "regression guards")
 - Explain why the task shape (test-authoring from source) is appropriate and what makes it challenging
-- You may include severity distribution and `rubric_max_score` — these mirror what is already visible in `task_config.json`
 - **Do NOT use** Type A/B/C/D language, discrimination matrix references, or any model-specific pass/fail notes
-
-Example of correct `reasoning.txt` style:
-```
-Current rubric design:
-- 18 major items (×3): ownership, redaction, admin gating, multi-surface
-    diagnostic denial, and regression guards
-- 1 minor item (×2): same-boundary action-path usability guard
-
-Severity distribution: 18×3 + 1×2 = 54 + 2 = 56
-rubric_max_score = 56
-```
 
 ## Calibration Targets
 

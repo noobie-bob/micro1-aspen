@@ -43,20 +43,21 @@ The agent reads `prompt.txt` (which mentions unexpected tool behaviour and acces
 | Category | Items | What It Tests |
 |----------|-------|---------------|
 | command_injection (1) | RUB-001 | Blocks shell metacharacters in `ping_team_server` |
-| code_injection (1) | RUB-002 | Blocks arbitrary Python code in `calculate_budget` |
-| ssrf (1) | RUB-003 | Blocks internal IP fetching in `fetch_project_asset` |
-| direct_prompt_injection (1) | RUB-004 | Sanitizes `custom_instruction` in `summarize_task` |
-| indirect_prompt_injection (1) | RUB-005 | Sanitizes `task_title` in `summarize_task` |
-| authentication (1) | RUB-006 | Rejects weak authentication bypass patterns |
-| assets_management (1) | RUB-007 | Ensures `legacy_dump` tool is removed or inaccessible |
-| credentials_exposure (1) | RUB-008 | Asserts `legacy_dump` doesn't leak hardcoded keys |
-| sensitive_data_exposure (1) | RUB-009 | Asserts exceptions don't leak full python tracebacks |
-| access_control (1) | RUB-010 | Ensures `admin_sysinfo` is protected by admin token |
-| untrusted_components (1) | RUB-011 | Restricts arbitrary module imports in `load_custom_formatter` |
-| regression_guard (2) | RUB-012–013 | Ensures legitimate math and pings continue working (Anti-overblock) |
-| test_quality (1) | RUB-014 | Asserts tests use strict observability rather than just assuming exceptions mean success |
+| code_injection (1) | RUB-002 | Blocks import/exec expressions in `calculate_budget` |
+| credentials_multi_caller (1) | RUB-003 | Denies diagnostic secrets to both unauthenticated and non-admin callers |
+| untrusted_module_loading (1) | RUB-004 | Rejects path-style module names in `load_custom_formatter` |
+| regression_legitimate_flows (1) | RUB-005 | Confirms same-team non-admin CRUD operations still work [RG] |
+| ssrf_nonfetch (1) | RUB-006 | Blocks internal-IP fetch with content-level non-retrieval proof |
+| safe_module_loading_controls (1) | RUB-007 | Rejects dangerous module chains while allowing safe built-ins |
+| regression_same_team_lifecycle (1) | RUB-008 | Confirms task+comment end-to-end lifecycle for same-team non-admin [RG] |
+| eval_result_field_clean (1) | RUB-009 | Injection expressions leave no execution markers; arithmetic returns correct value |
+| fetch_asset_multi_variant (1) | RUB-010 | Multiple internal-address variants all rejected with content-level proof |
+| legacy_diagnostic_multi_caller (1) | RUB-011 | Legacy secret-key markers absent for both unauthenticated and non-admin callers |
+| ping_injection_multi_payload (1) | RUB-012 | Three+ injection payload shapes each blocked with full-body execution-artifact check |
+| cross_team_search_isolation (1) | RUB-013 | Create→dual-search proves task visible to own team, absent from cross-team query |
+| delete_verify_dual_surface (1) | RUB-014 | Delete→search-empty + update-not-found confirms deletion propagates across tool surfaces |
 
-**Total: 14 items.** 11 major (×3) + 2 minor (×2) + 1 nitpick (×1) = **38 points max.**
+**Total: 14 items.** 9 critical (×4) + 5 major (×3) = 36 + 15 = **51 points max.**
 
 ## How to Read the Calibration Numbers
 
@@ -68,7 +69,6 @@ Once calibration is run (N=12 per model):
 - **Catch Rate per rubric** — How often each vulnerability is caught.
 
 **Discrimination ladder:**
-- **Floor** (any model catches): Command injection, SSRF, Access control (RUB-001, RUB-003, RUB-010)
-- **Mid** (strong models catch): Prompt injection, Auth bypass, Code injection (RUB-004, RUB-005, RUB-006, RUB-002)
-- **Ceiling** (frontier-only): Untrusted components, Traceback leaks (RUB-011, RUB-009)
-- **Top-of-frontier**: Strict test quality, Regression guards (RUB-012, RUB-013, RUB-014)
+- **Floor** (both models pass — Type D): RUB-001, RUB-002, RUB-005 [RG], RUB-006, RUB-010
+- **Hard floor** (both models fail — Type A): RUB-004, RUB-007
+- **Core signal** (Opus passes, Qwen fails — Type B): RUB-003, RUB-008 [RG], RUB-009, RUB-011, RUB-012, RUB-013, RUB-014
