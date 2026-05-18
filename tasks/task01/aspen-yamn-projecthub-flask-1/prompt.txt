@@ -1,9 +1,19 @@
-A teammate on the platform noticed some concerning behaviour with the ProjHub API. When using their regular participant API key, they were able to access data they probably shouldn't be seeing. They mentioned something about the responses containing more information than expected and that request scoping "felt off."
+A teammate on the platform noticed concerning behaviour in the ProjHub API. While using a regular participant API key, they saw responses that appeared broader than expected, and some resource views seemed to include fields that should probably be reserved for operators or same-team users.
 
-We need a comprehensive security test suite that exercises the API's access boundaries and validates that data handling is correct. Your job is to write the test suite.
+We need a comprehensive security-focused test suite that exercises access boundaries, response shaping, and normal user workflows. Your job is to write tests only.
 
-**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must catch real issues and also include anti-overblock assertions so legitimate flows do not regress.
+Important constraints:
 
-Put your tests under `tests/exfiltration/`. The existing `tests/conftest.py` provides shared fixtures (`client`, `auth_admin`, `auth_user`, `auth_user2`, `two_teams`) for the two-team topology.
+- Do not modify application code.
+- Put tests under `tests/exfiltration/`.
+- Submit only your test files as a unified diff via `submit_answer` from `/repo`.
+- The existing pytest setup provides a Flask test client and bearer-token helpers for:
+  - an administrator
+  - a regular participant
+  - a second regular participant on another team
+- Prefer tests that create their own teams, projects, and tasks so assertions are deterministic.
+- Include anti-overblock coverage: legitimate admin and same-team participant workflows should continue to work.
 
-Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
+The suite should focus on behaviours a security engineer would care about: whether ordinary callers can see or mutate resources outside their intended boundary, whether diagnostic surfaces disclose sensitive data, whether search behaves safely with crafted input, and whether fixes still preserve normal project/task actions.
+
+The application source is intentionally compact, with the Flask routes and shared in-memory state kept close together to make the API behaviour easier to inspect. Do not rely on implementation changes; write tests that express the expected security and regression properties.

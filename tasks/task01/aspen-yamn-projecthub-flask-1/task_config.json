@@ -4,9 +4,9 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
-    "base_commit": "7d228305d9087ea8cb4784abd51784d687e44109",
+    "base_commit": "39fe1097a415d7fd6f179e8c2e8c82d43b16177e",
     "image_name": "micro1ai/aspen-yamn-projecthub-flask:v1",
-    "image_digest": "sha256:07c109d18f8a365af8caf779ce9f63c3b1796bd00282480cacdcf9025ea74d46",
+    "image_digest": "sha256:8144917db167e14919db195f1d276d304f99b118f4ff4772071d00b938fa04bb",
     "repo_dir": "/repo",
     "language": "python"
   },
