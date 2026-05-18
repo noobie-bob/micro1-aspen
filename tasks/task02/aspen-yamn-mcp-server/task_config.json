@@ -52,7 +52,7 @@
       "id": "RUB-005",
       "category": "regression_legitimate_flows",
       "severity": "major",
-      "description": "after security enforcement, legitimate non-privileged workflows must remain usable across ordinary task and comment operations without overblocking."
+      "description": "write explicit regression assertions confirming that a same-team non-admin user can still call create_task, update_task, delete_task, add_comment, and list_task_comments after security enforcement — each call must return a non-error, non-Forbidden response; these must be direct pass checks on the response content, not merely absence-of-exception checks."
     },
     {
       "id": "RUB-006",
@@ -70,19 +70,43 @@
       "id": "RUB-008",
       "category": "regression_same_team_lifecycle",
       "severity": "major",
-      "description": "after security hardening, same-team non-admin lifecycle behavior must remain available end-to-end across task and comment surfaces."
+      "description": "write a single end-to-end test where a same-team non-admin user (a) creates a task, (b) updates it, (c) calls add_comment on that task, and (d) calls list_task_comments — all four tool calls must succeed without error or Forbidden response, confirming both the task surface and the comment surface remain accessible to same-team non-admins after security hardening."
     },
     {
       "id": "RUB-009",
       "category": "eval_result_field_clean_with_arithmetic_control",
       "severity": "critical",
-      "description": "code-injection expressions must not produce execution output or side-effect markers in the computed-result field, while a benign arithmetic expression in the same test must return the correct numeric value in the normal result path."
+      "description": "in one test function, first call calculate_budget with a code-injection expression (e.g. containing __import__ or exec) and assert the response body contains no execution output, module-load text, or side-effect markers in any field — do not merely check for the absence of a result key, scan the full response string for evidence of execution; then in the same test call calculate_budget with the plain expression '2+3' and assert the result field equals 5, confirming the normal arithmetic path is unbroken."
     },
     {
       "id": "RUB-010",
       "category": "fetch_asset_internal_address_variants_all_blocked",
       "severity": "critical",
       "description": "multiple internal-network address variants must each be rejected by the asset-fetcher with content-level proof that no internal page content was returned in any of the attempts."
+    },
+    {
+      "id": "RUB-011",
+      "category": "legacy_diagnostic_multi_caller_content_denial",
+      "severity": "critical",
+      "description": "the legacy-system diagnostic tool must be inaccessible to both unauthenticated callers and non-admin authenticated callers; known secret-key markers present in its output must be asserted absent from the response body for each caller class in the same test — confirming both the access denial and the content-level non-leak across caller types."
+    },
+    {
+      "id": "RUB-012",
+      "category": "ping_injection_multi_payload_sweep",
+      "severity": "critical",
+      "description": "multiple shell-injection payload shapes must each fail to produce execution-output text in the ping tool's response body — test at minimum a semicolon-appended command, a pipe-chained command, and an ampersand-chained command, and for each assert the full response string contains no execution artifact or command output; conclude the same test with a benign target call and assert an output field is present."
+    },
+    {
+      "id": "RUB-013",
+      "category": "cross_team_search_isolation_content_proof",
+      "severity": "critical",
+      "description": "create a task under one team with a unique sentinel title, then in the same test call search_tasks as the creating team's member and assert the sentinel title appears in the response body; call search_tasks with a token from a different team using the same query and assert the sentinel title is absent from the response body — both assertions must be raw-body content checks, not merely list-length comparisons."
+    },
+    {
+      "id": "RUB-014",
+      "category": "delete_verify_dual_surface_chain",
+      "severity": "major",
+      "description": "after calling delete_task on a task, call search_tasks with that task's unique title and assert the response body does not contain the title; then call update_task on the same deleted task id and assert a Not Found or error response — the search-empty content proof and the update-not-found assertion must both appear in the same test, confirming deletion propagates across tool surfaces."
     }
   ],
   "scoring_notes": [
@@ -92,7 +116,7 @@
     "Tests must include both attacker and legitimate user flows.",
     "Failure to include multi-caller scenarios results in major penalty."
   ],
-  "rubric_max_score": 36,
+  "rubric_max_score": 51,
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,

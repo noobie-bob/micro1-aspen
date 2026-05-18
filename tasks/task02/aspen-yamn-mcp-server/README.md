@@ -37,19 +37,19 @@ A FastMCP-based Model Context Protocol (MCP) server for "ProjHub" with multiple 
 | Rubric | Category | Severity | Opus Catch | Qwen Catch |
 |--------|----------|----------|------------|------------|
 | RUB-001 | command_injection | major | — | — |
-| RUB-002 | code_injection | major | — | — |
-| RUB-003 | ssrf | major | — | — |
-| RUB-004 | direct_prompt_injection | major | — | — |
-| RUB-005 | indirect_prompt_injection | major | — | — |
-| RUB-006 | authentication | major | — | — |
-| RUB-007 | assets_management | major | — | — |
-| RUB-008 | credentials_exposure | minor | — | — |
-| RUB-009 | sensitive_data_exposure | minor | — | — |
-| RUB-010 | access_control | major | — | — |
-| RUB-011 | untrusted_components | major | — | — |
-| RUB-012 | regression_guard | major | — | — |
-| RUB-013 | regression_guard | major | — | — |
-| RUB-014 | test_quality | nitpick | — | — |
+| RUB-002 | code_injection | critical | — | — |
+| RUB-003 | credentials_multi_caller_content_check | critical | — | — |
+| RUB-004 | untrusted_module_loading | major | — | — |
+| RUB-005 | regression_legitimate_flows | major | — | — |
+| RUB-006 | ssrf_internal_target_nonfetch | critical | — | — |
+| RUB-007 | safe_module_loading_with_controls | critical | — | — |
+| RUB-008 | regression_same_team_lifecycle | major | — | — |
+| RUB-009 | eval_result_field_clean_with_arithmetic_control | critical | — | — |
+| RUB-010 | fetch_asset_internal_address_variants_all_blocked | critical | — | — |
+| RUB-011 | legacy_diagnostic_multi_caller_content_denial | critical | — | — |
+| RUB-012 | ping_injection_multi_payload_sweep | critical | — | — |
+| RUB-013 | cross_team_search_isolation_content_proof | critical | — | — |
+| RUB-014 | delete_verify_dual_surface_chain | major | — | — |
 
 ### Discrimination ladder rung breakdown
 

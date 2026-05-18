@@ -10,3 +10,9 @@ all contextualized within a MCP-like domain:
 
 Test-authoring is the right shape because the threat surface is spread across multiple FastMCP tools,
 requiring careful testing to patch without breaking valid domain tools.
+
+Current rubric design:
+- 9 critical items (×4): code injection, credentials multi-caller, SSRF nonfetch, module loader controls,
+  eval dual-contract, multi-variant SSRF, legacy diagnostic multi-caller, ping multi-payload sweep,
+  cross-team search isolation
+- 5 major items (×3): command injection, module path rejection, regression guards (×2), delete-verify chain

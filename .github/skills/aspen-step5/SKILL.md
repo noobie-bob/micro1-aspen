@@ -116,7 +116,7 @@ After each run, collect:
 
 - [ ] `prompt.txt` — 3-paragraph, no rubric enumeration, references `conftest.py` not `test_smoke.py`
 - [ ] `task_config.json` — all fields filled, arithmetic correct, no placeholder strings
-- [ ] `reasoning.txt` — 8-15 lines, severity distribution explained
+- [ ] `reasoning.txt` — 8-15 lines
 - [ ] `README.md` — calibration data, discrimination verdict
 - [ ] `DEEP_DIVE.md` — outsider on-ramp
 - [ ] `Dockerfile` — E2B convention, anti-cheating
