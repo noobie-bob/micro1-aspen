@@ -1,0 +1,5 @@
+A teammate said the ProjHub MCP server feels too permissive when ordinary users call tools. They were able to move across team boundaries that should have stayed separate, and some tool responses looked richer than the same workflow should expose. They also suspected that diagnostic tools, legacy tools, formatter loading, outbound fetches, shell-like ping targets, and budget expressions behave differently from ordinary project/task tools.
+
+We need a Go test suite that pins down the bad behavior without prescribing a particular fix. Write Go tests only. Do not modify server code. Put your tests under `tests/exfiltration/`.
+
+A separate engineer will use your tests to validate their fix, so the suite needs to catch real boundary leaks, content leaks, unsafe tool-input handling, prompt-boundary mistakes, credential/legacy diagnostic exposure, and regression risks while still preserving legitimate same-team project/task/comment flows. Submit only your test files as a unified diff via `submit_answer` from `/repo`.

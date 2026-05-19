@@ -1,0 +1,152 @@
+{
+  "instance_id": "aspen__yamn_mcp_go",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task05",
+    "base_commit": "dcadf9c82db03648d443f93a662cbe6f35725d8a",
+    "image_name": "micro1ai/aspen-mcp-go:v1",
+    "image_digest": "sha256:placeholder",
+    "repo_dir": "/repo",
+    "language": "go"
+  },
+  "title": "Author Go tests for ProjHub MCP cross-tool security, content-safety, and regression behavior",
+  "track": "Realm Aspen",
+  "cwe": [
+    "CWE-22",
+    "CWE-78",
+    "CWE-89",
+    "CWE-94",
+    "CWE-200",
+    "CWE-209",
+    "CWE-284",
+    "CWE-287",
+    "CWE-639",
+    "CWE-862",
+    "CWE-863",
+    "CWE-918"
+  ],
+  "severity": "critical",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/exfiltration/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "critical",
+      "category": "credential_and_legacy_surfaces",
+      "description": "Credential-revealing diagnostic and legacy tools must be inaccessible or sanitized for unauthenticated, bypass-token, and non-admin callers. Tests must assert known secret markers such as admin-key, user-key, user2-key, super_secret_legacy_key_123!, and SENTINEL_SYSINFO_SECRET are absent from all non-privileged response bodies.",
+      "justification": "Protects against credential and legacy diagnostic exposure across caller classes. The expected value is determined by privilege checks and absence of known secret markers in returned tool content."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "critical",
+      "category": "command_injection_with_control",
+      "description": "ping_team_server must treat target as data. A table-driven test must try at least semicolon, pipe, and ampersand/&& payloads and assert no execution artifacts such as uid= appear in the full response body, then call a benign target and assert the normal output path still works.",
+      "justification": "Prevents shell metacharacters in network-tool input from becoming command execution. The benign target control ensures hardening does not disable legitimate ping-style usage."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "critical",
+      "category": "code_injection_with_arithmetic_control",
+      "description": "calculate_budget must reject execution-oriented expressions containing __import__, exec, os/system, or subprocess without emitting execution artifacts or side-effect markers in any field; the same test must call expression 2+3 and assert result equals 5.",
+      "justification": "Prevents expression-evaluation abuse while preserving ordinary arithmetic behavior. The paired malicious expression and arithmetic control verifies both security and regression behavior in the same result path."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "critical",
+      "category": "ssrf_internal_target_nonfetch",
+      "description": "fetch_project_asset must block internal-address variants such as localhost, 127.0.0.1, 0.0.0.0, [::1], and 169.254.169.254 with content-level proof that SENTINEL_INTERNAL_METADATA_PAYLOAD was not retrieved.",
+      "justification": "Prevents SSRF and internal metadata exfiltration. The expected value is determined by rejecting internal-address variants before retrieving or returning protected internal payloads."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "critical",
+      "category": "module_loading_with_controls",
+      "description": "load_custom_formatter must reject path-style, traversal, and dangerous module names such as ../secrets, /tmp/x.py, os, and subprocess, while safe module json still loads in the same sequence after rejected attempts.",
+      "justification": "Prevents untrusted module names from being interpreted as filesystem paths or dangerous import chains while preserving safe built-in formatter loading."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "auth_bypass_boundary",
+      "description": "Tokens beginning with bypass- or malformed/case-modified token variants must not authenticate to team-gated tools. Tests must assert they cannot get_project/get_team/create_task and that protected project/task fields are absent from response bodies.",
+      "justification": "Ensures malformed, bypass-shaped, or case-modified tokens cannot authenticate to team-gated resources or reveal protected task/project fields."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "cross_team_project_task_boundary",
+      "description": "A user-key caller must not read or mutate beta-team project/task resources, while the same caller can read and work with alpha resources. Tests must use the same captured ids and sentinel markers across get_project, get_team/create_task/update_task, and search_tasks style flows.",
+      "justification": "Enforces team-boundary isolation for project and task tools and prevents cross-team reads or mutations while preserving same-team access."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "major",
+      "category": "comment_visibility_with_same_team_control",
+      "description": "Internal comments must remain hidden from non-admin same-team users while public comments remain visible; cross-team callers must not list the task comments or recover internal body markers. Include same-team public-comment positive control.",
+      "justification": "Protects internal collaboration content from ordinary users and cross-team callers while keeping public same-team discussion flows usable."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "major",
+      "category": "prompt_boundary",
+      "description": "summarize_task must not place custom_instruction before or inside the system boundary. Tests must assert malicious custom_instruction text does not precede the task-summary boundary, while benign instruction text remains represented in the appropriate user-controlled portion.",
+      "justification": "Preserves prompt-boundary integrity by preventing caller-supplied instructions from being placed before or inside the system instruction boundary."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "cross_team_search_isolation",
+      "description": "Create a task with a unique sentinel title under one team, assert the owner team's search_tasks response contains the sentinel, then assert a different team's token using the same query does not contain the sentinel in the raw response body.",
+      "justification": "Prevents task discovery from widening across teams and requires raw-body sentinel checks rather than relying only on result counts."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "major",
+      "category": "delete_verify_dual_surface",
+      "description": "After delete_task on a created task, search_tasks with that task title must not contain the title, and update_task on the same deleted task id must return Not Found or an error in the same test.",
+      "justification": "Ensures deletion propagates across search and update surfaces, proving state integrity after destructive operations."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "major",
+      "category": "same_team_lifecycle_regression",
+      "description": "A same-team non-admin user can create_task, update_task, add_comment, list_task_comments, delete_task, and observe non-error/non-Forbidden response content for each direct tool call.",
+      "justification": "Guards against overblocking by proving ordinary same-team task and comment workflows remain usable after security hardening."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "major",
+      "category": "admin_and_team_regression",
+      "description": "Admin can create_team, get_team, create_project, get_project, and create_task across teams; a regular same-team user can still get_project and search_tasks for their own team's data. Assertions must use captured ids, not only no-exception checks.",
+      "justification": "Guards against overblocking of administrative and same-team project/task setup flows and requires captured-ID assertions for reliability."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "Tests isolate state by using seeded ids intentionally or by creating fresh teams/projects/tasks with unique sentinel markers; tests must not rely on ordering or shared mutated state from another test.",
+      "justification": "Ensures repeatable tests by avoiding hidden dependencies on execution order or shared mutated state."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "nitpicking",
+      "category": "test_quality",
+      "description": "Tests use full-response body assertions, captured IDs, sentinel markers, and small reusable helpers. Exception-only, status-only, broad truthiness-only, or single-tool-without-setup tests do not satisfy this criterion.",
+      "justification": "Promotes robust tests that use full response content, sentinel markers, captured IDs, and helpers instead of shallow exception-only or truthiness checks."
+    }
+  ],
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpicking": 1
+  },
+  "rubric_max_score": 47
+}
