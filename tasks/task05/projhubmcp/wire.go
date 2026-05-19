@@ -6,24 +6,19 @@ import (
 )
 
 func NewServer() *API { return &API{db: seed()} }
-
 func NewHandler() http.Handler {
 	api := NewServer()
 	m := http.NewServeMux()
 	m.HandleFunc("POST /mcp", api.mcpHandler)
 	m.HandleFunc("POST /tools/{name}", api.toolHandler)
-	m.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, 200, map[string]string{"status": "ok"})
-	})
+	m.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) { writeJSON(w, 200, map[string]string{"status": "ok"}) })
 	return recoverer(m)
 }
-
 func (a *API) CallTool(name string, params map[string]any) (any, error) {
 	a.db.mu.Lock()
 	defer a.db.mu.Unlock()
 	return a.callLocked(name, params)
 }
-
 func (a *API) mcpHandler(w http.ResponseWriter, r *http.Request) {
 	var req MCPRequest
 	if r.Body == nil {
@@ -41,7 +36,6 @@ func (a *API) mcpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, MCPResponse{Result: res})
 }
-
 func (a *API) toolHandler(w http.ResponseWriter, r *http.Request) {
 	params, ok := decodeMap(w, r)
 	if !ok {
@@ -54,7 +48,6 @@ func (a *API) toolHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, res)
 }
-
 func (a *API) callLocked(name string, p map[string]any) (any, error) {
 	if p == nil {
 		p = map[string]any{}
@@ -98,7 +91,6 @@ func (a *API) callLocked(name string, p map[string]any) (any, error) {
 		return nil, http.ErrNotSupported
 	}
 }
-
 func recoverer(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {

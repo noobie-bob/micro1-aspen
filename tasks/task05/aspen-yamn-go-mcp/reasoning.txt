@@ -1,15 +1,9 @@
-ProjHub MCP is a cross-tool visibility and unsafe-input task, not a single-tool bug hunt.
-Ordinary callers can cross team boundaries through task/project tools, diagnostic tools,
-legacy tools, search, prompt construction, module loading, outbound fetches, shell-like
-ping targets, and budget-expression evaluation.
+ProjHub MCP is a cross-tool visibility and utility-tool safety task, not a single-tool bug hunt.
+The first calibration was over-hardened: many items were Type A because they combined too many callers, surfaces, or state invariants. This revision keeps the high-signal patterns that worked and rewrites hard or inverted items into smaller, judge-proof chains.
 
-The Go substrate mirrors the successful Go calibration style: seeded state, explicit
-actors/tokens, sentinel markers, central authorization helpers, a generic tool dispatcher,
-and tool outputs that are observable as JSON. Test-authoring is the right shape because
-security properties are visible at the tool boundary.
-
-The rubric decomposition follows prior MCP success patterns: multi-caller diagnostic
-content checks, command/code injection with positive controls, SSRF non-fetch proof,
-module-loading reject-then-safe-control, prompt-boundary assertions, cross-team search
-isolation, deletion propagation, same-team lifecycle regression, repeatability, and
-body-level test quality.
+Design strategy:
+- keep the proven B-style checks: ping payloads with benign control, comment visibility with public control, and full-response assertion quality;
+- convert over-broad regression items into explicit one-flow anti-overblock checks;
+- shorten hard chains into one or two exact tool checks with captured IDs or named sentinels;
+- remove the inverted lifecycle rubric and replace it with simpler product-regression checks;
+- keep only a small number of deliberately hard security checks.

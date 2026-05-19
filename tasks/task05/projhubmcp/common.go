@@ -14,11 +14,9 @@ func writeJSON(w http.ResponseWriter, code int, v any) {
 	w.WriteHeader(code)
 	_ = json.NewEncoder(w).Encode(v)
 }
-
 func problem(w http.ResponseWriter, code int, msg string) {
 	writeJSON(w, code, map[string]any{"error": msg, "status": code})
 }
-
 func decodeMap(w http.ResponseWriter, r *http.Request) (map[string]any, bool) {
 	m := map[string]any{}
 	if r.Body == nil || r.ContentLength == 0 {
@@ -30,21 +28,18 @@ func decodeMap(w http.ResponseWriter, r *http.Request) (map[string]any, bool) {
 	}
 	return m, true
 }
-
 func str(m map[string]any, k string) string {
 	if v, ok := m[k].(string); ok {
 		return v
 	}
 	return ""
 }
-
 func strDefault(m map[string]any, k, d string) string {
 	if v := str(m, k); v != "" {
 		return v
 	}
 	return d
 }
-
 func boolv(m map[string]any, k string) bool {
 	if v, ok := m[k].(bool); ok {
 		return v
@@ -54,7 +49,6 @@ func boolv(m map[string]any, k string) bool {
 	}
 	return false
 }
-
 func listStrings(m map[string]any, k string) []string {
 	out := []string{}
 	switch v := m[k].(type) {
@@ -67,9 +61,6 @@ func listStrings(m map[string]any, k string) []string {
 			}
 		}
 	case string:
-		if strings.TrimSpace(v) == "" {
-			return out
-		}
 		for _, p := range strings.Split(v, ",") {
 			if s := strings.TrimSpace(p); s != "" {
 				out = append(out, s)
@@ -78,7 +69,6 @@ func listStrings(m map[string]any, k string) []string {
 	}
 	return out
 }
-
 func nextID(s *Store, prefix string) string {
 	n := s.next[prefix]
 	if n == 0 {
@@ -87,7 +77,6 @@ func nextID(s *Store, prefix string) string {
 	s.next[prefix] = n + 1
 	return fmt.Sprintf("%s-%d", prefix, n)
 }
-
 func containsAny(s string, needles ...string) bool {
 	low := strings.ToLower(s)
 	for _, n := range needles {
@@ -97,9 +86,7 @@ func containsAny(s string, needles ...string) bool {
 	}
 	return false
 }
-
 func parseBudgetExpression(expr string) (any, bool) {
-	// Tiny benign arithmetic parser so the normal control path is deterministic.
 	e := strings.ReplaceAll(expr, " ", "")
 	parts := strings.Split(e, "+")
 	if len(parts) == 2 {
@@ -111,14 +98,8 @@ func parseBudgetExpression(expr string) (any, bool) {
 	}
 	return nil, false
 }
-
 func isInternalURL(u string) bool {
 	low := strings.ToLower(u)
-	return strings.Contains(low, "localhost") ||
-		strings.Contains(low, "127.0.0.1") ||
-		strings.Contains(low, "0.0.0.0") ||
-		strings.Contains(low, "169.254.169.254") ||
-		strings.Contains(low, "[::1]")
+	return strings.Contains(low, "localhost") || strings.Contains(low, "127.0.0.1") || strings.Contains(low, "0.0.0.0") || strings.Contains(low, "169.254.169.254") || strings.Contains(low, "[::1]")
 }
-
 func envDump() []string { return os.Environ() }

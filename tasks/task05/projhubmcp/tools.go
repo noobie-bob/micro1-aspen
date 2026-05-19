@@ -14,14 +14,12 @@ func (a *API) verifyToken(token string) (Caller, error) {
 	case "user2-key":
 		return Caller{User, "bob-uuid"}, nil
 	default:
-		// Intentional auth-bypass bug carried from the Python FastMCP task.
 		if strings.HasPrefix(token, "bypass-") {
 			return Caller{User, "bypass-uuid"}, nil
 		}
 		return Caller{}, fmt.Errorf("Unauthorized")
 	}
 }
-
 func (a *API) member(userID, teamID string) bool {
 	t, ok := a.db.teams[teamID]
 	if !ok {
@@ -34,15 +32,10 @@ func (a *API) member(userID, teamID string) bool {
 	}
 	return false
 }
-
 func (a *API) projectAllowed(c Caller, p Project) bool {
 	return c.Role == Admin || a.member(c.UserID, p.TeamID)
 }
-
-func (a *API) taskProject(t Task) (Project, bool) {
-	p, ok := a.db.projects[t.ProjectID]
-	return p, ok
-}
+func (a *API) taskProject(t Task) (Project, bool) { p, ok := a.db.projects[t.ProjectID]; return p, ok }
 
 func (a *API) createTeam(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
@@ -57,7 +50,6 @@ func (a *API) createTeam(p map[string]any) (any, error) {
 	a.db.teams[id] = t
 	return t, nil
 }
-
 func (a *API) getTeam(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -72,7 +64,6 @@ func (a *API) getTeam(p map[string]any) (any, error) {
 	}
 	return t, nil
 }
-
 func (a *API) createProject(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -87,7 +78,6 @@ func (a *API) createProject(p map[string]any) (any, error) {
 	a.db.projects[id] = pr
 	return pr, nil
 }
-
 func (a *API) getProject(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -100,10 +90,8 @@ func (a *API) getProject(p map[string]any) (any, error) {
 	if !a.projectAllowed(c, pr) {
 		return nil, fmt.Errorf("Forbidden")
 	}
-	// Intentional response-shaping bug: non-admins receive privileged fields too.
 	return pr, nil
 }
-
 func (a *API) createTask(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -121,7 +109,6 @@ func (a *API) createTask(p map[string]any) (any, error) {
 	a.db.tasks[id] = t
 	return t, nil
 }
-
 func (a *API) updateTask(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -153,7 +140,6 @@ func (a *API) updateTask(p map[string]any) (any, error) {
 	a.db.tasks[t.ID] = t
 	return t, nil
 }
-
 func (a *API) deleteTask(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -173,7 +159,6 @@ func (a *API) deleteTask(p map[string]any) (any, error) {
 	delete(a.db.tasks, t.ID)
 	return map[string]any{"status": "deleted", "id": t.ID}, nil
 }
-
 func (a *API) addComment(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -198,7 +183,6 @@ func (a *API) addComment(p map[string]any) (any, error) {
 	a.db.comments[id] = cm
 	return cm, nil
 }
-
 func (a *API) listTaskComments(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -223,7 +207,6 @@ func (a *API) listTaskComments(p map[string]any) (any, error) {
 	}
 	return out, nil
 }
-
 func (a *API) searchTasks(p map[string]any) (any, error) {
 	c, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -249,12 +232,10 @@ func (a *API) pingTeamServer(p map[string]any) (any, error) {
 	}
 	target := str(p, "target")
 	if containsAny(target, ";", "|", "&&", "`") {
-		// Intentional command-injection artifact.
 		return map[string]any{"output": "PING " + target + "\nuid=1000(user) gid=1000(user)"}, nil
 	}
 	return map[string]any{"output": "PING " + target + " ok"}, nil
 }
-
 func (a *API) calculateBudget(p map[string]any) (any, error) {
 	_, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -265,12 +246,10 @@ func (a *API) calculateBudget(p map[string]any) (any, error) {
 		return map[string]any{"result": v}, nil
 	}
 	if containsAny(expr, "__import__", "exec", "system", "os.", "subprocess") {
-		// Intentional eval-like execution artifact.
 		return map[string]any{"result": "module loaded; uid=1000(user); SENTINEL_EVAL_SIDE_EFFECT"}, nil
 	}
 	return map[string]any{"error": "bad expression"}, nil
 }
-
 func (a *API) fetchProjectAsset(p map[string]any) (any, error) {
 	_, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -282,7 +261,6 @@ func (a *API) fetchProjectAsset(p map[string]any) (any, error) {
 	}
 	return map[string]any{"content": "public asset preview"}, nil
 }
-
 func (a *API) summarizeTask(p map[string]any) (any, error) {
 	_, err := a.verifyToken(str(p, "token"))
 	if err != nil {
@@ -292,18 +270,15 @@ func (a *API) summarizeTask(p map[string]any) (any, error) {
 	if !ok {
 		return nil, fmt.Errorf("Not Found")
 	}
-	// Intentional prompt-boundary bug: custom instruction precedes task request inside the system line.
 	prompt := "System: You are an AI assistant. " + str(p, "custom_instruction") + "\n\nPlease summarize this task: " + t.Title
 	return map[string]any{"prompt": prompt}, nil
 }
-
 func (a *API) loadCustomFormatter(p map[string]any) (any, error) {
 	_, err := a.verifyToken(str(p, "token"))
 	if err != nil {
 		return nil, err
 	}
 	name := str(p, "module_name")
-	// Intentional unsafe loader: path/danger names may look loaded; json is legitimate control.
 	if name == "json" || name == "strings" {
 		return map[string]any{"status": "Loaded " + name, "doc": "standard library module"}, nil
 	}
@@ -312,13 +287,9 @@ func (a *API) loadCustomFormatter(p map[string]any) (any, error) {
 	}
 	return map[string]any{"error": "module not found"}, nil
 }
-
 func (a *API) adminSysinfo(p map[string]any) (any, error) {
-	// Intentional no-token privileged surface.
 	return map[string]any{"os": "linux", "status": "healthy", "secret": a.db.kv["sysinfo_secret"]}, nil
 }
-
 func (a *API) legacyDump(p map[string]any) (any, error) {
-	// Intentional no-token legacy secret surface.
 	return map[string]any{"status": "legacy system active", "keys": map[string]any{"root": a.db.kv["legacy_root"]}}, nil
 }

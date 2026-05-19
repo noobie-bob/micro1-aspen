@@ -5,22 +5,19 @@ import "sync"
 type Role string
 
 const (
-	Admin  Role = "admin"
-	User   Role = "user"
-	Bypass Role = "bypass"
+	Admin Role = "admin"
+	User  Role = "user"
 )
 
 type Caller struct {
 	Role   Role   `json:"role"`
 	UserID string `json:"user_id"`
 }
-
 type Team struct {
 	ID        string   `json:"id"`
 	Name      string   `json:"name"`
 	MemberIDs []string `json:"member_ids"`
 }
-
 type Project struct {
 	ID              string `json:"id"`
 	TeamID          string `json:"team_id"`
@@ -29,7 +26,6 @@ type Project struct {
 	AdminConfig     string `json:"admin_config,omitempty"`
 	InternalMetrics string `json:"internal_metrics,omitempty"`
 }
-
 type Task struct {
 	ID               string `json:"id"`
 	ProjectID        string `json:"project_id"`
@@ -39,7 +35,6 @@ type Task struct {
 	ReviewerNotes    string `json:"reviewer_notes,omitempty"`
 	InternalPriority string `json:"internal_priority,omitempty"`
 }
-
 type Comment struct {
 	ID       string `json:"id"`
 	TaskID   string `json:"task_id"`
@@ -47,7 +42,6 @@ type Comment struct {
 	Internal bool   `json:"internal"`
 	Author   string `json:"author"`
 }
-
 type Store struct {
 	mu       sync.Mutex
 	teams    map[string]Team
@@ -57,14 +51,11 @@ type Store struct {
 	kv       map[string]string
 	next     map[string]int
 }
-
 type API struct{ db *Store }
-
 type MCPRequest struct {
 	Method string         `json:"method"`
 	Params map[string]any `json:"params"`
 }
-
 type MCPResponse struct {
 	Result any `json:"result,omitempty"`
 	Error  any `json:"error,omitempty"`
