@@ -3,7 +3,7 @@
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
-    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task04",
     "base_commit": "407df11a06a2954877886263313dd3136a9ce553",
     "image_name": "micro1ai/aspen-yamn-projecthub-go:v1",
     "image_digest": "sha256:d6a30a669d685d35ab5041fa52e35330fd66d470d723a2ab29ea81b68f4ac0d9407df11a0",
