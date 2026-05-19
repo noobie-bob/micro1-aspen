@@ -40,106 +40,92 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "ping_team_server must treat target as plain data. In one test, call it with at least two shell-style payloads such as semicolon, pipe, ampersand/&&, or backtick inputs, and assert the serialized tool responses contain no execution artifacts such as uid=, gid=, whoami, or command output. In the same test, call any benign target such as 127.0.0.1, example.com, or build.example.com and assert a normal output field or ok-style output is present.",
-      "justification": "Prevents shell-style input from becoming command execution while preserving benign ping behavior."
+      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case.",
+      "justification": "Prevents command injection while allowing safe usage."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
-      "category": "comment_visibility_with_public_control",
-      "description": "Internal comments must stay hidden from non-admin users while public comments remain visible. Call list_task_comments on task-alpha as user-key, serialize the returned value or error response to JSON, assert the alpha public comment text appears, and assert SENTINEL_INTERNAL_COMMENT_ALPHA is absent. Also verify that a user-key attempt involving task-beta does not reveal SENTINEL_INTERNAL_COMMENT_BETA, either by returning Forbidden/error or by returning serialized content without that marker.",
-      "justification": "Protects internal comment content while preserving ordinary same-team comment visibility."
+      "category": "comment_visibility",
+      "description": "Ensure internal comments are hidden while public comments remain visible for user-key.",
+      "justification": "Protects sensitive internal comment data."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
-      "category": "response_shaping_with_admin_control",
-      "description": "Non-admin project reads must not expose privileged project markers, while admin reads still can. Call get_project for project-alpha as user-key and assert the serialized response does not contain SENTINEL_ADMIN_CONFIG_ALPHA or SENTINEL_INTERNAL_METRICS_ALPHA. Then call get_project for the same project as admin-key and assert at least one of those privileged markers is present.",
-      "justification": "Ensures privileged project metadata is redacted for ordinary users but remains available to admins."
+      "category": "response_shaping",
+      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can.",
+      "justification": "Ensures sensitive fields are properly restricted."
     },
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "calculate_budget_combined_check",
-      "description": "In a single test, call calculate_budget with one dangerous expression and one arithmetic expression, and assert no execution artifacts appear and the arithmetic result is correct.",
-      "justification": "Prevents unsafe expression execution while ensuring correct arithmetic behavior."
+      "category": "initialize_connection",
+      "description": "Initialize the MCP server using NewServer and assert it is not nil and does not error.",
+      "justification": "Ensures the MCP server initializes correctly."
     },
     {
       "id": "RUB-005",
       "severity": "major",
-      "category": "module_loading_reject_then_safe_control",
-      "description": "load_custom_formatter must reject dangerous names while preserving safe formatter loading. In one test, call it with at least one path-style name such as ../secrets, ../../etc/passwd, /tmp/x.py, or /etc/shadow and at least one dangerous module-style name such as os or subprocess; assert the dangerous serialized responses do not report a Loaded status. Then call it with json and assert Loaded json appears.",
-      "justification": "Prevents unsafe formatter/module loading while preserving safe built-in formatter loading."
+      "category": "module_loading",
+      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted.",
+      "justification": "Prevents unsafe module loading."
     },
     {
       "id": "RUB-006",
       "severity": "major",
-      "category": "cross_team_project_boundary_seeded",
-      "description": "A user-key caller must not read beta project data and must still read alpha project data. Call get_project for project-beta as user-key and assert the serialized response is an error/Forbidden or otherwise does not contain SENTINEL_ADMIN_CONFIG_BETA. Then call get_project for project-alpha as user-key and assert project-alpha or Apollo appears.",
-      "justification": "Enforces project team boundaries while preserving same-team project access."
+      "category": "project_boundary",
+      "description": "Ensure user-key cannot access project-beta but can access project-alpha.",
+      "justification": "Enforces access control boundaries."
     },
     {
       "id": "RUB-007",
       "severity": "major",
-      "category": "same_team_task_update",
-      "description": "Create a task under project-alpha, update it using the returned task_id, and assert the updated title is reflected.",
-      "justification": "Ensures valid same-team task updates are not blocked."
+      "category": "task_update_boundary",
+      "description": "Ensure user-key cannot update task-beta or see beta reviewer markers.",
+      "justification": "Prevents cross-team task mutation and metadata exposure."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "same_team_search",
-      "description": "Create a task with a unique title and verify search_tasks returns it for the same user.",
-      "justification": "Ensures same-team task search works as expected."
+      "category": "delete_search_consistency",
+      "description": "Ensure a deleted task no longer appears in search results for its title.",
+      "justification": "Ensures deleted tasks are removed from discovery."
     },
     {
       "id": "RUB-009",
       "severity": "major",
-      "category": "delete_task_basic",
-      "description": "Create a task, delete it using its task_id, and assert the returned deleted ID matches.",
-      "justification": "Ensures task deletion behavior is correct."
+      "category": "search_boundary",
+      "description": "Ensure user-key search can find alpha tasks but user2-key cannot find the same alpha task query.",
+      "justification": "Ensures task search results stay within team boundaries."
     },
     {
       "id": "RUB-010",
       "severity": "major",
-      "category": "task_update_flow",
-      "description": "Create a task, capture task_id, update that same task_id, and assert the updated value appears.",
-      "justification": "Validates a simple task update workflow."
+      "category": "asset_fetch",
+      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content.",
+      "justification": "Prevents sensitive metadata exposure."
     },
     {
       "id": "RUB-011",
-      "severity": "major",
-      "category": "admin_create_retrieve_project",
-      "description": "Admin project setup must remain usable in one flow. As admin-key, create a team that includes alice-uuid, capture the returned team ID, create a project under that same team ID, capture project_id, then call get_project for that same project_id and assert the serialized response contains the captured project ID and created project name.",
-      "justification": "Ensures administrative team and project setup remains functional after hardening."
+      "severity": "minor",
+      "category": "diagnostic_non_leak",
+      "description": "Ensure diagnostic endpoints do not expose sensitive secrets.",
+      "justification": "Prevents diagnostic data leaks."
     },
     {
       "id": "RUB-012",
-      "severity": "major",
-      "category": "asset_fetch_internal_with_public_control",
-      "description": "fetch_project_asset must not return internal metadata for internal-looking URLs and must still handle a benign public-looking URL. Call it with at least one internal-address URL such as localhost, 127.0.0.1, 169.254.169.254, 0.0.0.0, or [::1] and assert SENTINEL_INTERNAL_METADATA_PAYLOAD is absent. Then call it with a benign public-looking URL and assert a content field or public asset preview is returned.",
-      "justification": "Prevents internal asset-fetch exposure while preserving benign public asset retrieval."
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "Ensure tests are independent and reproducible.",
+      "justification": "Ensures stable test execution."
     },
     {
       "id": "RUB-013",
-      "severity": "minor",
-      "category": "diagnostic_secret_nonleak_simple",
-      "description": "Non-admin or no-token diagnostic calls must not reveal obvious privileged secrets. Call admin_sysinfo and legacy_dump through the normal tool path as user-key or without token parameters and assert serialized responses do not contain SENTINEL_SYSINFO_SECRET or super_secret_legacy_key_123!.",
-      "justification": "Prevents diagnostic and legacy tools from leaking privileged secrets."
-    },
-    {
-      "id": "RUB-014",
-      "severity": "minor",
-      "category": "repeatability",
-      "description": "Tests isolate state by using seeded IDs intentionally or by creating fresh resources with unique markers. Tests must not depend on ordering or state mutated by another test.",
-      "justification": "Ensures the submitted test suite is repeatable and order-independent."
-    },
-    {
-      "id": "RUB-015",
       "severity": "nitpicking",
       "category": "test_quality",
-      "description": "Tests use serialized full-response assertions, captured IDs, sentinel markers, and small reusable helpers. Exception-only, status-only, broad truthiness-only, or single-tool-without-setup tests do not satisfy this criterion.",
-      "justification": "Encourages robust tests with explicit content, state, and identity assertions."
+      "description": "Ensure tests use proper assertions and captured values.",
+      "justification": "Encourages good testing practices."
     }
   ],
   "rubric_severity_weights": {
@@ -148,5 +134,5 @@
     "minor": 2,
     "nitpicking": 1
   },
-  "rubric_max_score": 44
+  "rubric_max_score": 38
 }
