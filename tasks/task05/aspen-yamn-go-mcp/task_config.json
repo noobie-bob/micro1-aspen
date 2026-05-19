@@ -10,7 +10,7 @@
     "repo_dir": "/repo",
     "language": "go"
   },
-  "title": "Author rebalanced Go tests for ProjHub MCP security and product-regression behavior",
+  "title": "Author simple Go unit tests for ProjHub MCP security and product-regression behavior",
   "track": "Realm Aspen",
   "cwe": [
     "CWE-200",
@@ -40,106 +40,106 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "ping_team_server must treat target as plain data. In one table-driven test, call it with semicolon, pipe, and ampersand-style payloads and assert the full response body contains no execution artifacts such as uid= or gid=. Then call a benign target such as 127.0.0.1 and assert the normal output field is present.",
-      "justification": "Kept from the strongest B cluster: Opus consistently preserves multi-payload negative checks plus benign-control assertions better than Qwen."
+      "description": "ping_team_server must treat target as plain data. In one test, call it with at least two shell-style payloads such as semicolon, pipe, ampersand/&&, or backtick inputs, and assert the serialized tool responses contain no execution artifacts such as uid=, gid=, whoami, or command output. In the same test, call any benign target such as 127.0.0.1, example.com, or build.example.com and assert a normal output field or ok-style output is present.",
+      "justification": "Prevents shell-style input from becoming command execution while preserving benign ping behavior."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility_with_public_control",
-      "description": "Internal comment bodies must stay hidden from non-admin same-team users while public comments remain visible. Use task-alpha: list comments as user-key, assert alpha public comment text appears, and assert SENTINEL_INTERNAL_COMMENT_ALPHA is absent from the raw response body. Also call list_task_comments on task-beta as user-key and assert the response does not contain SENTINEL_INTERNAL_COMMENT_BETA.",
-      "justification": "Best observed B item in the failed run: Opus caught the positive public-control plus internal-marker denial pattern while Qwen missed it."
+      "description": "Internal comments must stay hidden from non-admin users while public comments remain visible. Call list_task_comments on task-alpha as user-key, serialize the returned value or error response to JSON, assert the alpha public comment text appears, and assert SENTINEL_INTERNAL_COMMENT_ALPHA is absent. Also verify that a user-key attempt involving task-beta does not reveal SENTINEL_INTERNAL_COMMENT_BETA, either by returning Forbidden/error or by returning serialized content without that marker.",
+      "justification": "Protects internal comment content while preserving ordinary same-team comment visibility."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "response_shaping_with_admin_control",
-      "description": "Non-admin project reads must not expose privileged project markers, while admin reads still can. Call get_project for project-alpha as user-key and assert SENTINEL_ADMIN_CONFIG_ALPHA and SENTINEL_INTERNAL_METRICS_ALPHA are absent from the raw response body; then call get_project for the same project as admin-key and assert at least one of those markers is present.",
-      "justification": "A close variant of the successful Go response-shaping pattern, narrowed to one project and one positive admin control to avoid the previous over-broad cross-surface failure."
+      "description": "Non-admin project reads must not expose privileged project markers, while admin reads still can. Call get_project for project-alpha as user-key and assert the serialized response does not contain SENTINEL_ADMIN_CONFIG_ALPHA or SENTINEL_INTERNAL_METRICS_ALPHA. Then call get_project for the same project as admin-key and assert at least one of those privileged markers is present.",
+      "justification": "Ensures privileged project metadata is redacted for ordinary users but remains available to admins."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "code_injection_with_arithmetic_control",
-      "description": "calculate_budget must not emit execution artifacts for explicit dangerous expressions. Call it with an expression containing __import__ or exec and assert the full response string contains no uid=, module loaded, or SENTINEL_EVAL_SIDE_EFFECT. In the same test, call calculate_budget with 2+3 and assert the result value is 5.",
-      "justification": "Previous version was Type A; this one keeps the proven malicious-plus-arithmetic-control structure but names exact payload markers and narrows the check."
+      "description": "calculate_budget must not emit execution artifacts for dangerous expressions. In one test, call it with an expression containing __import__, exec, system, os, or subprocess and assert the serialized response contains no uid=, module loaded, or SENTINEL_EVAL_SIDE_EFFECT. In the same test, call any simple arithmetic expression such as 2+3, 1+2, 10+32, or 100+200 and assert the returned result equals the expected value.",
+      "justification": "Blocks dangerous expression execution while preserving legitimate arithmetic calculation."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading_reject_then_safe_control",
-      "description": "load_custom_formatter must reject dangerous module names while preserving safe formatter loading. Call it with ../secrets and os and assert neither response contains a Loaded status. Then call it with json and assert the response contains Loaded json.",
-      "justification": "Previous module-loading item was too broad. This version uses two dangerous examples plus one safe control, matching the known reject-then-safe-control success pattern."
+      "description": "load_custom_formatter must reject dangerous names while preserving safe formatter loading. In one test, call it with at least one path-style name such as ../secrets, ../../etc/passwd, /tmp/x.py, or /etc/shadow and at least one dangerous module-style name such as os or subprocess; assert the dangerous serialized responses do not report a Loaded status. Then call it with json and assert Loaded json appears.",
+      "justification": "Prevents unsafe formatter/module loading while preserving safe built-in formatter loading."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "cross_team_project_boundary_seeded",
-      "description": "A user-key caller must not read beta project data and must still read alpha project data. Call get_project for project-beta as user-key and assert the response is an error or Forbidden and does not contain SENTINEL_ADMIN_CONFIG_BETA. Then call get_project for project-alpha as user-key and assert project-alpha or Apollo appears.",
-      "justification": "Previous boundary chain was too broad. This shrinks it to seeded project IDs plus one same-boundary positive control, making it likely D or weak B."
+      "description": "A user-key caller must not read beta project data and must still read alpha project data. Call get_project for project-beta as user-key and assert the serialized response is an error/Forbidden or otherwise does not contain SENTINEL_ADMIN_CONFIG_BETA. Then call get_project for project-alpha as user-key and assert project-alpha or Apollo appears.",
+      "justification": "Enforces project team boundaries while preserving same-team project access."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "cross_team_task_update_denied_with_marker_absence",
-      "description": "A user-key caller must not mutate beta-team tasks. Call update_task on task-beta as user-key with a unique title such as SHOULD_NOT_WRITE_BETA and assert the response is an error or Forbidden and does not contain SHOULD_NOT_WRITE_BETA or SENTINEL_REVIEWER_BETA. Then search_tasks as user2-key for Migrate DB and assert the beta task is still discoverable by its owner team.",
-      "justification": "A shortened mutation-integrity item: one denied update plus one owner-side positive control instead of a full multi-field readback chain."
+      "description": "A user-key caller must not mutate beta-team tasks. Call update_task on task-beta as user-key with a unique title such as SHOULD_NOT_WRITE_BETA and assert the serialized response is an error/Forbidden or does not contain the injected title. Also assert the response does not expose SENTINEL_REVIEWER_BETA.",
+      "justification": "Prevents cross-team task mutation and restricted task metadata exposure."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "cross_team_search_isolation_seeded_query",
-      "description": "Search isolation must hold across teams using the same query. Call search_tasks as user-key with q set to SENTINEL_ALPHA_TASK and assert that marker appears. Then call search_tasks as user2-key with the same q and assert SENTINEL_ALPHA_TASK is absent from the raw response body.",
-      "justification": "Previous create-and-search chain was Type A. This uses seeded markers and the same query across callers to make the evidence simpler and judge-proof."
+      "category": "cross_team_search_isolation_same_query",
+      "description": "Search isolation must hold across teams using the same query. Use either the seeded SENTINEL_ALPHA_TASK marker or create a fresh unique alpha task title. Search as user-key and assert the marker/title appears in the serialized response. Search as user2-key with the exact same query and assert that same marker/title is absent.",
+      "justification": "Ensures task search results remain scoped to the caller's team."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "delete_then_update_not_found",
-      "description": "Deletion must affect later tool calls for the same task ID. Create a task under project-alpha as user-key, capture the returned task ID, delete that same ID, then call update_task on that same ID and assert the response contains an error or Not Found.",
-      "justification": "Previous delete-search-update dual-surface item was too hard. This keeps state propagation but drops search-empty to become a simpler regression/state check."
+      "description": "Deletion must affect later tool calls for the same task ID. Create a task under project-alpha as user-key, capture the returned task ID, delete that same ID, then call update_task on that same ID and assert the serialized response contains an error or Not Found.",
+      "justification": "Verifies deleted tasks cannot be updated through later tool calls."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "same_team_task_comment_lifecycle",
-      "description": "A same-team non-admin user can complete a short task/comment lifecycle. As user-key, create a task under project-alpha, capture task_id, update that same task, add a non-internal comment to that task, and list comments for the same task. Assert each response is non-error and the comment body appears in the list response.",
-      "justification": "Replaces the inverted Type C lifecycle item with a shorter captured-ID chain that should become a stable anti-overblock floor item."
+      "description": "A same-team non-admin user can complete a short task/comment lifecycle in one flow. As user-key, create a task under project-alpha, capture task_id, update that same task_id, add a non-internal comment to that same task_id, and list comments for that same task_id. Assert each step is non-error and the added comment body appears in the serialized list response.",
+      "justification": "Protects legitimate same-team task and comment workflows from overblocking."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "admin_create_retrieve_project",
-      "description": "Admin project setup must remain usable. As admin-key, create a team with member alice-uuid, create a project under the returned team ID, capture project_id, then get_project for that same project_id and assert the returned body contains the captured project ID and created project name.",
-      "justification": "Previous admin regression was too broad. This uses direct create-and-retrieve wording, based on judge feedback from earlier failures."
+      "description": "Admin project setup must remain usable in one flow. As admin-key, create a team that includes alice-uuid, capture the returned team ID, create a project under that same team ID, capture project_id, then call get_project for that same project_id and assert the serialized response contains the captured project ID and created project name.",
+      "justification": "Ensures administrative team and project setup remains functional after hardening."
     },
     {
       "id": "RUB-012",
       "severity": "major",
-      "category": "asset_fetch_internal_one_variant_with_public_control",
-      "description": "fetch_project_asset must not return internal metadata for an internal address and must still handle a benign public URL. Call it with http://127.0.0.1/latest/meta-data and assert SENTINEL_INTERNAL_METADATA_PAYLOAD is absent. Then call it with https://example.com/public.txt and assert a content field or public asset preview is returned.",
-      "justification": "Previous SSRF item was Type D when broad, but this one is kept as a simple stabilizer with a public positive control."
+      "category": "asset_fetch_internal_with_public_control",
+      "description": "fetch_project_asset must not return internal metadata for internal-looking URLs and must still handle a benign public-looking URL. Call it with at least one internal-address URL such as localhost, 127.0.0.1, 169.254.169.254, 0.0.0.0, or [::1] and assert SENTINEL_INTERNAL_METADATA_PAYLOAD is absent. Then call it with a benign public-looking URL and assert a content field or public asset preview is returned.",
+      "justification": "Prevents internal asset-fetch exposure while preserving benign public asset retrieval."
     },
     {
       "id": "RUB-013",
       "severity": "minor",
       "category": "diagnostic_secret_nonleak_simple",
-      "description": "Non-admin callers must not receive obvious privileged diagnostic secrets. Call admin_sysinfo and legacy_dump through the normal tool path as user-key or with no token parameters and assert the raw responses do not contain SENTINEL_SYSINFO_SECRET or super_secret_legacy_key_123!.",
-      "justification": "The earlier multi-caller diagnostic item was Type A. This is a deliberately smaller floor or weak-B diagnostic non-leak item."
+      "description": "Non-admin or no-token diagnostic calls must not reveal obvious privileged secrets. Call admin_sysinfo and legacy_dump through the normal tool path as user-key or without token parameters and assert serialized responses do not contain SENTINEL_SYSINFO_SECRET or super_secret_legacy_key_123!.",
+      "justification": "Prevents diagnostic and legacy tools from leaking privileged secrets."
     },
     {
       "id": "RUB-014",
       "severity": "minor",
       "category": "repeatability",
       "description": "Tests isolate state by using seeded IDs intentionally or by creating fresh resources with unique markers. Tests must not depend on ordering or state mutated by another test.",
-      "justification": "Repeatability remained a stable D item and should stay as denominator support."
+      "justification": "Ensures the submitted test suite is repeatable and order-independent."
     },
     {
       "id": "RUB-015",
       "severity": "nitpicking",
       "category": "test_quality",
-      "description": "Tests use full-response body assertions, captured IDs, sentinel markers, and small reusable helpers. Exception-only, status-only, broad truthiness-only, or single-tool-without-setup tests do not satisfy this criterion.",
-      "justification": "Kept as a useful B-leaning quality discriminator; Opus more often preserves captured-ID and raw-body checks."
+      "description": "Tests use serialized full-response assertions, captured IDs, sentinel markers, and small reusable helpers. Exception-only, status-only, broad truthiness-only, or single-tool-without-setup tests do not satisfy this criterion.",
+      "justification": "Encourages robust tests with explicit content, state, and identity assertions."
     }
   ],
   "rubric_severity_weights": {

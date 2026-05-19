@@ -1,9 +1,8 @@
-ProjHub MCP is a cross-tool visibility and utility-tool safety task, not a single-tool bug hunt.
-The first calibration was over-hardened: many items were Type A because they combined too many callers, surfaces, or state invariants. This revision keeps the high-signal patterns that worked and rewrites hard or inverted items into smaller, judge-proof chains.
+ProjHub MCP is a cross-tool visibility and utility-tool safety task. Prior calibration showed models wrote semantically close tests but missed overly exact literal values. This revision asks for simple unit tests with NewServer and CallTool, and the rubric accepts equivalent payloads, benign controls, and fresh unique markers where appropriate.
 
 Design strategy:
-- keep the proven B-style checks: ping payloads with benign control, comment visibility with public control, and full-response assertion quality;
-- convert over-broad regression items into explicit one-flow anti-overblock checks;
-- shorten hard chains into one or two exact tool checks with captured IDs or named sentinels;
-- remove the inverted lifecycle rubric and replace it with simpler product-regression checks;
-- keep only a small number of deliberately hard security checks.
+- keep B-style patterns but avoid brittle exact strings;
+- say serialized tool response instead of raw HTTP body;
+- make anti-overblock flows short one-flow unit tests;
+- accept any reasonable benign arithmetic or public URL control;
+- keep seeded sentinels for stable content assertions.
