@@ -4,9 +4,9 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task05",
-    "base_commit": "dcadf9c82db03648d443f93a662cbe6f35725d8a",
+    "base_commit": "dd0b7a2da480d59f79c5e98484c54e1049164400",
     "image_name": "micro1ai/aspen-mcp-go:v2",
-    "image_digest": "sha256:placeholder",
+    "image_digest": "sha256:563f22421cc0ff66c1dc68580c881bba375e3a36cfb8ebb8cddb750cfdd1dc6d",
     "repo_dir": "/repo",
     "language": "go"
   },
