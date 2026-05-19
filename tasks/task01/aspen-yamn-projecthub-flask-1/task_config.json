@@ -1,17 +1,31 @@
 {
-  "instance_id": "aspen__projhub_balanced_frontier_015",
+  "instance_id": "aspen__projhub_flask_visibility",
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
-    "base_commit": "39fe1097a415d7fd6f179e8c2e8c82d43b16177e",
+    "base_commit": "84d3b0592d966649c6285aa96a6d9ad405fd1765",
     "image_name": "micro1ai/aspen-yamn-projecthub-flask:v1",
-    "image_digest": "sha256:8144917db167e14919db195f1d276d304f99b118f4ff4772071d00b938fa04bb",
+    "image_digest": "sha256:c776f70874d6e940f2ea91b847c13add3408edf1f1d42562762d21b3815ccf59",
     "repo_dir": "/repo",
     "language": "python"
   },
-  "title": "Author balanced security and regression tests for ProjHub multi-surface behavior",
+  "title": "Author tests for ProjectHub visibility regressions and unsafe auxiliary surfaces",
   "track": "Realm Aspen",
+  "cwe": [
+    "CWE-200",
+    "CWE-209",
+    "CWE-22",
+    "CWE-78",
+    "CWE-89",
+    "CWE-284",
+    "CWE-328",
+    "CWE-639",
+    "CWE-862",
+    "CWE-863",
+    "CWE-918",
+    "CWE-915"
+  ],
   "severity": "critical",
   "behavioral_prompt": "prompt.txt",
   "rubric_only": true,
@@ -21,103 +35,118 @@
     ],
     "presentation": "git_diff"
   },
-  "rubric_max_score": 45,
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "critical",
+      "category": "delegated_scope_hard_rung",
+      "description": "Delegated/share scope confinement: create a share for beta_project as an authorized beta/admin caller, accept it as the target user, and prove that accepted access is confined to that same beta project. The test must also prove the seeded expired/unaccepted share does not grant beta access and that the accepted beta share cannot be replayed to alpha_project or alpha_task. Use captured share_id/token and seeded_ids['expired_share']; include a same-team positive control.",
+      "justification": "valid delegated state works only within explicit scope; expired/unaccepted/replayed state must fail."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "critical",
+      "category": "unsafe_inputs_hard_rung",
+      "description": "Table-driven unsafe-input chain with benign controls across four surfaces: project search, task search, report generation, webhook notification, and attachment retrieval. For each surface include one benign request that succeeds and one crafted request that must not leak SENTINEL_* markers, command-output artifacts such as uid=, internal webhook targets such as localhost/127.0.0.1/169.254.169.254, or SENTINEL_ROOT_SECRET from traversal-style paths.",
+      "justification": "multi-surface crafted-input testing with positive controls and content-level non-leak assertions."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "critical",
+      "category": "error_and_token_hard_rung",
+      "description": "A combined hard-rung test verifies two properties: first, malformed/not-found/forced-error responses must not contain Traceback, projhub/app.py, filesystem-looking paths, runtime version strings, sys.path-like content, or executable command text; second, repeated share-link issuance must produce usable non-empty links that are not simple echoes or substring embeddings of the stable project id or user id and do not expose privileged sentinels.",
+      "justification": "Keeps the known hard error-sanitization and token-property patterns, but combines them so they act as a deliberate top-end discriminator rather than many accidental failures."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "major",
+      "category": "boundary_journey",
+      "description": "Boundary journey across project and task read surfaces: using seeded_ids or fresh resources, assert bearer user-key can list/retrieve alpha_project and alpha_task but cannot enumerate, retrieve, or body-leak beta_project or beta_task. Required anchors: use the same beta_project and beta_task identifiers across GET /projects, GET /projects/{id}, GET /tasks/{id}, and GET /projects/{id}/tasks; raw bodies must not contain SENTINEL_ADMIN_CONFIG_BETA or SENTINEL_REVIEWER_NOTES_BETA.",
+      "justification": "Opus-favouring journey: same IDs across multiple endpoints plus positive same-boundary controls."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "major",
+      "category": "response_shaping",
+      "description": "Cross-surface response shaping: seed or use one project with admin_config/internal_metrics/budget sentinel markers. For a non-admin same-team caller, assert those exact markers are absent from GET /projects/{id}, POST /projects/{id}/share, GET /projects/{id}/export, and search response bodies. In the same test, use admin-key on the same project id and assert the privileged markers remain visible to admin.",
+      "justification": "Validated Type-B pattern: primary plus secondary/package views, same marker, non-admin absence, admin positive control."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "operational_surfaces",
+      "description": "Operational surface non-leak chain: call /debug/users, /debug/config, /debug/env, /debug/dump, /api/v1/projects, /api/v1/tasks, /ops/replay, and /ops/cursor/<id> as both unauthenticated and bearer user-key callers. For every non-privileged response body, assert known tokens and sentinels are absent: admin-key, user-key, user2-key, SENTINEL_JWT_SECRET, SENTINEL_DB_PASSWORD, SENTINEL_AWS_TOKEN, and SENTINEL_ROOT_SECRET. Status-code-only checks do not satisfy this item.",
+      "justification": "Validated Flask pattern: multi-caller operational denial/sanitization with raw-body token and secret absence."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "mutation_integrity",
+      "description": "Project mutation integrity with authoritative readback: have bearer user-key attempt to PATCH beta_project to rewrite owner_id, team_id, admin_config.marker, internal_metrics.marker, and budget_allocation. Then read the same beta_project as admin-key and assert the original owner/team and SENTINEL_ADMIN_CONFIG_BETA/SENTINEL_INTERNAL_METRICS_BETA markers remain unchanged.",
+      "justification": "Validated mutation-integrity pattern: forbidden mutation attempt plus admin readback unchanged."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "major",
+      "category": "task_mutation_integrity",
+      "description": "Task mutation integrity with authoritative readback: have bearer user-key attempt to PATCH beta_task to rewrite status, project_id, team_id, assigned_to, internal_priority, and reviewer_notes. Then read the same beta_task as admin-key and assert the original boundary fields and SENTINEL_REVIEWER_NOTES_BETA/internal_priority values remain unchanged.",
+      "justification": "Validated task-state analogue of cross-team mutation denied with owner/admin readback."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "major",
+      "category": "admin_create_retrieve_regression",
+      "description": "Anti-overblock: with admin-key, create a fresh team, then create a fresh project under that exact team and capture project_id. Then GET /projects/{project_id} with admin-key and assert HTTP 200, returned id equals captured project_id, returned team_id equals the created team id, and the created name matches. This must be a direct create-and-retrieve assertion, not only fixture setup.",
+      "justification": "Addresses prior judge feedback where broad admin project coverage missed direct create+retrieve proof."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "same_task_identity_regression",
+      "description": "Anti-overblock: create a task in a same-team project as user-key and capture task_id. Assert GET /tasks/{task_id} returns that exact id, then GET /projects/{project_id}/tasks returns a JSON array containing an object with the same captured task_id. Then POST /tasks/{task_id}/assign and POST /tasks/{task_id}/transition to done and assert the same id/status are returned.",
+      "justification": "Addresses prior judge feedback where endpoints were covered separately but same-task identity was not explicitly joined."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "major",
+      "category": "same_boundary_action_regression",
+      "description": "Anti-overblock: for a same-team project, bearer user-key can call POST /projects/{id}/share, GET /projects/{id}/export, POST /projects/{id}/duplicate, POST /projects/{id}/snapshot, POST /projects/{id}/generate-report with benign input, and POST /projects/{id}/share-link. Assert each returns 2xx/201 and each response contains a stable project id, action field, token, URL, or generated status appropriate to that endpoint.",
+      "justification": "Keeps legitimate action endpoints usable after hardening; modeled after successful same-boundary action guards."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "major",
+      "category": "admin_visibility_regression",
+      "description": "Anti-overblock: admin-key can list projects across both alpha and beta teams and retrieve each seeded project. The admin responses must include the corresponding privileged sentinels SENTINEL_ADMIN_CONFIG_ALPHA and SENTINEL_ADMIN_CONFIG_BETA on the correct project objects.",
+      "justification": "Prevents overblocking admin visibility and preserves privileged-field visibility for admin."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "minor",
+      "category": "same_boundary_collaboration_regression",
+      "description": "Anti-overblock: a same-team participant can add a non-internal comment to their own task, list comments for that task, upload a benign attachment, and retrieve that same attachment by path. Assertions must use the captured comment id or attachment path/body from the same test.",
+      "justification": "Simple D-style collaboration regression guard to lift stable model pass rates without weakening security rungs."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "Tests isolate state by intentionally using seeded_ids or by creating fresh resources with unique sentinel markers. Tests must not depend on mutations or data created by another test, and broad truthiness over non-unique data is insufficient.",
+      "justification": "Repeatability guard for seeded in-memory applications."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "nitpicking",
+      "category": "test_quality",
+      "description": "Tests use explicit body-level assertions with captured IDs and sentinel markers, plus small reusable setup/helper functions where useful. Status-code-only, exception-only, broad truthiness-only, or unrelated endpoint-coverage tests do not satisfy this criterion.",
+      "justification": "Validated quality discriminator: Opus more consistently keeps captured-ID and sentinel assertions."
+    }
+  ],
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
     "minor": 2,
     "nitpicking": 1
   },
-  "ground_truth_issues": [
-    {
-      "id": "RUB-001",
-      "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "GET /debug/env without Authorization returns HTTP 200 and response contains at least one environment variable."
-    },
-    {
-      "id": "RUB-002",
-      "severity": "major",
-      "category": "broken_access_control",
-      "description": "GET /projects with user-key returns projects belonging to multiple teams."
-    },
-    {
-      "id": "RUB-003",
-      "severity": "major",
-      "category": "injection",
-      "description": "GET /search/projects?q=' OR '1'='1 returns more results than a benign query."
-    },
-    {
-      "id": "RUB-004",
-      "severity": "major",
-      "category": "sensitive_data_exposure",
-      "description": "Call GET /debug/users with no Authorization and with user-key. Assert both return HTTP 200 and responses contain api_token fields."
-    },
-    {
-      "id": "RUB-005",
-      "severity": "critical",
-      "category": "injection",
-      "description": "Call GET /search/projects with a benign query and an injection payload and assert that the injection returns a larger result set."
-    },
-    {
-      "id": "RUB-006",
-      "severity": "major",
-      "category": "state_integrity",
-      "description": "PATCH a project using user-key, then GET the same project and assert the updated field persists."
-    },
-    {
-      "id": "RUB-007",
-      "severity": "major",
-      "category": "cross_surface",
-      "description": "Retrieve a project via GET /projects/{id} and via POST /projects/{id}/share and assert admin_config is present in both responses."
-    },
-    {
-      "id": "RUB-008",
-      "severity": "major",
-      "category": "visibility",
-      "description": "Access a task using GET /tasks/{id} and GET /projects/{id}/tasks and assert the same task appears in both responses."
-    },
-    {
-      "id": "RUB-009",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "Admin can create and list a team successfully."
-    },
-    {
-      "id": "RUB-010",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "Admin can create and retrieve a project under a team."
-    },
-    {
-      "id": "RUB-011",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "User can create a task within their team project."
-    },
-    {
-      "id": "RUB-012",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "GET /projects returns HTTP 200 and a JSON array."
-    },
-    {
-      "id": "RUB-013",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "POST /projects/{id}/share returns share_id and a URL starting with /shared/."
-    },
-    {
-      "id": "RUB-014",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "POST /tasks/{id}/assign updates assigned_to field."
-    },
-    {
-      "id": "RUB-015",
-      "severity": "major",
-      "category": "regression_guard",
-      "description": "POST /tasks/{id}/transition updates status to a valid state."
-    }
-  ]
+  "rubric_max_score": 44
 }

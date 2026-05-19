@@ -1,9 +1,4 @@
-"""Shared test fixtures for ProjHub.
-
-Provides Flask test client, auth headers for three roles (admin, user alice,
-user bob), and a helper to set up the standard two-team topology used in
-all smoke and exfiltration tests.
-"""
+"""Shared test fixtures for the Go-style seeded ProjHub Flask app."""
 
 import pytest
 
@@ -41,31 +36,52 @@ def auth_user2():
 
 
 @pytest.fixture()
-def two_teams(client, auth_admin):
-    """Create two teams and assign alice to team-alpha, bob to team-beta.
+def auth_lead():
+    return {"Authorization": "Bearer lead-key"}
 
-    Returns a dict with team IDs:
-        {"alpha": "<team-alpha-id>", "beta": "<team-beta-id>"}
-    """
-    # Create team-alpha
-    resp = client.post("/teams", headers=auth_admin, json={
-        "name": "team-alpha",
-        "internal_budget": 50000,
-        "admin_notes": "Primary engineering team",
-        "billing_code": "ENG-001",
-        "member_ids": ["alice-uuid"],
-    })
+
+@pytest.fixture()
+def seeded_ids():
+    """Stable seeded IDs."""
+    return {
+        "alpha_team": "team-alpha",
+        "beta_team": "team-beta",
+        "alpha_project": "project-alpha",
+        "beta_project": "project-beta",
+        "alpha_task": "task-alpha",
+        "beta_task": "task-beta",
+        "expired_share": "share-beta-to-alice-expired",
+    }
+
+
+@pytest.fixture()
+def two_teams(client, auth_admin):
+    """Create two fresh teams and assign alice to alpha, bob to beta."""
+    resp = client.post(
+        "/teams",
+        headers=auth_admin,
+        json={
+            "name": "team-alpha-extra",
+            "internal_budget": 50000,
+            "admin_notes": "Primary engineering team",
+            "billing_code": "ENG-001",
+            "member_ids": ["alice-uuid"],
+        },
+    )
     assert resp.status_code == 200
     alpha_id = resp.get_json()["id"]
 
-    # Create team-beta
-    resp = client.post("/teams", headers=auth_admin, json={
-        "name": "team-beta",
-        "internal_budget": 30000,
-        "admin_notes": "Security team",
-        "billing_code": "SEC-002",
-        "member_ids": ["bob-uuid"],
-    })
+    resp = client.post(
+        "/teams",
+        headers=auth_admin,
+        json={
+            "name": "team-beta-extra",
+            "internal_budget": 30000,
+            "admin_notes": "Security team",
+            "billing_code": "SEC-002",
+            "member_ids": ["bob-uuid"],
+        },
+    )
     assert resp.status_code == 200
     beta_id = resp.get_json()["id"]
 
