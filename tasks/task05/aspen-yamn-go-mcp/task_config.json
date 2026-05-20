@@ -122,7 +122,7 @@
     },
     {
       "id": "RUB-013",
-      "severity": "nitpicking",
+      "severity": "nitpick",
       "category": "test_quality",
       "description": "Ensure tests use proper assertions and captured values.",
       "justification": "Encourages good testing practices."
@@ -132,7 +132,7 @@
     "critical": 4,
     "major": 3,
     "minor": 2,
-    "nitpicking": 1
+    "nitpick": 1
   },
   "rubric_max_score": 38
 }

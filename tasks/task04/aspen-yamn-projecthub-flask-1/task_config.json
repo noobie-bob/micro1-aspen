@@ -136,7 +136,7 @@
     },
     {
       "id": "RUB-015",
-      "severity": "nitpicking",
+      "severity": "nitpick",
       "category": "test_quality",
       "description": "Tests use explicit body-level assertions with captured IDs and sentinel markers, plus small reusable setup/helper functions where useful. Status-code-only, exception-only, broad truthiness-only, or unrelated endpoint-coverage tests do not satisfy this criterion.",
       "justification": "Validated quality discriminator: Opus more consistently keeps captured-ID and sentinel assertions."
@@ -146,7 +146,7 @@
     "critical": 4,
     "major": 3,
     "minor": 2,
-    "nitpicking": 1
+    "nitpick": 1
   },
   "rubric_max_score": 44
 }

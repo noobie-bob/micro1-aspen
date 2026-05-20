@@ -10,7 +10,3 @@ secondary, discovery, operational, and unsafe-input surfaces. The suite should e
 dual contract: catch cross-boundary access, secondary-path redaction failures, delegated
 scope drift, unsafe input handling, predictable tokens, verbose errors, and operational
 leaks without overblocking legitimate same-team flows.
-
-Rubric decomposition mirrors the successful Go task: 5 critical merged chains, 8 major
-supporting items, 1 minor repeatability item, and 1 nitpick quality item.
-Severity arithmetic: 4x5 + 8x3 + 1x2 + 1x1 = 47.

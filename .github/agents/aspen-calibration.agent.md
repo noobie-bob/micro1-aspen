@@ -223,19 +223,7 @@ After:  RUB-001, RUB-002, RUB-003, RUB-004, RUB-005, RUB-006, RUB-007, RUB-008, 
 
 ### Step 4 — Record all items in tasks/findings/
 
-The `tasks/findings/` tree has four destinations:
-
-```
-tasks/findings/
-  trim/
-    failure/   ← items REMOVED because both models FAILED them (or inverted: Qwen beat Opus)
-    pass/      ← items REMOVED because both models PASSED them (floor, no discrimination value)
-  success/
-    failure/   ← items KEPT whose expected model behaviour is FAIL (hard rungs, kept intentionally)
-    pass/      ← items KEPT whose expected model behaviour is PASS (validated discrimination items)
-```
-
-Each destination has four severity files: `critical.md`, `major.md`, `minor.md`, `nitpicking.md`.
+The `tasks/findings/` directory contains the findings files. For each removed item, append a row to the appropriate file describing the vulnerability/scenario type, the reason for removal, and the rubric ID if it was a kept item. Always check for duplicates before adding new rows — if a row describing the same vulnerability/scenario type already exists, update its `Language` and `Framework` columns instead of adding a new row.:
 
 **Routing logic:**
 
