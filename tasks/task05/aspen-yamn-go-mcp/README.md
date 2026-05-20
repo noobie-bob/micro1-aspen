@@ -4,7 +4,7 @@
 
 | Substrate | Stack | Rubric items | Max score | Status |
 |-----------|-------|--------------:|----------:|--------|
-| projecthub | Go `net/http` | 15 (5 critical, 8 major, 1 minor, 1 nitpick) | 52 | DISCRIMINATIVE — observed Opus N=1 and Qwen N=4 recorded; |
+| projecthub | Go `net/http` | 12 (3 critical, 6 major, 2 minor, 1 nitpick) | 35 | Calibration pending |
 
 ## Substrate summary
 
@@ -47,34 +47,31 @@ Reward threshold >= 0.80
 | 5 | TBD |
 | 10 | TBD |
 
-## Per-rubric catch rates (observed: Opus N=1, Qwen N=4)
+## Rubric (from task_config.json)
 
-| Rubric | Severity | Category | Opus Catch | Qwen Catch |
-|--------|----------|----------|-----------:|-----------:|
-| RUB-001 | critical | boundary_journey | 1/1 (100%) | 3/4 (75%) |
-| RUB-002 | critical | response_shaping | 1/1 (100%) | 1/4 (25%) |
-| RUB-003 | critical | delegated_scope | 0/1 (0%) | 0/4 (0%) |
-| RUB-004 | critical | operational_surfaces | 1/1 (100%) | 3/4 (75%) |
-| RUB-005 | critical | unsafe_inputs | 1/1 (100%) | 0/4 (0%) |
-| RUB-006 | major | mutation_integrity | 1/1 (100%) | 0/4 (0%) |
-| RUB-007 | major | token_properties | 0/1 (0%) | 0/4 (0%) |
-| RUB-008 | major | special_visibility_scope | 1/1 (100%) | 4/4 (100%) |
-| RUB-009 | major | artifact_consistency | 1/1 (100%) | 2/4 (50%) |
-| RUB-010 | major | widened_summaries | 1/1 (100%) | 4/4 (100%) |
-| RUB-011 | major | role_scoped_boundaries | 1/1 (100%) | 4/4 (100%) |
-| RUB-012 | major | error_sanitization | 1/1 (100%) | 0/4 (0%) |
-| RUB-013 | major | regression_guards | 1/1 (100%) | 0/4 (0%) |
-| RUB-014 | minor | repeatability | 1/1 (100%) | 4/4 (100%) |
-| RUB-015 | nitpick | test_quality | 1/1 (100%) | 3/4 (75%) |
+| Rubric | Severity | Category |
+|--------|----------|----------|
+| RUB-001 | critical | command_injection_with_benign_control |
+| RUB-002 | critical | comment_visibility |
+| RUB-003 | critical | response_shaping |
+| RUB-004 | major | initialize_connection |
+| RUB-005 | major | module_loading |
+| RUB-006 | major | task_update_boundary |
+| RUB-007 | major | delete_search_consistency |
+| RUB-008 | major | search_boundary |
+| RUB-009 | major | asset_fetch |
+| RUB-010 | minor | diagnostic_non_leak |
+| RUB-011 | minor | repeatability |
+| RUB-012 | nitpick | test_quality |
 
 ## Discrimination ladder rung breakdown
 
 | Rung | Intended role | Current count | Notes |
 |------|---------------|--------------:|-------|
-| Floor | Both models catch reliably | 8 | Observed floor items are RUB-001, RUB-004, RUB-008, RUB-009, RUB-010, RUB-011, RUB-014, and RUB-015 |
-| Mid-tier | Strong-model catches without saturation | 5 | Observed discrimination items are RUB-002, RUB-005, RUB-006, RUB-012, and RUB-013 |
-| Hard rungs | Frontier-skewed multi-step reasoning | 2 | Observed hard rungs are RUB-003 and RUB-007; both models missed them in this sample |
-| Top-of-frontier | Rare catches, at least one item preferred | 0 | Not yet observed in the current Opus N=1 and Qwen N=4 sample |
+| Floor | Both models catch reliably | n/a | See calibration records for model catch rates |
+| Mid-tier | Strong-model catches without saturation | n/a | See calibration records for model catch rates |
+| Hard rungs | Frontier-skewed multi-step reasoning | n/a | See calibration records for model catch rates |
+| Top-of-frontier | Rare catches, at least one item preferred | n/a | See calibration records for model catch rates |
 
 ## Discrimination verdict
 

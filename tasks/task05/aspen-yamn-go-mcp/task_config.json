@@ -5,7 +5,7 @@
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task05",
     "base_commit": "dd0b7a2da480d59f79c5e98484c54e1049164400",
-    "image_name": "micro1ai/aspen-mcp-go:v2",
+    "image_name": "micro1ai/aspen-mcp-go:security-v3",
     "image_digest": "sha256:563f22421cc0ff66c1dc68580c881bba375e3a36cfb8ebb8cddb750cfdd1dc6d",
     "repo_dir": "/repo",
     "language": "go"
@@ -40,92 +40,73 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case.",
-      "justification": "Prevents command injection while allowing safe usage."
+      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility",
-      "description": "Ensure internal comments are hidden while public comments remain visible for user-key.",
-      "justification": "Protects sensitive internal comment data."
+      "description": "Ensure internal comments are hidden while public comments remain visible for user-key."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "response_shaping",
-      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can.",
-      "justification": "Ensures sensitive fields are properly restricted."
+      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "initialize_connection",
-      "description": "Initialize the MCP server using NewServer and assert it is not nil and does not error.",
-      "justification": "Ensures the MCP server initializes correctly."
+      "description": "Initialize the MCP server using NewServer and assert it is not nil and does not error."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading",
-      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted.",
-      "justification": "Prevents unsafe module loading."
+      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted."
     },
     {
       "id": "RUB-006",
       "severity": "major",
-      "category": "project_boundary",
-      "description": "Ensure user-key cannot access project-beta but can access project-alpha.",
-      "justification": "Enforces access control boundaries."
+      "category": "task_update_boundary",
+      "description": "Ensure user-key cannot update task-beta or see beta reviewer markers."
     },
     {
       "id": "RUB-007",
       "severity": "major",
-      "category": "task_update_boundary",
-      "description": "Ensure user-key cannot update task-beta or see beta reviewer markers.",
-      "justification": "Prevents cross-team task mutation and metadata exposure."
+      "category": "delete_search_consistency",
+      "description": "Ensure a deleted task no longer appears in search results for its title."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "delete_search_consistency",
-      "description": "Ensure a deleted task no longer appears in search results for its title.",
-      "justification": "Ensures deleted tasks are removed from discovery."
+      "category": "search_boundary",
+      "description": "Ensure user-key search can find alpha tasks but user2-key cannot find the same alpha task query."
     },
     {
       "id": "RUB-009",
       "severity": "major",
-      "category": "search_boundary",
-      "description": "Ensure user-key search can find alpha tasks but user2-key cannot find the same alpha task query.",
-      "justification": "Ensures task search results stay within team boundaries."
+      "category": "asset_fetch",
+      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content."
     },
     {
       "id": "RUB-010",
-      "severity": "major",
-      "category": "asset_fetch",
-      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content.",
-      "justification": "Prevents sensitive metadata exposure."
+      "severity": "minor",
+      "category": "diagnostic_non_leak",
+      "description": "Ensure diagnostic endpoints do not expose sensitive secrets."
     },
     {
       "id": "RUB-011",
       "severity": "minor",
-      "category": "diagnostic_non_leak",
-      "description": "Ensure diagnostic endpoints do not expose sensitive secrets.",
-      "justification": "Prevents diagnostic data leaks."
+      "category": "repeatability",
+      "description": "Ensure tests are independent and reproducible."
     },
     {
       "id": "RUB-012",
-      "severity": "minor",
-      "category": "repeatability",
-      "description": "Ensure tests are independent and reproducible.",
-      "justification": "Ensures stable test execution."
-    },
-    {
-      "id": "RUB-013",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "Ensure tests use proper assertions and captured values.",
-      "justification": "Encourages good testing practices."
+      "description": "Ensure tests use proper assertions and captured values."
     }
   ],
   "rubric_severity_weights": {
@@ -134,5 +115,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 38
+  "rubric_max_score": 35
 }
