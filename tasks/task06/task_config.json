@@ -6,7 +6,7 @@
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task06",
     "base_commit": "484e1c60642be13c9315097114d673cec207ee5e",
     "image_name": "micro1ai/aspen-mcp_hub_fastmcp:security-v1",
-    "image_digest": "sha256:409a93d06c7a4c3d8848601abe106537be904273cb187603cd0b631b05f6edc4",
+    "image_digest": "sha256:e94d420e2d41d247023d5bd3159052e174c1012111a19b9fbb4cbb1239f3222b",
     "repo_dir": "/mcp_hub",
     "language": "python"
   },
