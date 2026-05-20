@@ -4,7 +4,7 @@
 
 | Substrate | Stack | Rubric items | Max score | Status |
 |-----------|-------|--------------:|----------:|--------|
-| projecthub | Go `net/http` | 15 (5 critical, 8 major, 1 minor, 1 nitpick) | 52 | DISCRIMINATIVE — observed Opus N=1 and Qwen N=4 recorded; |
+| projecthub | Go `net/http` | 15 (5 critical, 8 major, 1 minor, 1 nitpick) | 47 | Calibration pending |
 
 ## Substrate summary
 
@@ -20,32 +20,6 @@ The service is intentionally small enough to read in one sitting, but wide enoug
 - **Digest:** `sha256:b312cfa2df697d39d5ced97700dc629990705459da32a4a1124332de2a3bdc66`
 - **Base commit:** `813e0a3dfd9df8d3aa5603d8588798c968427afd`
 - **Status:** published; image digest and base commit updated
-
-## Calibration results
-
-| Model | N | Mean Reward | Saturation Rate | Pass Rate | Distribution |
-|-------|---:|------------:|----------------:|----------:|--------------|
-| Claude Opus 4.7 | 1 | 0.846 | n/a | n/a | 0.846-0.846 |
-| Qwen 3.5 | 4 | 0.423 | n/a | n/a | 0.400-0.470 |
-| Gemini | 10 | TBD | TBD | TBD | TBD |
-
-## gemini N=10 stability
-
-Reward threshold >= 0.60
-
-| k | pass@k |
-|---:|:------|
-| 1 | TBD |
-| 5 | TBD |
-| 10 | TBD |
-
-Reward threshold >= 0.80
-
-| k | pass@k |
-|---:|:------|
-| 1 | TBD |
-| 5 | TBD |
-| 10 | TBD |
 
 ## Per-rubric catch rates (observed: Opus N=1, Qwen N=4)
 
@@ -79,6 +53,12 @@ Reward threshold >= 0.80
 ## Discrimination verdict
 
 DISCRIMINATIVE, with the current evidence marked as partial rather than final. The observed sample lands at Opus 84.6% and Qwen 42.3%, which is inside the target bands and yields a 42.3-point spread. The task also shows a clean split between eight floor items, five clear Type B discrimination items, and two hard rungs that neither model solved. Gemini and a larger Opus sample are still pending, so this verdict should be treated as the current team-facing status rather than the final platform calibration record.
+
+## Rubric
+
+- **Items:** 15 (5 critical, 8 major, 1 minor, 1 nitpick)
+- **Max score:** 47
+- **Details:** The canonical rubric entries and severity weights are maintained in `task_config.json` (see the project folder for the authoritative copy). The rubric emphasizes boundary checks, response shaping, delegated access, operational surfaces, and crafted-input behaviors while preserving legitimate same-team and admin flows.
 
 ## Aspen pipeline notes
 
