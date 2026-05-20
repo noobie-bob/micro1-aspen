@@ -40,73 +40,85 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case."
+      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case.",
+      "justification": "Detects command-injection risk from user input; benign control prevents false positives."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility",
-      "description": "Ensure internal comments are hidden while public comments remain visible for user-key."
+      "description": "Ensure internal comments are hidden while public comments remain visible for user-key.",
+      "justification": "Protects sensitive internal notes from regular users while preserving public UX."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "response_shaping",
-      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can."
+      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can.",
+      "justification": "Enforces least-privilege access to project fields to prevent data leakage."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "initialize_connection",
-      "description": "Initialize the MCP server using NewServer and assert it is not nil and does not error."
+      "description": "Initialize the MCP server using NewServer and assert it is not nil and does not error.",
+      "justification": "Validates the server starts correctly to catch regressions in initialization."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading",
-      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted."
+      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted.",
+      "justification": "Prevents loading untrusted modules that could execute code while allowing safe modules."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "task_update_boundary",
-      "description": "Ensure user-key cannot update task-beta or see beta reviewer markers."
+      "description": "Ensure user-key cannot update task-beta or see beta reviewer markers.",
+      "justification": "Protects beta content and reviewer metadata from unauthorized access or edits."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "call_tool_basic",
-      "description": "Call any valid tool (e.g., get_project or search_tasks) and assert the response contains expected fields."
+      "description": "Call any valid tool (e.g., get_project or search_tasks) and assert the response contains expected fields.",
+      "justification": "Ensures tool integrations return required fields for correct downstream behavior."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "call_tool_schema_validation",
-      "description": "Call any tool and assert that the response completes and returns without errors."
+      "description": "Call any tool and assert that the response completes and returns without errors.",
+      "justification": "Catches runtime failures in tool calls and guarantees stable handling of inputs."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "asset_fetch",
-      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content."
+      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content.",
+      "justification": "Prevents information leaks from internal endpoints and verifies public asset delivery."
     },
     {
       "id": "RUB-010",
       "severity": "minor",
       "category": "diagnostic_non_leak",
-      "description": "Ensure diagnostic endpoints do not expose sensitive secrets."
+      "description": "Ensure diagnostic endpoints do not expose sensitive secrets.",
+      "justification": "Stops accidental secret exposure via diagnostics, reducing attack surface."
     },
     {
       "id": "RUB-011",
       "severity": "minor",
       "category": "repeatability",
-      "description": "Ensure tests are independent and reproducible."
+      "description": "Ensure tests are independent and reproducible.",
+      "justification": "Guarantees consistent CI results by avoiding shared state and test order dependencies."
     },
     {
       "id": "RUB-012",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "Ensure tests use proper assertions and captured values."
+      "description": "Ensure tests use proper assertions and captured values.",
+      "justification": "Improves test clarity and reduces flakiness by using explicit assertions."
     }
   ],
   "rubric_severity_weights": {
