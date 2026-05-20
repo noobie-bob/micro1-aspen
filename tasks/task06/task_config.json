@@ -1,0 +1,151 @@
+{
+  "instance_id": "aspen__mcp_hub_fastmcp_001",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task06",
+    "base_commit": "484e1c60642be13c9315097114d673cec207ee5e",
+    "image_name": "micro1ai/aspen-mcp_hub_fastmcp:security-v1",
+    "image_digest": "sha256:409a93d06c7a4c3d8848601abe106537be904273cb187603cd0b631b05f6edc4",
+    "repo_dir": "/mcp_hub",
+    "language": "python"
+  },
+  "title": "Author simple Python tests for mcp_hub MCP security and product behavior",
+  "track": "Realm Aspen",
+  "cwe": [
+    "CWE-200",
+    "CWE-209",
+    "CWE-22",
+    "CWE-78",
+    "CWE-94",
+    "CWE-284",
+    "CWE-287",
+    "CWE-639",
+    "CWE-862",
+    "CWE-863",
+    "CWE-918"
+  ],
+  "severity": "critical",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/exfiltration/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "critical",
+      "category": "command_injection_with_benign_control",
+      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case.",
+      "justification": "Prevents command injection while allowing safe usage."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "critical",
+      "category": "comment_visibility",
+      "description": "Ensure internal comments are hidden while public comments remain visible for user-key.",
+      "justification": "Protects sensitive internal comment data."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "critical",
+      "category": "response_shaping",
+      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can.",
+      "justification": "Ensures sensitive fields are properly restricted."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "major",
+      "category": "initialize_connection",
+      "description": "Initialize the server or app module and assert the callable test surface is available.",
+      "justification": "Ensures the server can be initialized for tests."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "major",
+      "category": "module_loading",
+      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted.",
+      "justification": "Prevents unsafe module loading."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "tool_call_basic",
+      "description": "Call a valid tool through call_tool and assert a basic expected response is returned.",
+      "justification": "Ensures basic tool execution works."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "asset_fetch",
+      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content.",
+      "justification": "Prevents sensitive metadata exposure."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "major",
+      "category": "diagnostic_non_leak",
+      "description": "Ensure diagnostic tools do not expose known secrets to non-admin or no-token calls.",
+      "justification": "Prevents diagnostic data leaks."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "major",
+      "category": "task_create_basic",
+      "description": "Create a task under project-alpha and assert the response contains the created title.",
+      "justification": "Ensures basic task creation works."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "search_basic",
+      "description": "Search for an existing alpha task marker and assert a same-team caller can find it.",
+      "justification": "Ensures basic same-team search works."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "major",
+      "category": "admin_visibility",
+      "description": "Ensure admin-key can access seeded project data across teams.",
+      "justification": "Ensures administrative visibility remains available."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "Ensure tests are independent and reproducible with fresh setup or stable seeded data.",
+      "justification": "Ensures stable test execution."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "minor",
+      "category": "serialized_assertions",
+      "description": "Ensure tests use serialized response assertions for content and marker checks.",
+      "justification": "Encourages content-level verification."
+    },
+    {
+      "id": "RUB-014",
+      "severity": "nitpicking",
+      "category": "captured_values",
+      "description": "Ensure tests use explicit expected values rather than broad truthiness checks.",
+      "justification": "Encourages precise and maintainable tests."
+    },
+    {
+      "id": "RUB-015",
+      "severity": "nitpicking",
+      "category": "test_helpers",
+      "description": "Ensure tests use small reusable helpers for tool calls and serialization where useful.",
+      "justification": "Encourages clear and reusable test structure."
+    }
+  ],
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpicking": 1
+  },
+  "rubric_max_score": 42
+}

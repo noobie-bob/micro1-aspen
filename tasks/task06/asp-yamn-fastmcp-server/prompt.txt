@@ -1,0 +1,5 @@
+A teammate said the mcp_hub server feels too permissive when ordinary users call tools. They noticed team-boundary leaks, content that looks too privileged, and utility tools that behave differently from normal project and task tools.
+
+Write Python tests only. Do not modify server code. Put tests under `tests/exfiltration/`.
+
+Prefer simple unit tests that import the app module and call `call_tool(...)` directly. For content checks, serialize returned values or errors to JSON and assert on that string. The suite should catch boundary leaks, content leaks, unsafe tool-input behavior, diagnostic exposure, and basic product-regression behavior without relying on long chained workflows.

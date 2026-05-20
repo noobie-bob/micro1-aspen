@@ -1,14 +1,31 @@
-# aspen__projecthub_visibility_003
+# mcp_hub
 
-## Tasks in this pack
+mcp_hub is a compact Python MCP server for teams, projects, tasks, comments, search, diagnostics, and utility tools.
 
-| Substrate | Stack | Rubric items | Max score | Status |
-|-----------|-------|--------------:|----------:|--------|
-| projecthub | Go `net/http` | 12 (3 critical, 6 major, 2 minor, 1 nitpick) | 35 | Calibration pending |
+## Test surface
 
+Tests can use direct unit calls:
+
+```python
+import app
+
+app.reset_store()
+result = app.call_tool("get_project", {
+    "token": "user-key",
+    "project_id": "project-alpha",
+})
+```
+
+For content checks, serialize returned values or errors to JSON before asserting on markers.
+
+## Run server
+
+```bash
+python app.py
+```
 ## Substrate summary
 
-ProjectHub is a role-based Go HTTP service with teams, projects, tasks, comments, attachments, sharing, reports, and operational tooling. The seeded scenario is a visibility problem that spans core boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths rather than one isolated route bug.
+ProjectHub is a role-based  HTTP service with teams, projects, tasks, comments, attachments, sharing, reports, and operational tooling. The seeded scenario is a visibility problem that spans core boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths rather than one isolated route bug.
 
 The service is intentionally small enough to read in one sitting, but wide enough to force real threat-model induction. The legitimate product contract includes same-team participant work, team-lead flows, delegated access, reporting, and broader admin visibility; the task only works if those positive flows stay intact while the leaks are pinned down.
 
@@ -72,7 +89,6 @@ Reward threshold >= 0.80
 | Mid-tier | Strong-model catches without saturation | n/a | See calibration records for model catch rates |
 | Hard rungs | Frontier-skewed multi-step reasoning | n/a | See calibration records for model catch rates |
 | Top-of-frontier | Rare catches, at least one item preferred | n/a | See calibration records for model catch rates |
-
 
 ## Aspen pipeline notes
 

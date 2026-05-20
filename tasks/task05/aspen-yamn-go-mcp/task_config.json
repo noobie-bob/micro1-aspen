@@ -75,14 +75,14 @@
     {
       "id": "RUB-007",
       "severity": "major",
-      "category": "delete_search_consistency",
-      "description": "Ensure a deleted task no longer appears in search results for its title."
+      "category": "call_tool_basic",
+      "description": "Call any valid tool (e.g., get_project or search_tasks) and assert the response contains expected fields."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "search_boundary",
-      "description": "Ensure user-key search can find alpha tasks but user2-key cannot find the same alpha task query."
+      "category": "call_tool_schema_validation",
+      "description": "Call any tool and assert that the response completes and returns without errors."
     },
     {
       "id": "RUB-009",

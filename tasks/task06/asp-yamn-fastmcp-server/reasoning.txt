@@ -1,0 +1,3 @@
+mcp_hub is a compact Python MCP server with seeded teams, projects, tasks, comments, diagnostics, and utility tools. The task is calibrated for simple unit tests that import the app module and call call_tool directly.
+
+The rubric uses short descriptions, one-line justifications, serialized response assertions, and a controlled mix of security checks and product-regression checks. It avoids long chained workflows because those have proven unstable for MCP test-authoring calibration.
