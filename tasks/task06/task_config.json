@@ -39,113 +39,98 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case.",
-      "justification": "Prevents command injection while allowing safe usage."
+      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility",
-      "description": "Ensure internal comments are hidden while public comments remain visible for user-key.",
-      "justification": "Protects sensitive internal comment data."
+      "description": "Validate internal comments are hidden while public comments remain visible for user-key."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "response_shaping",
-      "description": "Ensure non-admin users cannot see admin/internal project fields while admin users can.",
-      "justification": "Ensures sensitive fields are properly restricted."
+      "description": "A test verifies admin/internal project fields not visible to non-admin users."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "initialize_connection",
-      "description": "Initialize the server or app module and assert the callable test surface is available.",
-      "justification": "Ensures the server can be initialized for tests."
+      "description": "Initialize the server or app module and assert the callable test surface is available."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading",
-      "description": "Ensure unsafe module names are rejected and safe modules like json are accepted.",
-      "justification": "Prevents unsafe module loading."
+      "description": "Assert unsafe module names are rejected and safe modules like json are accepted."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "tool_call_basic",
-      "description": "Call a valid tool through call_tool and assert a basic expected response is returned.",
-      "justification": "Ensures basic tool execution works."
+      "description": "Test by calling a valid tool through call_tool and assert a basic expected response is returned."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "asset_fetch",
-      "description": "Ensure internal URLs do not leak metadata and public URLs return expected content.",
-      "justification": "Prevents sensitive metadata exposure."
+      "description": "Test internal URLs do not leak metadata and public URLs return expected content."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "diagnostic_non_leak",
-      "description": "Ensure diagnostic tools do not expose known secrets to non-admin or no-token calls.",
-      "justification": "Prevents diagnostic data leaks."
+      "description": "Test diagnostic tools do not expose known secrets to non-admin or no-token calls."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "task_create_basic",
-      "description": "Create a task under project-alpha and assert the response contains the created title.",
-      "justification": "Ensures basic task creation works."
+      "description": "Test by task creation under project-alpha and assert the response contains the created title."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "search_basic",
-      "description": "Search for an existing alpha task marker and assert a same-team caller can find it.",
-      "justification": "Ensures basic same-team search works."
+      "description": "Test by searching for an existing alpha task marker and assert a same-team caller can find it."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "admin_visibility",
-      "description": "Ensure admin-key can access seeded project data across teams.",
-      "justification": "Ensures administrative visibility remains available."
+      "description": "Test admin-key access to seeded project data across teams."
     },
     {
       "id": "RUB-012",
       "severity": "minor",
       "category": "repeatability",
-      "description": "Ensure tests are independent and reproducible with fresh setup or stable seeded data.",
-      "justification": "Ensures stable test execution."
+      "description": "Assert tests are independent and reproducible with fresh setup or stable seeded data."
     },
     {
       "id": "RUB-013",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "Ensure tests use serialized response assertions for content and marker checks.",
-      "justification": "Encourages content-level verification."
+      "description": "Test that serialized response assertions are used for content and marker checks."
     },
     {
       "id": "RUB-014",
-      "severity": "nitpicking",
+      "severity": "nitpick",
       "category": "captured_values",
-      "description": "Ensure tests use explicit expected values rather than broad truthiness checks.",
-      "justification": "Encourages precise and maintainable tests."
+      "description": "Test that explicit expected values are used rather than broad truthiness checks."
     },
     {
       "id": "RUB-015",
-      "severity": "nitpicking",
+      "severity": "nitpick",
       "category": "test_helpers",
-      "description": "Ensure tests use small reusable helpers for tool calls and serialization where useful.",
-      "justification": "Encourages clear and reusable test structure."
+      "description": "Test that small reusable helpers are used for tool calls and serialization where useful."
     }
   ],
   "rubric_severity_weights": {
     "critical": 4,
     "major": 3,
     "minor": 2,
-    "nitpicking": 1
+    "nitpick": 1
   },
   "rubric_max_score": 42
 }
