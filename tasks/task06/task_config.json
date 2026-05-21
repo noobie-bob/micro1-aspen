@@ -39,79 +39,67 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "Call ping_team_server with shell-style payloads and assert no execution artifacts like uid= or gid= appear, along with a benign control case."
+      "description": "A test calls ping_team_server with shell-style command-injection payloads and asserts the response does not contain execution artifacts such as uid= or gid=. The submitted tests also include a benign ping_team_server control case that asserts an expected normal response."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility",
-      "description": "Validate internal comments are hidden while public comments remain visible for user-key."
-    },
-    {
-      "id": "RUB-003",
-      "severity": "critical",
-      "category": "response_shaping",
-      "description": "A test verifies admin/internal project fields not visible to non-admin users."
+      "description": "A test verifies that, when using user-key, public comments are visible in the response while internal comments are not included."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "initialize_connection",
-      "description": "Initialize the server or app module and assert the callable test surface is available."
+      "description": "A test initializes the server or app module and asserts that the expected callable test surface, such as registered tools or call_tool access, is available."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading",
-      "description": "Assert unsafe module names are rejected and safe modules like json are accepted."
+      "description": "Tests verify module-loading behavior by asserting that unsafe module names are rejected and that a safe module such as json is accepted."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "tool_call_basic",
-      "description": "Test by calling a valid tool through call_tool and assert a basic expected response is returned."
+      "description": "A test calls a valid tool through call_tool and asserts a specific expected response or response marker is returned."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "asset_fetch",
-      "description": "Test internal URLs do not leak metadata and public URLs return expected content."
+      "description": "Tests verify asset-fetching behavior by asserting that internal URLs do not leak metadata or internal-only content and that public URLs return expected public content."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "diagnostic_non_leak",
-      "description": "Test diagnostic tools do not expose known secrets to non-admin or no-token calls."
-    },
-    {
-      "id": "RUB-009",
-      "severity": "major",
-      "category": "task_create_basic",
-      "description": "Test by task creation under project-alpha and assert the response contains the created title."
+      "description": "A test calls diagnostic tools as a non-admin or unauthenticated caller and asserts that known secrets are not exposed in the response."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "search_basic",
-      "description": "Test by searching for an existing alpha task marker and assert a same-team caller can find it."
+      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned."
     },
     {
       "id": "RUB-011",
       "severity": "major",
-      "category": "admin_visibility",
-      "description": "Test admin-key access to seeded project data across teams."
+      "category": "admin_visibility_and_response_shaping",
+      "description": "A test verifies authorization-sensitive project visibility by asserting that admin-key can access seeded cross-team or admin/internal project data, while a non-admin caller does not receive admin-only or internal project fields."
     },
     {
       "id": "RUB-012",
       "severity": "minor",
       "category": "repeatability",
-      "description": "Assert tests are independent and reproducible with fresh setup or stable seeded data."
+      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state."
     },
     {
       "id": "RUB-013",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "Test that serialized response assertions are used for content and marker checks."
+      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects."
     },
     {
       "id": "RUB-014",
@@ -132,5 +120,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 42
+  "rubric_max_score": 35
 }
