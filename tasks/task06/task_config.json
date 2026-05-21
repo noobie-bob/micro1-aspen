@@ -44,8 +44,8 @@
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "initialize_connection",
-      "description": "A test initializes the server or app module and asserts that the expected callable test surface, such as registered tools or call_tool access, is available."
+      "category": "cross_team_access_boundary",
+      "description": "A test verifies that user-key cannot access seeded cross-team task or project data belonging to another team."
     },
     {
       "id": "RUB-006",
