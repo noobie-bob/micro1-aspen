@@ -44,8 +44,8 @@
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "cross_team_access_boundary",
-      "description": "A test verifies that user-key cannot access seeded cross-team task or project data belonging to another team."
+      "category": "participant_team_boundary_with_positive_control",
+      "description": "A single test verifies the participant team boundary by asserting user-key can access seeded same-team task or project data but cannot access seeded cross-team task or project data."
     },
     {
       "id": "RUB-006",
