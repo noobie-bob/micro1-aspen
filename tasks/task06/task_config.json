@@ -36,28 +36,16 @@
   },
   "ground_truth_issues": [
     {
-      "id": "RUB-001",
-      "severity": "critical",
-      "category": "command_injection_with_benign_control",
-      "description": "A test sends shell-control characters to a command-like utility call and asserts the serialized response does not contain command-execution artifacts such as uid= or gid=."
-    },
-    {
       "id": "RUB-002",
       "severity": "critical",
-      "category": "comment_visibility",
-      "description": "A single test lists comments for an allowed seeded task as user-key and asserts the serialized response omits the seeded internal comment marker."
+      "category": "same_team_participant_access",
+      "description": "A test verifies user-key can access seeded same-team task or project data."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "initialize_connection",
       "description": "A test initializes the server or app module and asserts that the expected callable test surface, such as registered tools or call_tool access, is available."
-    },
-    {
-      "id": "RUB-005",
-      "severity": "major",
-      "category": "module_loading",
-      "description": "A test verifies that formatter or module-loading functionality rejects a dangerous module name, path-like module name, or unsafe import target."
     },
     {
       "id": "RUB-006",
@@ -86,8 +74,8 @@
     {
       "id": "RUB-011",
       "severity": "major",
-      "category": "admin_visibility_and_response_shaping",
-      "description": "A test retrieves an otherwise allowed seeded project as a non-admin caller and asserts the serialized response omits seeded admin-only or internal project fields."
+      "category": "admin_cross_team_access",
+      "description": "A test verifies admin-key can access seeded cross-team project or task data."
     },
     {
       "id": "RUB-012",
@@ -120,5 +108,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 35
+  "rubric_max_score": 28
 }
