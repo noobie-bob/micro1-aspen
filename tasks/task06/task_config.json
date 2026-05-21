@@ -100,13 +100,19 @@
       "severity": "nitpick",
       "category": "test_helpers",
       "description": "Test that small reusable helpers are used for tool calls and serialization where useful."
+    },
+    {
+      "id": "RUB-016",
+      "severity": "major",
+      "category": "cross_team_search_sentinel_boundary",
+      "description": "A single test uses serialized user-key search output to assert that a seeded alpha task marker is present while a seeded beta task marker is absent from the same search response."
     }
   ],
   "rubric_severity_weights": {
-    "critical": 4,
-    "major": 3,
+    "critical": 1,
+    "major": 7,
     "minor": 2,
-    "nitpick": 1
+    "nitpick": 2
   },
-  "rubric_max_score": 28
+  "rubric_max_score": 31
 }
