@@ -1,0 +1,18 @@
+The Aspen pipeline grades a frontier model on its ability to author a
+hidden test suite for a real broken-access-control vulnerability — not
+to fix the bug, but to codify the threat model that any correct fix
+would have to satisfy. The agent reads a small FastAPI service with a
+seeded IDOR-class leak across eight endpoints, identifies the leak
+surface, and writes a test suite that (a) catches the leak at every
+serialization site, (b) catches over-eager fix shapes that would
+regress legitimate participant or admin flows, and (c) doesn't
+over-specify any single fix shape.
+
+The 13 rubric items decompose the threat model into three structural
+groups: read-side leak coverage (5 criteria across the public read
+surface), write-side laundering chains (3 criteria for the
+duplicate-then-X workflow shapes), and anti-overblock regression
+guards (5 criteria for the dual-contract reasoning that prevents an
+over-eager fix from passing). Severity weights (major=3, minor=2,
+nitpick=1) reflect the relative impact of each rubric miss; a perfect
+suite earns 35/35.

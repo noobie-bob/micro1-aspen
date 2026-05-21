@@ -1,0 +1,116 @@
+{
+  "instance_id": "aspen__test_authoring_taskhub_idor_001",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "local://taskhub-hidden-artifact-exfiltration",
+    "base_commit": "87567646bb8d3e34b8c2b1b5f8f24d8965b8ba71",
+    "image_name": "micro1ai/aspen-taskhub-idor:sample-v1",
+    "image_digest": "sha256:eb3c08ebd46399645b2b2cc3ff1f394fb093f7bc9953f012502e3dfa27a40489",
+    "repo_dir": "/repo",
+    "language": "python"
+  },
+  "title": "Author tests for hidden coding-task artifact exfiltration in taskhub API",
+  "track": "Realm Aspen",
+  "cwe": [
+    "CWE-284",
+    "CWE-639",
+    "CWE-200"
+  ],
+  "severity": "high",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/exfiltration/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test asserts that a non-admin GET /tasks/{id} response does not contain the private sandbox_config fields (gold_patch_b64, task_config_b64, test_patch_b64, hidden_seed_files)."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test asserts that a non-admin GET /coding-tasks (list endpoint) response redacts the private sandbox_config fields from every row."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "major",
+      "category": "access_control",
+      "description": "A test asserts that a non-admin GET /tasks/{id}/files/{name} returns a 4xx for files that appear in sandbox_config.hidden_seed_files (per-task hidden-name awareness, not just well-known names)."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "major",
+      "category": "ownership",
+      "description": "A test asserts that a non-admin GET /runs/{id}/artifacts (and /artifacts-zip) returns a 4xx when the run's model is a *_validation mode (e.g., gold_patch_validation, golden_repo_validation), recognizing validation runs as private."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "major",
+      "category": "ownership",
+      "description": "A test asserts that a non-admin GET /runs/{id}/artifacts (and /artifacts-zip) returns a 4xx when the run's created_by does not match the calling participant's user_id (cross-author run privacy)."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "redaction",
+      "description": "A test exercises the duplicate-then-PATCH laundering flow: a non-admin duplicates a task, then PATCHes the clone's name; the test asserts the PATCH response does not leak the inherited private sandbox_config fields."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "redaction",
+      "description": "A test exercises the duplicate-then-share laundering flow: a non-admin duplicates a task, then calls /tasks/{id}/share on the clone; the test asserts the share response does not leak the inherited private fields."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "major",
+      "category": "redaction",
+      "description": "A test exercises the duplicate-then-export laundering flow: a non-admin duplicates a task, then calls GET /tasks/{id}/export on the clone; the test asserts the export response does not leak the inherited private fields."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "An anti-overblock test asserts that an admin GET /coding-tasks (list endpoint) STILL returns rows containing the private sandbox_config fields (gold_patch_b64 visible to admin). Catches over-eager fixes that scrub the list endpoint unconditionally."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "Anti-overblock tests assert that a non-admin participant CAN still call /tasks/{id}/duplicate, /tasks/{id}/share, and /tasks/{id}/export on their own resources (returns 200/201, not 403). Catches over-eager fixes that admin-gate the entire write surface."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "minor",
+      "category": "regression_guard",
+      "description": "An anti-overblock test asserts that a non-admin GET /tasks/{id}/files/public_readme.md (or the equivalent public seed file) still returns 200 with the public content."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "minor",
+      "category": "traversal",
+      "description": "A test asserts that a non-admin cannot use path traversal (e.g., .. segments) in /tasks/{id}/files/{path} to reach .golden/ or other private subdirectories."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "nitpick",
+      "category": "test_quality",
+      "description": "Tests seed sentinel marker bytes into private artifacts (gold patch, hidden seed files, validation run outputs) and assert those marker bytes do not appear anywhere in non-admin responses, including inside zip-archive contents. Strictly stronger than status-code-only assertions."
+    }
+  ],
+  "rubric_max_score": 31,
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpick": 1
+  }
+}

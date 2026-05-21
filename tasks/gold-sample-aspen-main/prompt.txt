@@ -1,0 +1,9 @@
+A participant on our eval platform pinged me — they think they can read back files from tasks they didn't create. Said they were "poking around the API" with their normal participant key and stumbled into something that looked like another author's gold patch. They've been trying different things and keep finding stuff they shouldn't.
+
+We don't have any tests covering this. Your job is to write the test suite that catches it.
+
+**Write tests only. Do not modify any file under `taskhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) catch a fix that over-blocks legitimate participant or admin flows.
+
+Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant + admin flows already in use — your suite should pin those down with anti-overblock assertions so they cannot regress.
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
