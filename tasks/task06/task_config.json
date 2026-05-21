@@ -39,13 +39,13 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "command_injection_with_benign_control",
-      "description": "A test calls ping_team_server with shell-style command-injection payloads and asserts the response does not contain execution artifacts such as uid= or gid=. The submitted tests also include a benign ping_team_server control case that asserts an expected normal response."
+      "description": "A test sends shell-control characters to a command-like utility call and asserts the serialized response does not contain command-execution artifacts such as uid= or gid=."
     },
     {
       "id": "RUB-002",
       "severity": "critical",
       "category": "comment_visibility",
-      "description": "A test verifies that, when using user-key, public comments are visible in the response while internal comments are not included."
+      "description": "A single test lists comments for an allowed seeded task as user-key and asserts the serialized response omits the seeded internal comment marker."
     },
     {
       "id": "RUB-004",
@@ -57,7 +57,7 @@
       "id": "RUB-005",
       "severity": "major",
       "category": "module_loading",
-      "description": "Tests verify module-loading behavior by asserting that unsafe module names are rejected and that a safe module such as json is accepted."
+      "description": "A test verifies that formatter or module-loading functionality rejects a dangerous module name, path-like module name, or unsafe import target."
     },
     {
       "id": "RUB-006",
@@ -69,13 +69,13 @@
       "id": "RUB-007",
       "severity": "major",
       "category": "asset_fetch",
-      "description": "Tests verify asset-fetching behavior by asserting that internal URLs do not leak metadata or internal-only content and that public URLs return expected public content."
+      "description": "A test fetches an internal-looking asset URL and asserts the serialized response does not expose seeded internal metadata."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "diagnostic_non_leak",
-      "description": "A test calls diagnostic tools as a non-admin or unauthenticated caller and asserts that known secrets are not exposed in the response."
+      "description": "A test calls a diagnostic or legacy information surface without admin authorization and asserts the serialized response does not expose a seeded secret marker."
     },
     {
       "id": "RUB-010",
@@ -87,7 +87,7 @@
       "id": "RUB-011",
       "severity": "major",
       "category": "admin_visibility_and_response_shaping",
-      "description": "A test verifies authorization-sensitive project visibility by asserting that admin-key can access seeded cross-team or admin/internal project data, while a non-admin caller does not receive admin-only or internal project fields."
+      "description": "A test retrieves an otherwise allowed seeded project as a non-admin caller and asserts the serialized response omits seeded admin-only or internal project fields."
     },
     {
       "id": "RUB-012",
