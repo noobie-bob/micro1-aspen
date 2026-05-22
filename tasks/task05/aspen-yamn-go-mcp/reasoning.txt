@@ -1,8 +1,24 @@
-ProjHub MCP is a cross-tool visibility and utility-tool safety task. Prior calibration showed models wrote semantically close tests but missed overly exact literal values. This revision asks for simple unit tests with NewServer and CallTool, and the rubric accepts equivalent payloads, benign controls, and fresh unique markers where appropriate.
+The Aspen pipeline grades a frontier model on its ability to author a
+hidden test suite for a real broken-access-control and exposure class
+vulnerability — not to fix the bug, but to codify the threat model that
+any correct fix would have to satisfy. The agent reads a small Go MCP
+service with seeded teams, projects, tasks, and sentinel-rich records,
+identifies cross-boundary and over-disclosure behavior across primary
+tool calls, secondary read paths, helper/utility behavior, and
+operational surfaces, and writes a test suite that (a) catches boundary
+leaks and redaction failures at every relevant serialization site,
+(b) catches unsafe request-handling behavior that can surface execution
+or internal-data artifacts, and (c) doesn’t over-specify any single fix
+shape while still preventing over-eager fixes that would regress
+legitimate same-team or administrative flows.
 
-Design strategy:
-- Avoid brittle exact strings;
-- say serialized tool response instead of raw HTTP body;
-- make anti-overblock flows short one-flow unit tests;
-- accept any reasonable benign arithmetic or public URL control;
-- keep seeded sentinels for stable content assertions.
+The 12 rubric items decompose the threat model into three structural
+groups: read-side boundary and response-shaping coverage (4 criteria
+spanning core object access and secondary comment/task visibility),
+unsafe-input and helper/operational exposure coverage (5 criteria for
+crafted-input behavior, module/tool safety, asset/internal-data
+handling, and diagnostic/ops leakage), and anti-overblock + suite
+quality guards (3 criteria ensuring server initialization coverage,
+repeatability, and clear assertions). Severity weights
+(critical=4, major=3, minor=2, nitpick=1) reflect the relative impact
+of each rubric miss; a perfect suite earns 35/35.
