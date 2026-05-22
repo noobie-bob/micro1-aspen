@@ -92,8 +92,8 @@
     {
       "id": "RUB-010",
       "severity": "nitpick",
-      "category": "test_helpers",
-      "description": "Test that small reusable helpers are used for tool calls and serialization where useful."
+      "category": "serialization_helper_reuse",
+      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
     },
     {
       "id": "RUB-011",
@@ -110,20 +110,20 @@
     {
       "id": "RUB-013",
       "severity": "major",
-      "category": "task_update_boundary_with_control",
-      "description": "A single test verifies user-key can update an allowed alpha task value while a cross-team beta task update attempt does not expose or modify seeded beta task data."
+      "category": "cross_team_update_denial_marker_check",
+      "description": "A test attempts a user-key update against seeded beta task data and asserts the serialized denied outcome does not expose a seeded beta marker."
     },
     {
       "id": "RUB-014",
       "severity": "major",
-      "category": "admin_user_beta_marker_contrast",
-      "description": "A test contrasts roles by asserting admin-key can observe seeded beta task or project data while user-key cannot observe the same seeded beta marker."
+      "category": "admin_user_beta_search_contrast",
+      "description": "A single test serializes search results for the same beta-focused query under admin-key and user-key and asserts only the admin result contains a seeded beta task marker."
     },
     {
       "id": "RUB-015",
       "severity": "minor",
-      "category": "exact_sentinel_negative_assertions",
-      "description": "Security-negative tests assert absence of exact seeded sentinel markers rather than relying only on generic error, status, or truthiness checks."
+      "category": "exact_allowed_update_value",
+      "description": "A test verifies an allowed user-key alpha task update by asserting the exact updated title value in the serialized response."
     }
   ],
   "rubric_severity_weights": {
@@ -132,5 +132,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 40
+  "rubric_max_score": 39
 }
