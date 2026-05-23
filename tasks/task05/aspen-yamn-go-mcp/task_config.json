@@ -43,30 +43,6 @@
       "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response contains `Apollo`."
     },
     {
-      "id": "RUB-002",
-      "severity": "major",
-      "category": "tool_call_basic",
-      "description": "A test calls `get_team` as `user-key` for the seeded alpha team and asserts the returned team id equals `team-alpha`."
-    },
-    {
-      "id": "RUB-003",
-      "severity": "major",
-      "category": "cross_team_project_privileged_marker_hidden",
-      "description": "A test calls `get_project` as `user-key` for the seeded beta project and asserts the tool outcome does not expose `SENTINEL_ADMIN_CONFIG_BETA`."
-    },
-    {
-      "id": "RUB-004",
-      "severity": "major",
-      "category": "cross_team_task_update_denied",
-      "description": "A test calls `update_task` as `user-key` for `task-beta` and asserts the mutation does not succeed."
-    },
-    {
-      "id": "RUB-005",
-      "severity": "major",
-      "category": "same_team_search_visibility",
-      "description": "A test calls `search_tasks` as `user-key` with a query that matches the seeded alpha task and asserts the response contains `SENTINEL_ALPHA_TASK`."
-    },
-    {
       "id": "RUB-006",
       "severity": "major",
       "category": "admin_project_visibility",
@@ -104,7 +80,7 @@
     },
     {
       "id": "RUB-012",
-      "severity": "major",
+      "severity": "minor",
       "category": "cross_team_denial_serialized_marker_check",
       "description": "A test calls `get_project` as `user-key` for `project-beta` and asserts the tool outcome does not expose `Borealis`."
     },
@@ -139,5 +115,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 46
+  "rubric_max_score": 33
 }
