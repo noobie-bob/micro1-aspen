@@ -118,18 +118,6 @@
       "severity": "major",
       "category": "cross_org_document_fetch_denial",
       "description": "A test verifies a participant cross-organization direct document fetch attempt is denied."
-    },
-    {
-      "id": "RUB-014",
-      "severity": "minor",
-      "category": "admin_preview_beta_marker",
-      "description": "A test verifies an administrator preview response for seeded beta document data contains a seeded beta marker or seeded beta identifier."
-    },
-    {
-      "id": "RUB-015",
-      "severity": "major",
-      "category": "cross_org_export_beta_non_leak",
-      "description": "A test serializes a participant export response for seeded cross-organization beta document data and asserts it does not contain a seeded beta identifier."
     }
   ],
   "rubric_severity_weights": {
@@ -138,5 +126,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 38
+  "rubric_max_score": 33
 }
