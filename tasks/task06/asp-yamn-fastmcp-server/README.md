@@ -1,10 +1,20 @@
-# mcp_hub
+# mcp_hub (FastMCP)
 
-mcp_hub is a compact Python MCP server for teams, projects, tasks, comments, search, diagnostics, and utility tools.
+mcp_hub is a Python FastMCP server for teams, projects, tasks, comments, search, diagnostics, and utility tools. This repository contains a small, seeded substrate intended for writing focused exfiltration-style tests under `tests/exfiltration/`.
+
+## Task metadata
+
+- **Instance ID:** aspen__mcp_hub_fastmcp_001
+- **Title:** Author simple Python tests for mcp_hub MCP security and product behavior
+- **Repo source:** https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task06
+- **Repo dir:** /mcp_hub
+- **Image:** micro1ai/aspen-mcp_hub_fastmcp:security-v1
+- **Image digest:** sha256:e94d420e2d41d247023d5bd3159052e174c1012111a19b9fbb4cbb1239f3222b
+- **Base commit:** 484e1c60642be13c9315097114d673cec207ee5e
 
 ## Test surface
 
-Tests can use direct unit calls:
+Tests can call tools directly through the substrate API or exercise helper call sites. Example:
 
 ```python
 import app
@@ -16,84 +26,49 @@ result = app.call_tool("get_project", {
 })
 ```
 
-For content checks, serialize returned values or errors to JSON before asserting on markers.
+Always serialize responses (e.g., `.json()` or `json.dumps(...)`) before asserting on sentinel markers or internal fields.
 
 ## Run server
 
 ```bash
 python app.py
 ```
+
 ## Substrate summary
 
-ProjectHub is a role-based  HTTP service with teams, projects, tasks, comments, attachments, sharing, reports, and operational tooling. The seeded scenario is a visibility problem that spans core boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths rather than one isolated route bug.
+This FastMCP substrate implements role-based behaviors and small utility tools. The seeded scenario focuses on visibility and information-shape concerns (what a caller can read back), not heavy stateful workflows. Legitimate product contracts (same-team access, admin access, delegated flows) must remain intact while exfiltration-style tests assert presence/absence of seeded markers.
 
-The service is intentionally small enough to read in one sitting, but wide enough to force real threat-model induction. The legitimate product contract includes same-team participant work, team-lead flows, delegated access, reporting, and broader admin visibility; the task only works if those positive flows stay intact while the leaks are pinned down.
+## Vulnerability classes (CWEs)
 
-**Vulnerability classes:** CWE-284, CWE-639, CWE-200, CWE-862, CWE-915, CWE-22, CWE-78, CWE-918, CWE-328, CWE-209, CWE-1295.
+This task targets information exposure and access control scenarios. CWEs listed in the task config:
 
-## Image
+- CWE-200, CWE-209, CWE-22, CWE-78, CWE-94, CWE-284, CWE-287, CWE-639, CWE-862, CWE-863, CWE-918
 
-- **Tag:** `micro1ai/aspen-projecthub:visibility-v4`
-- **Digest:** `sha256:b312cfa2df697d39d5ced97700dc629990705459da32a4a1124332de2a3bdc66`
-- **Base commit:** `813e0a3dfd9df8d3aa5603d8588798c968427afd`
-- **Status:** published; image digest and base commit updated
+## Rubric (summary)
 
-## Calibration results
+Tests submitted under `tests/exfiltration/` should address the ground-truth items below; they are used by the grader to score submissions. `rubric_max_score` = 31.
 
-| Model | N | Mean Reward | Saturation Rate | Pass Rate | Distribution |
-|-------|---:|------------:|----------------:|----------:|--------------|
-| Claude Opus 4.7 | 1 | 0.846 | n/a | n/a | 0.846-0.846 |
-| Qwen 3.5 | 4 | 0.423 | n/a | n/a | 0.400-0.470 |
-| Gemini | 10 | TBD | TBD | TBD | TBD |
+| ID | Severity | Category | Short description |
+|----|----------|----------|-------------------|
+| RUB-001 | critical | same_team_participant_access | user-key reads same-team seeded data |
+| RUB-002 | major | tool_call_basic | call a valid tool and assert expected marker |
+| RUB-003 | major | asset_fetch | asset fetch must not expose internal metadata |
+| RUB-004 | major | diagnostic_non_leak | diagnostic surface must not leak seeded secret |
+| RUB-005 | major | search_basic | same-team search returns expected alpha task |
+| RUB-006 | major | admin_cross_team_access | admin-key can read cross-team data |
+| RUB-007 | minor | repeatability | tests are independent and reproducible |
+| RUB-008 | minor | serialized_assertions | serialize responses before checking markers |
+| RUB-009 | nitpick | captured_values | use explicit expected values in assertions |
+| RUB-010 | nitpick | serialization_helper_reuse | reuse a serialization helper across tests |
+| RUB-011 | major | second_participant_same_team_access | user2-key reads beta same-team data |
+| RUB-012 | major | cross_team_denial_serialized_marker_check | denied user cross-team access must not expose beta marker |
 
-## gemini N=10 stability
+## Submission
 
-Reward threshold >= 0.60
+- Place exfiltration tests in `tests/exfiltration/` so the expected diff path matches the task config.
 
-| k | pass@k |
-|---:|:------|
-| 1 | TBD |
-| 5 | TBD |
-| 10 | TBD |
+## Notes
 
-Reward threshold >= 0.80
+- Follow the behavioral prompt in `prompt.txt` (the prompt describes symptoms and legitimate flows; do not leak rubric details into smoke tests).
+- Maintain independent tests (reset or reseed state) to satisfy repeatability requirements.
 
-| k | pass@k |
-|---:|:------|
-| 1 | TBD |
-| 5 | TBD |
-| 10 | TBD |
-
-## Rubric (from task_config.json)
-
-| Rubric | Severity | Category |
-|--------|----------|----------|
-| RUB-001 | critical | command_injection_with_benign_control |
-| RUB-002 | critical | comment_visibility |
-| RUB-003 | critical | response_shaping |
-| RUB-004 | major | initialize_connection |
-| RUB-005 | major | module_loading |
-| RUB-006 | major | task_update_boundary |
-| RUB-007 | major | delete_search_consistency |
-| RUB-008 | major | search_boundary |
-| RUB-009 | major | asset_fetch |
-| RUB-010 | minor | diagnostic_non_leak |
-| RUB-011 | minor | repeatability |
-| RUB-012 | nitpick | test_quality |
-
-## Discrimination ladder rung breakdown
-
-| Rung | Intended role | Current count | Notes |
-|------|---------------|--------------:|-------|
-| Floor | Both models catch reliably | n/a | See calibration records for model catch rates |
-| Mid-tier | Strong-model catches without saturation | n/a | See calibration records for model catch rates |
-| Hard rungs | Frontier-skewed multi-step reasoning | n/a | See calibration records for model catch rates |
-| Top-of-frontier | Rare catches, at least one item preferred | n/a | See calibration records for model catch rates |
-
-## Aspen pipeline notes
-
-- The Docker image is the agent's working environment, not just a runtime artifact.
-- There is no in-sandbox verifier, so `task_config.json` and the rubric descriptions must be self-consistent.
-- Prompt-level instruction-following matters: the prompt should describe symptoms, not enumerate the audit plan or rubric.
-- The task gets most of its difficulty from merged scenario chains, actor switching, readback assertions, and anti-overblock coverage rather than raw endpoint count.
-- Rebuild the production image and refresh `repo.base_commit` and `repo.image_digest` before platform submission.
