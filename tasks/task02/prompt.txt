@@ -1,0 +1,7 @@
+A participant on our mcp_vault platform reported that ordinary document previews may reveal private notes from documents outside their workspace. They were using a normal participant key, trying normal read and search flows, and saw content that looked like another organization's confidential review material.
+
+We do not have tests covering this. Your job is to write the Python test suites that catch it. Do not modify server code. Put tests under `tests/exfiltration/`.
+
+Write tests only. Prefer simple unit tests that import the app module and call `call_tool(...)` directly. Do not modify any file under `/mcp_vault`. A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) detect a fix that over-blocks legitimate participant or admin flows.
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from /repo).
