@@ -40,37 +40,37 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "same_team_participant_access",
-      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the serialized response contains `Apollo`."
+      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response contains `Apollo`."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "tool_call_basic",
-      "description": "A test calls `get_team` as `user-key` for `team-alpha` and asserts the serialized response contains `team-alpha`."
+      "description": "A test calls `get_team` as `user-key` for the seeded alpha team and asserts the returned team id equals `team-alpha`."
     },
     {
       "id": "RUB-003",
       "severity": "major",
-      "category": "asset_fetch",
-      "description": "A test calls `fetch_project_asset` as `user-key` with an internal-looking URL and asserts the serialized response does not expose `SENTINEL_INTERNAL_METADATA_PAYLOAD`."
+      "category": "cross_team_project_privileged_marker_hidden",
+      "description": "A test calls `get_project` as `user-key` for the seeded beta project and asserts the tool outcome does not expose `SENTINEL_ADMIN_CONFIG_BETA`."
     },
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "diagnostic_non_leak",
-      "description": "A  test calls `admin_sysinfo` as `user-key` and asserts the serialized response does not expose `SENTINEL_SYSINFO_SECRET`."
+      "category": "cross_team_task_update_denied",
+      "description": "A test calls `update_task` as `user-key` for `task-beta` and asserts the mutation does not succeed."
     },
     {
       "id": "RUB-005",
       "severity": "major",
-      "category": "search_basic",
-      "description": "A test calls `search_tasks` as `user-key` with a query matching `SENTINEL_ALPHA_TASK` and asserts the serialized response contains `SENTINEL_ALPHA_TASK`."
+      "category": "same_team_search_visibility",
+      "description": "A test calls `search_tasks` as `user-key` with a query that matches the seeded alpha task and asserts the response contains `SENTINEL_ALPHA_TASK`."
     },
     {
       "id": "RUB-006",
       "severity": "major",
-      "category": "admin_cross_team_access",
-      "description": "A test calls `get_project` as `admin-key` for `project-beta` and asserts the serialized response contains `Borealis`."
+      "category": "admin_project_visibility",
+      "description": "A test calls `get_project` as `admin-key` and asserts the response contains `SENTINEL_ADMIN_CONFIG_ALPHA`."
     },
     {
       "id": "RUB-007",
@@ -86,9 +86,9 @@
     },
     {
       "id": "RUB-009",
-      "severity": "nitpick",
-      "category": "captured_values",
-      "description": "The submitted tests use explicit expected values or markers in assertions rather than broad truthiness or non-nil checks."
+      "severity": "major",
+      "category": "task_search_reviewer_redaction",
+      "description": "A test calls `search_tasks` as `user-key` for alpha task data and asserts the response does not expose `SENTINEL_REVIEWER_ALPHA`."
     },
     {
       "id": "RUB-010",
@@ -100,37 +100,37 @@
       "id": "RUB-011",
       "severity": "major",
       "category": "second_participant_same_team_access",
-      "description": "A test calls `get_project` as `user2-key` for `project-beta` and asserts the serialized response contains `Borealis`."
+      "description": "A test calls `get_project` as `user2-key` for the seeded beta project and asserts the returned project id equals `project-beta`."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "cross_team_denial_serialized_marker_check",
-      "description": "A test calls `get_project` as `user-key` for `project-beta` and asserts the serialized result or error does not expose `Borealis`."
+      "description": "A test calls `get_project` as `user-key` for `project-beta` and asserts the tool outcome does not expose `Borealis`."
     },
     {
       "id": "RUB-013",
       "severity": "critical",
       "category": "non_admin_admin_config_redaction",
-      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the serialized response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
+      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response does not expose `SENTINEL_ADMIN_CONFIG_ALPHA`."
     },
     {
       "id": "RUB-014",
       "severity": "major",
       "category": "non_admin_internal_metrics_redaction",
-      "description": "A  test calls `get_project` as `user-key` for `project-alpha` and asserts the serialized response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
+      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
     },
     {
       "id": "RUB-015",
       "severity": "major",
       "category": "internal_comment_marker_hidden",
-      "description": "A test calls `list_task_comments` as `user-key` for `task-alpha` and asserts the serialized response does not expose `SENTINEL_INTERNAL_COMMENT_ALPHA`."
+      "description": "A test calls `list_task_comments` as `user-key` for `task-alpha` and asserts the response does not expose `SENTINEL_INTERNAL_COMMENT_ALPHA`."
     },
     {
       "id": "RUB-016",
       "severity": "major",
-      "category": "unsafe_formatter_chain_rejected",
-      "description": "A test calls `load_custom_formatter` as `user-key` with an unsafe module or path-like name and asserts the serialized response does not expose `dangerous module chain accepted`."
+      "category": "cross_team_summary_non_leak",
+      "description": "A test calls `summarize_task` as `user-key` for `task-beta` and asserts the tool outcome does not expose `SENTINEL_BETA_TASK`."
     }
   ],
   "rubric_severity_weights": {
@@ -139,5 +139,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 44
+  "rubric_max_score": 46
 }
