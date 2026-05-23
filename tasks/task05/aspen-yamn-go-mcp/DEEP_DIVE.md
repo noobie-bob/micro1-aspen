@@ -1,39 +1,71 @@
-# Deep Dive: ProjectHub Visibility 003
 
-## Five-Second Summary
+# Deep Dive — aspen__mcp_go_projhub
 
-ProjectHub is a compact Go HTTP service for teams, projects, tasks, comments, attachments, sharing, reporting, and operational tooling. The scenario is not one isolated handler bug: the same underlying state leaks through boundary checks, response shaping, delegated access, diagnostic surfaces, and crafted-input paths. That makes this a test-authoring task rather than a bug-fix task.
+> **Audience.** Reader unfamiliar with this repo or task. This file explains what an AI model is being graded on, what the seeded leak looks like in code, why the substrate is realistic, and what to watch for when reading calibration results.
 
-## Why Test-Authoring Is the Right Shape
+---
 
-The right artifact here is a behavioural suite because the service exposes the same objects through several roles and retrieval paths. A strong suite has to enforce the dual contract: direct coverage that proves non-privileged actors cannot cross organisational boundaries or recover privileged content, and anti-overblock coverage that proves legitimate same-team, admin, and role-scoped flows still work after a fix. A patch that simply denies everything would be wrong, and a test suite that checks only one route family would miss the real scenario.
+## 1. Five-second summary
 
-## What the Agent Sees
+Ask: write a Go test suite that catches cross-team visibility leaks in a compact MCP-style Go service. The agent must (a) detect the seeded leak surfaces and (b) write anti-overblock tests that prove legitimate same-team and admin flows remain functional.
 
-The agent lands in a small Go module. `projecthub/wire.go` registers the HTTP surface. `projecthub/common.go` contains almost all of the gate logic, projector functions, and handlers. `projecthub/types.go` defines users, teams, projects, tasks, comments, attachments, shares, and audit events. `projecthub/seed.go` populates a fixed set of actors and sentinel-rich records. `projecthub/paths.go` adds extra packet and weave helpers that increase code-reading surface without changing the external contract.
+## 2. Why test-authoring is the right shape
 
-The seeded actors matter because the visibility model is role-based rather than anonymous-versus-authenticated. The service includes an org-wide admin, same-team participant and lead users, a participant from another team, an auditor-style user, and a child-team guest. The smoke suite demonstrates that ordinary same-team project and task work should continue to function even after the security gaps are closed.
+Fix shapes for visibility problems vary (redact, gate, or storage-layer fixes). Asking the agent to write tests isolates *threat-model induction* from implementation taste: a good suite catches the leak across retrieval and write-side laundering surfaces while also asserting the dual contract (leak closed, legitimate flows preserved).
 
-## What the Scenario Looks Like as Code
+## 3. What the agent sees
 
-The interesting code shape is centralised authorization plus inconsistent response shaping. One set of helpers decides whether a caller can reach a project or task. Another set decides what fields appear once access is granted. A third set packages the same records into exports, shares, duplicates, snapshots, summaries, and operational views. That is realistic engineering territory: once a service supports delegated access, mirrored data, historical or debug surfaces, and a handful of auxiliary workflows, scope checks and projector rules drift apart.
+- Small Go module mounted at `/repo`.
+- Key files: `projhubmcp/wire.go` (HTTP → MCP method dispatch), `projhubmcp/tools.go` (token verification: `admin-key`, `user-key`, `user2-key`), `projhubmcp/common.go` (helpers, response writers, side-effect helpers), `projhubmcp/seed.go` (seeded teams/projects/tasks/comments with sentinel markers), `projhubmcp/types.go` (data shapes), and `tests/smoke_test.go` (legitimate-flow smoke test).
+- Seeded data includes `project-alpha` (Name: "Apollo"), `project-beta` (Name: "Borealis"), `task-beta` title includes "Migrate DB", and internal comment markers such as `SENTINEL_INTERNAL_COMMENT_ALPHA`. Those sentinel values are the canonical markers used by the ground-truth rubric.
 
-In ProjectHub, the drift shows up in several ways. Boundary checks can widen under special conditions. Delegated access is stateful and therefore easy to over-grant. Non-privileged updates can alter fields that should be authoritative. The service also includes predictable access tokens, broad diagnostic surfaces, and a recoverer that returns internal-looking error text. None of those problems require source modification to observe; they are all visible from the HTTP boundary.
+The MCP dispatch surface provides methods the agent will call in tests: `get_project`, `list_task_comments`, `search_tasks`, `summarize_task`, `fetch_project_asset`, `ping_team_server`, and various create/update/delete flows. Many of these return full structs (e.g., `Project`) or injected strings (e.g., `summarize_task` returns a prompt containing the task title), which is why response-shape and summary endpoints are grading surfaces.
 
-## How the Rubric Decomposes the Scenario
+## 4. Scenario shape in code
 
-The rubric is intentionally compact. Instead of one tiny endpoint-local check per issue, it groups the scenario into denser behavioural journeys:
+Two structural patterns produce the leak surface here:
 
-- 5 critical items cover the main chains: organisational boundary enforcement, response shaping across primary and secondary paths, delegated-scope confinement, operational-surface lockdown, and crafted-input abuse.
-- 8 major items cover mutation integrity, token quality, special visibility modes, artifact consistency, widened summaries, specialised role boundaries, error sanitisation, and anti-overblock regression guards.
-- 1 minor item rewards repeatability and state isolation.
-- 1 nitpick item rewards sentinel-based body assertions and reusable helper quality.
+- Centralised auth + `projectAllowed()` gating: most reads call a small set of helpers that decide reachability (Admin OR team member).
+- Inconsistent projector/serializer choices: the same `Project` or `Task` objects are returned by many different helpers (direct reads, search results, summaries, exports). Some paths include admin-only fields (`AdminConfig`, `InternalMetrics`) or aggregate titles that carry seeded task names.
 
-That shape keeps the task within the healthier Aspen range while still forcing multi-actor reasoning, readback checks, and comparison across alternate retrieval paths.
+Those two axes lead to multi-surface leakage without any single-line bug; the seeded leak is observable from the outside via the public MCP endpoints.
 
-## How to Read the Calibration Numbers
+## 5. How the rubric decomposes the scenario
 
-Start with mean reward and saturation rate, but do not stop there. The per-rubric catch table is the real signal: a good task has some floor items that multiple strong models can catch, some harder items that only stronger models catch reliably, and at least one frontier-skewed rung. If smaller models clear most of the critical chains, the prompt or rubric is leaking too much. If frontier models miss the anti-overblock or same-team flows, the issue is usually smoke-surface clarity rather than legitimate task difficulty. Calibration is good when the task separates models by reasoning depth, not by hidden instructions.
+The rubric maps directly to observable, external test behaviors. High-level grouping:
+
+- **Critical (2):** same-team participant access test (RUB-001) and cross-team project-config non-leak (RUB-009). These must fail if privileged project fields or configs are recoverable by an ordinary participant.
+- **Major (6):** admin visibility checks, cross-team search non-leak, second-participant same-team access, cross-team summary title non-leak, internal comment marker hidden, cross-team summary non-leak — these cover the majority of retrieval and anti-overblock guard behaviors.
+- **Minor (3):** repeatability, serialized assertions (tests should assert on serialized outputs), and denial / marker checks for cross-team reads.
+- **Nitpick (1):** reuse of a serialization helper across tests (DRY + sentinel assertion quality).
+
+The `prompt.txt` explicitly asks tests to be placed under `tests/exfiltration/` and to avoid modifying server code. The judge will compare the submitted diff to the rubric entries in `task_config.json`.
+
+## 6. What to look for when writing tests
+
+- Prefer serialized assertions (marshal or inspect returned JSON) rather than asserting on opaque Go values.
+- Seed-specific sentinels are the authenticity signal: `Apollo`, `Borealis`, `Migrate DB`, `SENTINEL_INTERNAL_COMMENT_ALPHA`, and `SENTINEL_*` metadata keys.
+- Include anti-overblock assertions: add checks that admin and same-team happy-paths still succeed after the leak is closed.
+
+## 7. Per-task contents
+
+```
+.  README.md
+	DEEP_DIVE.md
+	prompt.txt
+	task_config.json
+	reasoning.txt (optional)
+	projhubmcp/          # Go substrate (common.go, tools.go, seed.go, types.go, wire.go)
+	tests/               # smoke and exfiltration tests
+	tests/smoke_test.go
+	tests/exfiltration/  # expected submission folder
+```
+
+## 8. Aspen pipeline gotchas
+
+- `rubric_only: true` — there is no in-sandbox verifier and no deterministic gold patch. The judge auto-generates NL assertions from `ground_truth_issues[]`.
+- `task_config.repo.image_name` is the agent's working environment. Make sure any local reasoning assumes the agent runs in the image specified by `task_config.json`.
+- The `tests/smoke_test.go` file is load-bearing: it documents legitimate flows and helps the agent understand which calls are participant-callable vs admin-only.
 
 
 

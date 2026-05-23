@@ -40,73 +40,85 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "same_team_participant_access",
-      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response contains `Apollo`."
+      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the response contains `Apollo`.",
+      "justification": "Validates same-team read paths and positive-path assertions; 'Apollo' is the seeded project name in `seed.go` used as a canonical marker."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "admin_project_visibility",
-      "description": "A test verifies an admin project read exposes a seeded privileged project field."
+      "description": "A test verifies an admin project read exposes a seeded privileged project field.",
+      "justification": "Guards against over-blocking by ensuring admin reads still expose privileged config fields; expected value is the admin-config sentinel seeded in `seed.go`."
     },
     {
       "id": "RUB-003",
       "severity": "minor",
       "category": "repeatability",
-      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state."
+      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state.",
+      "justification": "Ensures test determinism by using fresh setup or fixed seeded data from `seed.go`; expected reproducibility follows from the fixed seed state."
     },
     {
       "id": "RUB-004",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "The submitted tests serialize tool responses before checking content or seeded markers, so assertions inspect returned data rather than opaque Go values."
+      "description": "The submitted tests serialize tool responses before checking content or seeded markers, so assertions inspect returned data rather than opaque Go values.",
+      "justification": "Requires assertions against serialized API outputs (JSON/string) to reflect observable behavior rather than internal Go types; expected checks rely on seeded sentinels present in the serialized responses."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "cross_team_search_non_leak",
-      "description": "A test verifies an ordinary participant search for seeded beta task data does not return the seeded beta task marker."
+      "description": "A test verifies an ordinary participant search for seeded beta task data does not return the seeded beta task marker.",
+      "justification": "Validates that search filters enforce team boundaries so cross-team markers do not appear in results; expected absence is determined by the seeded `task-beta` markers in `seed.go`."
     },
     {
       "id": "RUB-006",
       "severity": "nitpick",
       "category": "serialization_helper_reuse",
-      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
+      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions.",
+      "justification": "Encourages DRY and consistent assertion behavior; expected helper reuse ensures identical parsing and sentinel checks across multiple tests."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "second_participant_same_team_access",
-      "description": "A test calls `get_project` as `user2-key` for the seeded beta project and asserts the returned project id equals `project-beta`."
+      "description": "A test calls `get_project` as `user2-key` for the seeded beta project and asserts the returned project id equals `project-beta`.",
+      "justification": "Checks correct team-membership semantics for a second participant; expected `project-beta` is the seeded identifier in `seed.go` confirming proper same-team access."
     },
     {
       "id": "RUB-008",
       "severity": "minor",
       "category": "cross_team_denial_serialized_marker_check",
-      "description": "A test calls `get_project` as `user-key` for `project-beta` and asserts the tool outcome does not expose `Borealis`."
+      "description": "A test calls `get_project` as `user-key` for `project-beta` and asserts the tool outcome does not expose `Borealis`.",
+      "justification": "Asserts denial for cross-team reads by checking serialized responses do not contain the seeded marker 'Borealis'; expected absence comes from the seeded project name in `seed.go`."
     },
     {
       "id": "RUB-009",
       "severity": "critical",
       "category": "cross_team_project_config_non_leak",
-      "description": "A test verifies an ordinary participant cannot recover a seeded privileged beta-project field from a cross-team project read."
+      "description": "A test verifies an ordinary participant cannot recover a seeded privileged beta-project field from a cross-team project read.",
+      "justification": "Critical check that privileged admin/internal project fields are not recoverable by ordinary participants; expected non-exposure is validated against admin/internal sentinels seeded in `seed.go`."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "cross_team_summary_title_non_leak",
-      "description": "A test calls `summarize_task` as `user-key` for `task-beta` and asserts the tool outcome does not expose `Migrate DB`."
+      "description": "A test calls `summarize_task` as `user-key` for `task-beta` and asserts the tool outcome does not expose `Migrate DB`.",
+      "justification": "Ensures summarization surfaces do not leak sensitive task titles across teams; 'Migrate DB' is the seeded title for `task-beta` used to detect leaks."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "internal_comment_marker_hidden",
-      "description": "A test calls `list_task_comments` as `user-key` for `task-alpha` and asserts the response does not expose `SENTINEL_INTERNAL_COMMENT_ALPHA`."
+      "description": "A test calls `list_task_comments` as `user-key` for `task-alpha` and asserts the response does not expose `SENTINEL_INTERNAL_COMMENT_ALPHA`.",
+      "justification": "Ensures internal/admin-only comments are hidden from non-admin callers; expected absence is the sentinel comment value present in `seed.go`."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "cross_team_summary_non_leak",
-      "description": "A test verifies cross-team task summarization by an ordinary participant does not expose the seeded beta task title."
+      "description": "A test verifies cross-team task summarization by an ordinary participant does not expose the seeded beta task title.",
+      "justification": "Broad safeguard that aggregated summaries and alternate retrieval paths do not reveal cross-team secret titles; expected non-exposure maps to seeded task titles and sentinels in `seed.go`."
     }
   ],
   "rubric_severity_weights": {
