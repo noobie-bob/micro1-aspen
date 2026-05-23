@@ -112,13 +112,13 @@
       "id": "RUB-013",
       "severity": "critical",
       "category": "non_admin_admin_config_redaction",
-      "description": "A test calls `get_project` as `user-key` for seeded alpha project data and asserts the serialized response does not expose `SENTINEL_ADMIN_CONFIG_ALPHA`."
+      "description": "A test calls `get_project` as `user-key` for `project-alpha` and asserts the serialized response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
     },
     {
       "id": "RUB-014",
       "severity": "major",
       "category": "non_admin_internal_metrics_redaction",
-      "description": "A test calls `get_project` as `user-key` for seeded alpha project data and asserts the serialized response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
+      "description": "A  test calls `get_project` as `user-key` for `project-alpha` and asserts the serialized response does not expose `SENTINEL_INTERNAL_METRICS_ALPHA`."
     },
     {
       "id": "RUB-015",
