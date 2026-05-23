@@ -1,34 +1,44 @@
 # mcp_vault (FastMCP)
 
-mcp_vault is a Python FastMCP server for organizations, folders, documents, previews, search, exports, audit records, diagnostics, and small utility tools. This repository contains a small, seeded substrate intended for writing focused exfiltration-style tests under `tests/exfiltration/`.
+Five-second summary
 
-## Test surface
+mcp_vault is a small Python FastMCP substrate that exposes document and
+audit tools. Tests should be authored under `tests/exfiltration/` and
+assert on seeded markers present in the repository's `seed.py`.
 
-Tests can call tools directly through the substrate API:
+Task metadata
 
-```python
-import app
-app.reset_store()
-result = app.call_tool("get_document", {
-    "token": "user-key",
-    "document_id": "doc-alpha",
-})
-```
+- **Instance ID:** aspen__mcp_vault_fastmcp_001
+- **Title:** Author simple Python tests for mcp_vault MCP security and product behavior
+- **Image:** micro1ai/aspen-mcp_vault_fastmcp:security-v1
+- **Image digest:** sha256:948380849346a209522191e10900c0cf7d643f6a90e1db7124542a41a8b4e120
+- **Base commit:** 7ed0b4744037d7d5a9837106305b32fd5e7fe4df
+- **Repo dir:** /mcp_vault (language: python)
+- **Submission path:** tests/exfiltration/
+- **Rubric items:** 13 (critical=1, major=7, minor=3, nitpick=2) — `rubric_max_score` = 33
 
-Always serialize responses before asserting on sentinel markers or internal fields.
+Seeded markers and actors (evidence)
 
-## Run server
+- `seed.py` contains `doc-alpha` and `doc-beta` plus sentinel markers:
+    `SENTINEL_ALPHA_DOC_BODY`, `SENTINEL_ALPHA_PRIVATE_NOTE`,
+    `SENTINEL_BETA_DOC_BODY`, `SENTINEL_BETA_PRIVATE_NOTE`, and audit
+    markers used by the rubric.
+- Seeded tokens/actors: `admin-key`, `user-key`, `user2-key` (use
+    `app.reset_store()` in tests to ensure reproducibility).
+
+Quick run
 
 ```bash
 python app.py
 ```
 
-## Seeded actors
+Notes for test authors
 
-- `admin-key`: admin reviewer
-- `user-key`: alpha organization participant
-- `user2-key`: beta organization participant
+- Use `app.call_tool(...)` or the exported tool wrappers (e.g.,
+    `app.get_document`) and serialize responses before making assertions.
+- Preserve the dual contract: rubric items target both the leak and
+    legitimate behavior (e.g., admin visibility vs participant denial).
+- Place exfiltration tests under `tests/exfiltration/` so the judge's
+    expected diff path matches `task_config.json`.
 
-## Submission
-
-Place exfiltration tests in `tests/exfiltration/` so the expected diff path matches the task config.
+See `DEEP_DIVE.md` for a fuller on-ramp and rubric decomposition.
