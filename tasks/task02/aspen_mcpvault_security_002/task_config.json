@@ -44,107 +44,92 @@
     {
       "id": "RUB-001",
       "severity": "critical",
-      "category": "same_org_get_document_alpha_marker",
-      "description": "A test verifies user-key can read doc-alpha and asserts the serialized response contains SENTINEL_ALPHA_DOC_BODY.",
-      "justification": "Preserves legitimate same-organization document read behavior with one actor, one surface, and one seeded marker.\nCritical because document-vault authorization errors have high product and confidentiality impact."
+      "category": "same_org_get_document_alpha_id",
+      "description": "A test calls get_document as user-key for doc-alpha and asserts the returned id is doc-alpha."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "valid_tool_call_specific_marker",
-      "description": "A test calls one valid mcp_vault tool through call_tool and asserts a specific seeded marker or exact expected value is returned.",
-      "justification": "Confirms the public tool-call path works with a concrete output assertion rather than truthiness.\nMajor because tool routing failures can mask or amplify security regressions."
+      "description": "A test calls one valid mcp_vault tool through call_tool and asserts a specific seeded marker or exact expected value is returned."
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "same_org_search_alpha_result",
-      "description": "A test calls search_documents as user-key with an alpha-targeting query and asserts the serialized results contain doc-alpha or SENTINEL_ALPHA_DOC_BODY.",
-      "justification": "Rewrites the old alpha-search item based on judge feedback: the model searched alpha documents but did not always assert the exact body sentinel.\nMajor because search is a common path for exposing multiple private records."
+      "description": "A test calls search_documents as user-key with an alpha-targeting query and asserts the returned results include doc-alpha."
     },
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "admin_get_document_beta_marker",
-      "description": "A test verifies admin-key can read doc-beta and asserts the serialized response contains doc-beta or SENTINEL_BETA_DOC_BODY.",
-      "justification": "Rewrites the old admin anti-overblock item based on judge feedback: admin doc-beta access existed but not always with the exact beta-body sentinel.\nMajor because admin review flows must remain functional after an authorization fix."
+      "category": "admin_get_document_beta_id",
+      "description": "A test calls get_document as admin-key for doc-beta and asserts the returned id is doc-beta."
     },
     {
       "id": "RUB-005",
       "severity": "minor",
       "category": "repeatability",
-      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state.",
-      "justification": "Keeps grading reliable by avoiding state bleed between tests.\nMinor because this is test hygiene rather than a direct vulnerability."
+      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state."
     },
     {
       "id": "RUB-006",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects.",
-      "justification": "Serialized assertions reduce false positives and match caller-visible MCP responses.\nMinor because this supports correctness rather than being the primary security behavior."
+      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects."
     },
     {
       "id": "RUB-007",
       "severity": "nitpick",
       "category": "explicit_expected_values",
-      "description": "Tests use explicit expected values or seeded markers rather than broad truthiness checks.",
-      "justification": "Encourages precise, reviewable assertions.\nNitpick because it improves quality with low direct security impact."
+      "description": "Tests use explicit expected values or seeded markers rather than broad truthiness checks."
     },
     {
       "id": "RUB-008",
       "severity": "nitpick",
       "category": "serialization_helper_reuse",
-      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions.",
-      "justification": "Keeps the stable helper-structure discriminator that Opus already passes and Qwen misses.\nNitpick because maintainability impact is low."
+      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
     },
     {
       "id": "RUB-009",
       "severity": "major",
-      "category": "search_beta_query_non_leak",
-      "description": "A test serializes search_documents as user-key for a beta-targeting query and asserts the results do not contain SENTINEL_BETA_DOC_BODY.",
-      "justification": "Rewrites the old beta-search non-leak item based on judge feedback: the model searched beta-related terms but not always the exact sentinel query.\nMajor because search leaks can reveal many private documents at once."
+      "category": "participant_discovery_beta_private_note_non_leak",
+      "description": "A test serializes participant discovery results for seeded cross-organization document data and asserts the results do not contain a seeded beta private-note marker."
     },
     {
       "id": "RUB-010",
       "severity": "major",
-      "category": "search_role_contrast_beta_query",
-      "description": "Tests serialize search_documents results for the same beta-targeting query under user-key and admin-key and assert only the admin-key results contain SENTINEL_BETA_DOC_BODY.",
-      "justification": "Keeps the existing same-surface search contrast without changing the stable intended-B shape.\nMajor because same-surface role contrast strongly discriminates leakage from legitimate admin visibility."
+      "category": "admin_preview_beta_identifier",
+      "description": "A test verifies an administrator preview response for seeded cross-organization document data contains a seeded beta identifier."
     },
     {
       "id": "RUB-011",
       "severity": "minor",
-      "category": "alpha_search_scoped_no_beta_marker",
-      "description": "A test serializes search_documents as user-key for an alpha-targeting query and asserts the results do not contain SENTINEL_BETA_DOC_BODY.",
-      "justification": "Keeps the prior opportunistic B candidate as a low-weight scoped-search item.\nMinor because this is a boundary-hygiene check paired with one concrete beta marker."
+      "category": "same_org_preview_alpha_identifier",
+      "description": "A test verifies a participant same-organization preview response for seeded alpha document data contains a seeded alpha identifier."
     },
     {
       "id": "RUB-012",
       "severity": "major",
-      "category": "cross_org_get_document_denial",
-      "description": "A test verifies get_document as user-key for doc-beta is denied with PermissionError.",
-      "justification": "Replaces the old export/get_document mismatch with the exact cross-organization get_document auth-rejection shape the judge notes show Opus already writes.\nMajor because direct cross-organization document denial is core access-control coverage."
+      "category": "cross_org_preview_denial",
+      "description": "A test verifies a participant cross-organization preview attempt for seeded beta document data is denied."
     },
     {
       "id": "RUB-013",
       "severity": "major",
-      "category": "cross_org_preview_denial",
-      "description": "A test verifies preview_document as user-key for doc-beta is denied with PermissionError.",
-      "justification": "Replaces an off-prompt diagnostic/mutation item with an atomic preview auth-rejection check on a prompt-aligned readback surface.\nMajor because preview is a primary readback surface in the incident report."
+      "category": "cross_org_document_fetch_denial",
+      "description": "A test verifies a participant cross-organization direct document fetch attempt is denied."
     },
     {
       "id": "RUB-014",
       "severity": "minor",
-      "category": "same_org_get_folder_alpha",
-      "description": "A test serializes get_folder as user-key for folder-alpha and asserts the response contains folder-alpha or Alpha Contracts.",
-      "justification": "Replaces a dead A item with a prompt-adjacent readback floor check on a surface the submitted tests already exercise.\nMinor because this is primarily anti-overblock product coverage."
+      "category": "admin_preview_beta_marker",
+      "description": "A test verifies an administrator preview response for seeded beta document data contains a seeded beta marker or seeded beta identifier."
     },
     {
       "id": "RUB-015",
       "severity": "major",
-      "category": "cross_org_get_folder_denial",
-      "description": "A test verifies get_folder as user-key for folder-beta is denied with PermissionError.",
-      "justification": "Replaces an off-prompt mutation/diagnostic item with an atomic cross-boundary auth-rejection check on a surface the judge notes show the models already call.\nMajor because cross-organization folder denial is core access-control coverage."
+      "category": "cross_org_export_beta_non_leak",
+      "description": "A test serializes a participant export response for seeded cross-organization beta document data and asserts it does not contain a seeded beta identifier."
     }
   ],
   "rubric_severity_weights": {
