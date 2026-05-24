@@ -67,9 +67,9 @@
     },
     {
       "id": "RUB-005",
-      "severity": "minor",
-      "category": "repeatability",
-      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state."
+      "severity": "major",
+      "category": "admin_discovery_beta_private_note_present",
+      "description": "A test verifies administrator discovery results for seeded cross-organization document data contain the seeded beta private-note marker."
     },
     {
       "id": "RUB-006",
@@ -79,9 +79,9 @@
     },
     {
       "id": "RUB-007",
-      "severity": "nitpick",
-      "category": "explicit_expected_values",
-      "description": "Tests use explicit expected values or seeded markers rather than broad truthiness checks."
+      "severity": "minor",
+      "category": "explicit_serialized_marker_assertion",
+      "description": "A test checks serialized cross-organization participant-facing output against an exact seeded beta private-note marker rather than relying on broad truthiness or non-empty-result assertions."
     },
     {
       "id": "RUB-008",
@@ -126,5 +126,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 33
+  "rubric_max_score": 35
 }
