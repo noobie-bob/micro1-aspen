@@ -74,7 +74,7 @@
     },
     {
       "id": "RUB-007",
-      "severity": "critical",
+      "severity": "major",
       "category": "internal_comment_visibility",
       "description": "A test serializes participant comment readback for seeded same-boundary task data and asserts the response does not contain a seeded internal comment marker."
     },
@@ -82,13 +82,13 @@
       "id": "RUB-008",
       "severity": "major",
       "category": "same_boundary_project_access",
-      "description": "A test verifies a participant can read seeded same-boundary project data and asserts the response contains the seeded same-boundary project name or project id."
+      "description": "A test verifies a participant can read seeded same-boundary project data and asserts the response contains a seeded same-boundary project marker."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "same_boundary_task_search",
-      "description": "A test verifies participant search for seeded same-boundary task data returns the seeded same-boundary task title or task id."
+      "description": "A test verifies participant search for seeded same-boundary task data still returns the seeded same-boundary task marker."
     },
     {
       "id": "RUB-010",
@@ -107,6 +107,12 @@
       "severity": "minor",
       "category": "test_quality",
       "description": "The submitted tests are executable pytest tests that use the provided Flask test client or fixtures and include concrete assertions against response status or serialized response content."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "At least one test isolates state by creating fresh resources with unique sentinel markers and asserts that results do not depend on data created by other tests."
     }
   ],
   "rubric_severity_weights": {
@@ -115,5 +121,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 38
+  "rubric_max_score": 39
 }
