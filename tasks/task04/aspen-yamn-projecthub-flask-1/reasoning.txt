@@ -1,0 +1,20 @@
+ProjectHub Flask is a visibility-and-exposure task, not a single-endpoint bug
+hunt. Ordinary participants can cross organisational boundaries through core
+reads, delegated-access state, debug/operational surfaces, and crafted-input or
+search paths, while response-shaping and packaging flows may leak privileged
+metadata. Test-authoring is the right evaluation shape because the threat is
+fully observable at the HTTP boundary; a well-written test suite must both
+catch the leak and guard against over-eager fixes that break legitimate
+participant or admin flows.
+
+Rubric decomposition: 13 items total — 4 critical, 7 major, 2 minor. Severity
+arithmetic: 4×4 + 7×3 + 2×2 = 41.
+
+The critical items require multi-actor chains, state transitions, endpoint
+comparisons, and body-level assertions across direct reads, discovery, and
+packaged/exported flows. Major items cover delegated-share scoping,
+internal/comment/attachment hygiene, admin positive controls, and regression
+guards. Tests should rely on sentinel markers in `projhub/db.py`, use the
+provided Flask test client and fixtures, and isolate state so results are
+repeatable.
+

@@ -40,79 +40,92 @@
       "id": "RUB-001",
       "severity": "major",
       "category": "delegated_scope_boundary",
-      "description": "A test verifies an expired or unaccepted delegated access grant cannot let a participant read seeded cross-boundary project data, and asserts the serialized response does not contain a seeded cross-boundary project marker."
+      "description": "A test verifies an expired or unaccepted delegated access grant cannot let a participant read seeded cross-boundary project data, and asserts the serialized response does not contain a seeded cross-boundary project marker.",
+      "justification": "Ensures delegated grants cannot be replayed or stretched beyond their intended workspace; absence of the seeded marker proves delegation is correctly scoped and time-bound."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "operational_surface_boundary",
-      "description": "A test verifies an ordinary authenticated participant cannot retrieve seeded operational configuration data, and asserts the serialized response does not contain a seeded secret configuration marker."
+      "description": "A test verifies an ordinary authenticated participant cannot retrieve seeded operational configuration data, and asserts the serialized response does not contain a seeded secret configuration marker.",
+      "justification": "Operational and debug surfaces often leak sensitive configuration; this test ensures auxiliary surfaces do not expose operational markers to ordinary participants."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
       "category": "cross_boundary_project_readback",
-      "description": "A test serializes a participant readback response for seeded cross-boundary project data and asserts the outcome does not contain a seeded cross-boundary project marker."
+      "description": "A test serializes a participant readback response for seeded cross-boundary project data and asserts the outcome does not contain a seeded cross-boundary project marker.",
+      "justification": "Prevents cross-boundary data disclosure by proving non-privileged callers cannot read privileged project fields; missing seeded markers demonstrate proper enforcement."
     },
     {
       "id": "RUB-004",
       "severity": "critical",
       "category": "cross_boundary_project_discovery",
-      "description": "A test serializes participant project discovery results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary project marker."
+      "description": "A test serializes participant project discovery results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary project marker.",
+      "justification": "Discovery endpoints can widen surface area; this test ensures discovery and listing paths do not reveal cross-boundary projects to unauthorized callers."
     },
     {
       "id": "RUB-005",
       "severity": "critical",
       "category": "cross_boundary_task_search",
-      "description": "A test serializes participant task search results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary task marker."
+      "description": "A test serializes participant task search results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary task marker.",
+      "justification": "Search and query surfaces are common exfiltration vectors; asserting the absence of seeded task markers verifies search surfaces are scoped correctly."
     },
     {
       "id": "RUB-006",
       "severity": "critical",
       "category": "participant_response_shaping",
-      "description": "A test serializes a participant project readback response for same-boundary data and asserts it does not contain a seeded privileged project marker."
+      "description": "A test serializes a participant project readback response for same-boundary data and asserts it does not contain a seeded privileged project marker.",
+      "justification": "Response-shaping must not leak privileged fields; this item verifies that body-level serialization does not surface admin-only metadata to regular participants."
     },
     {
       "id": "RUB-007",
       "severity": "major",
       "category": "internal_comment_visibility",
-      "description": "A test serializes participant comment readback for seeded same-boundary task data and asserts the response does not contain a seeded internal comment marker."
+      "description": "A test serializes participant comment readback for seeded same-boundary task data and asserts the response does not contain a seeded internal comment marker.",
+      "justification": "Comments and pinned/internal flags are sensitive; this test ensures internal discussion artifacts are not exposed to ordinary participants."
     },
     {
       "id": "RUB-008",
       "severity": "major",
       "category": "same_boundary_project_access",
-      "description": "A test verifies a participant can read seeded same-boundary project data and asserts the response contains a seeded same-boundary project marker."
+      "description": "A test verifies a participant can read seeded same-boundary project data and asserts the response contains a seeded same-boundary project marker.",
+      "justification": "Anti-overblock checks confirm legitimate same-team access remains intact; returning the seeded marker proves positive-flow functionality."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "same_boundary_task_search",
-      "description": "A test verifies participant search for seeded same-boundary task data still returns the seeded same-boundary task marker."
+      "description": "A test verifies participant search for seeded same-boundary task data still returns the seeded same-boundary task marker.",
+      "justification": "Ensures search and discovery surfaces still serve intended same-boundary results and are not accidentally restricted by fixes."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "admin_project_visibility",
-      "description": "A test verifies admin readback of seeded cross-boundary project data returns a seeded privileged project marker."
+      "description": "A test verifies admin readback of seeded cross-boundary project data returns a seeded privileged project marker.",
+      "justification": "Admin and privileged roles must retain visibility; this item guards against fixes that would over-restrict administrative access."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "admin_task_visibility",
-      "description": "A test verifies admin readback of seeded cross-boundary task data returns a seeded privileged task marker."
+      "description": "A test verifies admin readback of seeded cross-boundary task data returns a seeded privileged task marker.",
+      "justification": "Confirms privileged task-level visibility for administrators remains available and is not blocked by security patches."
     },
     {
       "id": "RUB-012",
       "severity": "minor",
       "category": "test_quality",
-      "description": "The submitted tests are executable pytest tests that use the provided Flask test client or fixtures and include concrete assertions against response status or serialized response content."
+      "description": "The submitted tests are executable pytest tests that use the provided Flask test client or fixtures and include concrete assertions against response status or serialized response content.",
+      "justification": "Encourages robust, executable tests that assert body-level markers and use shared fixtures instead of fragile or superficial assertions."
     },
     {
       "id": "RUB-013",
       "severity": "minor",
       "category": "repeatability",
-      "description": "At least one test isolates state by creating fresh resources with unique sentinel markers and asserts that results do not depend on data created by other tests."
+      "description": "At least one test isolates state by creating fresh resources with unique sentinel markers and asserts that results do not depend on data created by other tests.",
+      "justification": "Ensures results are repeatable and independent by isolating state and using unique sentinel markers for reliable verification."
     }
   ],
   "rubric_severity_weights": {
@@ -121,5 +134,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 39
+  "rubric_max_score": 41
 }
