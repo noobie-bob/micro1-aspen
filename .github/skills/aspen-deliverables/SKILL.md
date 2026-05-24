@@ -52,6 +52,18 @@ Concise (8–15 lines) technical justification:
 - How the rubric decomposes along the scenario's structural axes — give counts.
 - How severity weights map to rubric counts to produce `rubric_max_score`.
 
+Match the compact gold-sample shape in `tasks/gold-sample-aspen-main/reasoning.txt`:
+
+- usually two dense paragraphs, not bullets in the file itself
+- paragraph 1 = scenario and why test-authoring fits
+- paragraph 2 = rubric-group decomposition, counts, and score math
+
+Source the decomposition from the live `task_config.json` for that task:
+
+- group the current `ground_truth_issues[]` into the task's real structural buckets
+- ensure the counts reconcile to the current rubric item total
+- recompute `rubric_max_score` from `rubric_severity_weights` instead of copying old arithmetic
+
 ### README.md
 
 Team-facing status report. Required sections:

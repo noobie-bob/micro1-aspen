@@ -16,6 +16,7 @@ RUN pip install -r /repo/requirements.txt
 # Copy only the conftest.py — the agent writes ALL test files.
 # conftest.py provides shared fixtures (client, auth headers, two_teams).
 COPY projhub/ /repo/projhub/
+COPY tests/test_smoke.py /repo/tests/test_smoke.py
 COPY tests/conftest.py /repo/tests/conftest.py
 COPY pytest.ini /repo/pytest.ini
 
