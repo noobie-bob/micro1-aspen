@@ -1,12 +1,3 @@
-"""Small local substrate for exercising pydantic-core union behavior.
-
-This repository intentionally does not vendor or clone pydantic-core.  Instead it
-installs the released pydantic-core wheel and exposes a few tiny helpers used by
-smoke tests and by task authors who want readable examples.  The benchmark task
-itself asks agents to write tests against pydantic_core.SchemaValidator and
-pydantic_core.core_schema directly, because the behavior under test lives in the
-core validation layer.
-"""
 from __future__ import annotations
 
 from typing import Any

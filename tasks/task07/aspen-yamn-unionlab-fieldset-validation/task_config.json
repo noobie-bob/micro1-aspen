@@ -4,13 +4,13 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task07",
-    "base_commit": "PLACEHOLDER_BUILD_COMMIT",
-    "image_name": "micro1ai/aspen-unionlab:fields-set-validation-v1",
-    "image_digest": "sha256:PLACEHOLDER_IMAGE_DIGEST",
+    "base_commit": "0f5f98ce508232823dfc9bf20d4d3b40b87471b9",
+    "image_name": "micro1ai/aspen-unionlab:fields-set-validation-v2",
+    "image_digest": "sha256:6586ddea0e1bfed4aba4f02d9b4839bcb006b5e19e2cc22707e443f4414c4101",
     "repo_dir": "/repo",
     "language": "python"
   },
-  "title": "Author tests for local Unionlabs field-count selection",
+  "title": "Author tests for local Unionlabs field-set validation",
   "track": "Realm Aspen",
   "cwe": [],
   "severity": "critical",
@@ -99,7 +99,7 @@
       "id": "RUB-013",
       "severity": "nitpick",
       "category": "test_quality",
-      "description": "Tests use pydantic_core.SchemaValidator and pydantic_core.core_schema directly for the core behavior under test, with any local unionlab helpers used only for smoke-style convenience if at all."
+      "description": "Tests use SchemaValidator and core_schema directly for the core behavior under test, with any local unionlab helpers used only for smoke-style convenience if at all."
     }
   ],
   "rubric_max_score": 30,

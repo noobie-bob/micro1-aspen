@@ -235,7 +235,7 @@ docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} \
   find /repo -type f -not -path '/repo/.git/*' | sort
 ```
 
-Expected: ONLY substrate files, `tests/conftest.py`, `pytest.ini`, `requirements.txt`. No `test_smoke.py`, no `exfiltration/`.
+Expected: ONLY substrate files, `tests/conftest.py`, `pytest.ini`, `requirements.txt`, `test_smoke.py`. No `exfiltration/`.
 
 ## Image Naming Convention
 
@@ -248,7 +248,6 @@ Expected: ONLY substrate files, `tests/conftest.py`, `pytest.ini`, `requirements
 
 - **E2B's image cache is sticky:** A poisoned tag (wrong arch, broken deps) is permanent. Increment version suffix.
 - **Realm does not pick up task_config.json changes** after initial upload — create a new task.
-- **No test_smoke.py in production:** Do not reference it in `prompt.txt`. Reference `conftest.py` instead.
 - **No placeholder strings in config:** Replace `"LEAVE_BLANK"` with empty strings.
 - **No pipeline-name leftovers:** No `shield`, `sequoia`, or `hornbeam` in git config or commit messages.
 
@@ -263,6 +262,6 @@ Expected: ONLY substrate files, `tests/conftest.py`, `pytest.ini`, `requirements
 - [ ] E2B uid-1000-user convention followed
 - [ ] Fresh git init, single commit, no remote
 - [ ] Image contains ONLY substrate + conftest.py + pytest.ini
-- [ ] No `test_smoke.py`, no `exfiltration/`, no `__pycache__/`
+- [ ] No `exfiltration/`, no `__pycache__/`
 - [ ] `task_config.json` has no placeholders; `image_name`, `image_digest`, `base_commit` all match
 - [ ] Image set to PRIVATE on Docker Hub
