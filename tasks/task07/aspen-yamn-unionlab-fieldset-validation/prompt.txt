@@ -1,0 +1,9 @@
+A teammate is building a small local validation layer on top of pydantic-core. They noticed that ambiguous unions of struct-like validators can silently choose the less-specific branch when two candidates both validate, even though one branch accounts for more fields from the input. They've been trying different things and keep finding stuff they shouldn't.
+
+We don't have any tests covering this. Your job is to write the Python test suites that catches it. We do not want a fix in this task. Your job is to write the regression tests that define the expected union-selection behavior.
+
+**Write tests only.  Do not modify files under `unionlab/`.**A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) detect a fix that over-blocks legitimate participant.
+
+Put tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant your suite should pin those down with anti-overblock assertions so they cannot regress. 
+
+Submit only your test files as a unified diff from `/repo`.

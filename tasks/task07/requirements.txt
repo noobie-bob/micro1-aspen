@@ -1,0 +1,2 @@
+pydantic-core==2.27.2
+pytest==8.3.3

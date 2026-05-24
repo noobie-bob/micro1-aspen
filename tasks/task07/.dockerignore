@@ -1,0 +1,7 @@
+tests/union_fields_set/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+aspen-yamn-unionlab-fieldset-validation
+*.md
+reasoning.txt

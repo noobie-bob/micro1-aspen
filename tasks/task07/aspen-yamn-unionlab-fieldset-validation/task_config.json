@@ -1,0 +1,112 @@
+{
+  "instance_id": "aspen__unionlab_fields_set_validation_001",
+  "pipeline": "aspen",
+  "task_type": "test_authoring",
+  "repo": {
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task07",
+    "base_commit": "PLACEHOLDER_BUILD_COMMIT",
+    "image_name": "micro1ai/aspen-unionlab:fields-set-validation-v1",
+    "image_digest": "sha256:PLACEHOLDER_IMAGE_DIGEST",
+    "repo_dir": "/repo",
+    "language": "python"
+  },
+  "title": "Author tests for local Unionlabs field-count selection",
+  "track": "Realm Aspen",
+  "cwe": [],
+  "severity": "critical",
+  "behavioral_prompt": "prompt.txt",
+  "rubric_only": true,
+  "submission": {
+    "expected_diff_paths": [
+      "tests/union_fields_set/"
+    ],
+    "presentation": "git_diff"
+  },
+  "ground_truth_issues": [
+    {
+      "id": "RUB-001",
+      "severity": "critical",
+      "category": "union_selection",
+      "description": "A test constructs a union of two model-like core schemas where one candidate's fields are a strict superset of the other's, validates input containing all fields of the more-specific candidate, and asserts that the returned object is the more-specific type rather than the less-specific type."
+    },
+    {
+      "id": "RUB-002",
+      "severity": "major",
+      "category": "union_selection",
+      "description": "A test verifies order-independence by constructing the same model-like union in both candidate orders and asserting that smart-mode validation selects the more-specific candidate in both cases."
+    },
+    {
+      "id": "RUB-003",
+      "severity": "major",
+      "category": "validator_coverage",
+      "description": "A test exercises typed dict schemas with overlapping keys where one typed dict has more keys, validates input containing the extra key, and asserts the branch matching more explicitly provided fields is selected or distinguishable by branch-specific output."
+    },
+    {
+      "id": "RUB-004",
+      "severity": "major",
+      "category": "validator_coverage",
+      "description": "A test exercises dataclass schemas with overlapping fields where one dataclass has more fields, validates input containing the extra field, and asserts the more-specific dataclass type is selected."
+    },
+    {
+      "id": "RUB-005",
+      "severity": "major",
+      "category": "union_selection",
+      "description": "A test covers defaults by creating a union where one struct-like candidate defines defaulted fields, validates input that omits those defaulted fields, and asserts selection is based on fields explicitly present in the input rather than total defined fields after defaults are applied."
+    },
+    {
+      "id": "RUB-006",
+      "severity": "major",
+      "category": "union_selection",
+      "description": "A test covers a specialized variant, such as a subclass-like model or an extending model schema, validates input containing the specialized extra field, and asserts the specialized type is selected."
+    },
+    {
+      "id": "RUB-007",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "An anti-regression test asserts plain scalar unions still work, for example int input returns an int and string input returns a str when using core_schema.union_schema."
+    },
+    {
+      "id": "RUB-008",
+      "severity": "major",
+      "category": "regression_guard",
+      "description": "An anti-regression test asserts that when exactly one union member can validate a given input, that member is selected correctly without relying on field-count tie-breaking."
+    },
+    {
+      "id": "RUB-009",
+      "severity": "minor",
+      "category": "union_selection",
+      "description": "A test constructs a union with three or more struct-like schemas and validates input whose best match is neither the first nor the last candidate, proving smart-mode comparison is global across all successful candidates."
+    },
+    {
+      "id": "RUB-010",
+      "severity": "minor",
+      "category": "implementation",
+      "description": "A test compares smart mode with left-to-right mode for the same ambiguous input and asserts the two modes can intentionally choose different candidates."
+    },
+    {
+      "id": "RUB-011",
+      "severity": "minor",
+      "category": "regression_guard",
+      "description": "An anti-regression test verifies nullable or mixed unions, such as None plus a struct-like schema or a struct-like schema plus a literal/string schema, still select the appropriate member for each input shape."
+    },
+    {
+      "id": "RUB-012",
+      "severity": "nitpick",
+      "category": "test_quality",
+      "description": "Tests assert returned object type, class identity, branch tag, or another concrete branch discriminator rather than merely asserting validation succeeds."
+    },
+    {
+      "id": "RUB-013",
+      "severity": "nitpick",
+      "category": "test_quality",
+      "description": "Tests use pydantic_core.SchemaValidator and pydantic_core.core_schema directly for the core behavior under test, with any local unionlab helpers used only for smoke-style convenience if at all."
+    }
+  ],
+  "rubric_max_score": 30,
+  "rubric_severity_weights": {
+    "critical": 4,
+    "major": 3,
+    "minor": 2,
+    "nitpick": 1
+  }
+}
