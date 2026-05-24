@@ -1,0 +1,15 @@
+The Aspen pipeline grades a frontier model on its ability to author a
+hidden test suite for seeded information-exposure and access-control
+surfaces in the `mcp_vault` tool substrate. The agent inspects a small
+Python MCP (tool) codebase with seeded documents and sentinel markers,
+identifies call sites that expose private fields (preview/export/audit),
+and writes pytest tests that (a) catch ordinary-leak exposures and (b)
+assert that legitimate participant and admin flows remain allowed.
+
+The 11 rubric items decompose into three structural groups: read-side
+leak and response-shaping coverage (5 criteria), admin and cross-org
+legitimate-access guards (3 criteria), and serialization/test-quality
+checks (3 criteria). Severity weights are `critical=4, major=3,
+minor=2, nitpick=1` producing arithmetic: `1*4 + 7*3 + 2*2 + 1*1 = 30`
+(`rubric_max_score = 30`). The reasoning and group counts above are
+derived directly from `aspen_mcpvault_security_002/task_config.json`.
