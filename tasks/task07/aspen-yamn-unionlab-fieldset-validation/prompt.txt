@@ -1,9 +1,9 @@
-A teammate is building a small local validation layer on top of pydantic-core. They noticed that ambiguous unions of struct-like validators can silently choose the less-specific branch when two candidates both validate, even though one branch accounts for more fields from the input. They've been trying different things and keep finding stuff they shouldn't.
+A teammate said the UnionLab validation layer feels inconsistent when it handles ordinary object-shaped input. They were able to provide data that clearly belonged to a more-specific branch, but validation sometimes came back as the broader generic branch instead. They also noticed that prefilled or fallback values seemed to affect the choice, even when those values were not part of the caller's input.
 
-We don't have any tests covering this. Your job is to write the Python test suites that catches it. We do not want a fix in this task. Your job is to write the regression tests that define the expected union-selection behavior.
+We don't have any tests covering this. Your job is to write the test suite that catches it.
 
-**Write tests only.  Do not modify files under `unionlab/`.**A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) detect a fix that over-blocks legitimate participant.
+**Write tests only. Do not modify any file under `unionlab/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the bad branch-selection behavior and (2) catch a fix that over-corrects by breaking legitimate validation behavior that already works.
 
-Put tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant your suite should pin those down with anti-overblock assertions so they cannot regress. 
+Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the baseline validation flows already in use — your suite should pin those down with anti-overblock assertions so they cannot regress.
 
-Submit only your test files as a unified diff from `/repo`.
+Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
