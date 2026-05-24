@@ -4,9 +4,9 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
-    "base_commit": "84d3b0592d966649c6285aa96a6d9ad405fd1765",
-    "image_name": "micro1ai/aspen-yamn-projecthub-flask:v1",
-    "image_digest": "sha256:c776f70874d6e940f2ea91b847c13add3408edf1f1d42562762d21b3815ccf59",
+    "base_commit": "79eae505230e7d6b9714940e67237a1da7d112fc",
+    "image_name": "micro1ai/aspen-yamn-projecthub-flask:security-v1",
+    "image_digest": "sha256:c32292f4bde3fedfe2d35e54f74b8cebaa4cf6092ca7997582c34147ff445935",
     "repo_dir": "/repo",
     "language": "python"
   },
@@ -38,108 +38,87 @@
   "ground_truth_issues": [
     {
       "id": "RUB-001",
-      "severity": "critical",
-      "category": "delegated_scope_hard_rung",
-      "description": "Delegated/share scope confinement: create a share for beta_project as an authorized beta/admin caller, accept it as the target user, and prove that accepted access is confined to that same beta project. The test must also prove the seeded expired/unaccepted share does not grant beta access and that the accepted beta share cannot be replayed to alpha_project or alpha_task. Use captured share_id/token and seeded_ids['expired_share']; include a same-team positive control.",
-      "justification": "valid delegated state works only within explicit scope; expired/unaccepted/replayed state must fail."
+      "severity": "major",
+      "category": "delegated_scope_boundary",
+      "description": "A test verifies an expired or unaccepted delegated access grant cannot let a participant read seeded cross-boundary project data, and asserts the serialized response does not contain a seeded cross-boundary project marker."
     },
     {
       "id": "RUB-002",
-      "severity": "critical",
-      "category": "unsafe_inputs_hard_rung",
-      "description": "Table-driven unsafe-input chain with benign controls across four surfaces: project search, task search, report generation, webhook notification, and attachment retrieval. For each surface include one benign request that succeeds and one crafted request that must not leak SENTINEL_* markers, command-output artifacts such as uid=, internal webhook targets such as localhost/127.0.0.1/169.254.169.254, or SENTINEL_ROOT_SECRET from traversal-style paths.",
-      "justification": "multi-surface crafted-input testing with positive controls and content-level non-leak assertions."
+      "severity": "major",
+      "category": "operational_surface_boundary",
+      "description": "A test verifies an ordinary authenticated participant cannot retrieve seeded operational configuration data, and asserts the serialized response does not contain a seeded secret configuration marker."
     },
     {
       "id": "RUB-003",
       "severity": "critical",
-      "category": "error_and_token_hard_rung",
-      "description": "A combined hard-rung test verifies two properties: first, malformed/not-found/forced-error responses must not contain Traceback, projhub/app.py, filesystem-looking paths, runtime version strings, sys.path-like content, or executable command text; second, repeated share-link issuance must produce usable non-empty links that are not simple echoes or substring embeddings of the stable project id or user id and do not expose privileged sentinels.",
-      "justification": "Keeps the known hard error-sanitization and token-property patterns, but combines them so they act as a deliberate top-end discriminator rather than many accidental failures."
+      "category": "cross_boundary_project_readback",
+      "description": "A test serializes a participant readback response for seeded cross-boundary project data and asserts the outcome does not contain a seeded cross-boundary project marker."
     },
     {
       "id": "RUB-004",
-      "severity": "major",
-      "category": "boundary_journey",
-      "description": "Boundary journey across project and task read surfaces: using seeded_ids or fresh resources, assert bearer user-key can list/retrieve alpha_project and alpha_task but cannot enumerate, retrieve, or body-leak beta_project or beta_task. Required anchors: use the same beta_project and beta_task identifiers across GET /projects, GET /projects/{id}, GET /tasks/{id}, and GET /projects/{id}/tasks; raw bodies must not contain SENTINEL_ADMIN_CONFIG_BETA or SENTINEL_REVIEWER_NOTES_BETA.",
-      "justification": "Opus-favouring journey: same IDs across multiple endpoints plus positive same-boundary controls."
+      "severity": "critical",
+      "category": "cross_boundary_project_discovery",
+      "description": "A test serializes participant project discovery results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary project marker."
     },
     {
       "id": "RUB-005",
-      "severity": "major",
-      "category": "response_shaping",
-      "description": "Cross-surface response shaping: seed or use one project with admin_config/internal_metrics/budget sentinel markers. For a non-admin same-team caller, assert those exact markers are absent from GET /projects/{id}, POST /projects/{id}/share, GET /projects/{id}/export, and search response bodies. In the same test, use admin-key on the same project id and assert the privileged markers remain visible to admin.",
-      "justification": "Validated Type-B pattern: primary plus secondary/package views, same marker, non-admin absence, admin positive control."
+      "severity": "critical",
+      "category": "cross_boundary_task_search",
+      "description": "A test serializes participant task search results for seeded cross-boundary data and asserts the results do not contain a seeded cross-boundary task marker."
     },
     {
       "id": "RUB-006",
-      "severity": "major",
-      "category": "operational_surfaces",
-      "description": "Operational surface non-leak chain: call /debug/users, /debug/config, /debug/env, /debug/dump, /api/v1/projects, /api/v1/tasks, /ops/replay, and /ops/cursor/<id> as both unauthenticated and bearer user-key callers. For every non-privileged response body, assert known tokens and sentinels are absent: admin-key, user-key, user2-key, SENTINEL_JWT_SECRET, SENTINEL_DB_PASSWORD, SENTINEL_AWS_TOKEN, and SENTINEL_ROOT_SECRET. Status-code-only checks do not satisfy this item.",
-      "justification": "Validated Flask pattern: multi-caller operational denial/sanitization with raw-body token and secret absence."
+      "severity": "critical",
+      "category": "participant_response_shaping",
+      "description": "A test serializes a participant project readback response for same-boundary data and asserts it does not contain a seeded privileged project marker."
     },
     {
       "id": "RUB-007",
       "severity": "major",
-      "category": "mutation_integrity",
-      "description": "Project mutation integrity with authoritative readback: have bearer user-key attempt to PATCH beta_project to rewrite owner_id, team_id, admin_config.marker, internal_metrics.marker, and budget_allocation. Then read the same beta_project as admin-key and assert the original owner/team and SENTINEL_ADMIN_CONFIG_BETA/SENTINEL_INTERNAL_METRICS_BETA markers remain unchanged.",
-      "justification": "Validated mutation-integrity pattern: forbidden mutation attempt plus admin readback unchanged."
+      "category": "internal_comment_visibility",
+      "description": "A test serializes participant comment readback for seeded same-boundary task data and asserts the response does not contain a seeded internal comment marker."
     },
     {
       "id": "RUB-008",
       "severity": "major",
-      "category": "task_mutation_integrity",
-      "description": "Task mutation integrity with authoritative readback: have bearer user-key attempt to PATCH beta_task to rewrite status, project_id, team_id, assigned_to, internal_priority, and reviewer_notes. Then read the same beta_task as admin-key and assert the original boundary fields and SENTINEL_REVIEWER_NOTES_BETA/internal_priority values remain unchanged.",
-      "justification": "Validated task-state analogue of cross-team mutation denied with owner/admin readback."
+      "category": "same_boundary_project_access",
+      "description": "A test verifies a participant can read seeded same-boundary project data and asserts the response contains a seeded same-boundary project marker."
     },
     {
       "id": "RUB-009",
       "severity": "major",
-      "category": "admin_create_retrieve_regression",
-      "description": "Anti-overblock: with admin-key, create a fresh team, then create a fresh project under that exact team and capture project_id. Then GET /projects/{project_id} with admin-key and assert HTTP 200, returned id equals captured project_id, returned team_id equals the created team id, and the created name matches. This must be a direct create-and-retrieve assertion, not only fixture setup.",
-      "justification": "Addresses prior judge feedback where broad admin project coverage missed direct create+retrieve proof."
+      "category": "same_boundary_task_search",
+      "description": "A test verifies participant search for seeded same-boundary task data still returns the seeded same-boundary task marker."
     },
     {
       "id": "RUB-010",
       "severity": "major",
-      "category": "same_task_identity_regression",
-      "description": "Anti-overblock: create a task in a same-team project as user-key and capture task_id. Assert GET /tasks/{task_id} returns that exact id, then GET /projects/{project_id}/tasks returns a JSON array containing an object with the same captured task_id. Then POST /tasks/{task_id}/assign and POST /tasks/{task_id}/transition to done and assert the same id/status are returned.",
-      "justification": "Addresses prior judge feedback where endpoints were covered separately but same-task identity was not explicitly joined."
+      "category": "admin_project_visibility",
+      "description": "A test verifies admin readback of seeded cross-boundary project data returns a seeded privileged project marker."
     },
     {
       "id": "RUB-011",
       "severity": "major",
-      "category": "same_boundary_action_regression",
-      "description": "Anti-overblock: for a same-team project, bearer user-key can call POST /projects/{id}/share, GET /projects/{id}/export, POST /projects/{id}/duplicate, POST /projects/{id}/snapshot, POST /projects/{id}/generate-report with benign input, and POST /projects/{id}/share-link. Assert each returns 2xx/201 and each response contains a stable project id, action field, token, URL, or generated status appropriate to that endpoint.",
-      "justification": "Keeps legitimate action endpoints usable after hardening; modeled after successful same-boundary action guards."
+      "category": "admin_task_visibility",
+      "description": "A test verifies admin readback of seeded cross-boundary task data returns a seeded privileged task marker."
     },
     {
       "id": "RUB-012",
-      "severity": "major",
-      "category": "admin_visibility_regression",
-      "description": "Anti-overblock: admin-key can list projects across both alpha and beta teams and retrieve each seeded project. The admin responses must include the corresponding privileged sentinels SENTINEL_ADMIN_CONFIG_ALPHA and SENTINEL_ADMIN_CONFIG_BETA on the correct project objects.",
-      "justification": "Prevents overblocking admin visibility and preserves privileged-field visibility for admin."
+      "severity": "minor",
+      "category": "repeatability",
+      "description": "The submitted tests reset or isolate application state so repeated test runs do not depend on execution order or mutated shared state."
     },
     {
       "id": "RUB-013",
       "severity": "minor",
-      "category": "same_boundary_collaboration_regression",
-      "description": "Anti-overblock: a same-team participant can add a non-internal comment to their own task, list comments for that task, upload a benign attachment, and retrieve that same attachment by path. Assertions must use the captured comment id or attachment path/body from the same test.",
-      "justification": "Simple D-style collaboration regression guard to lift stable model pass rates without weakening security rungs."
+      "category": "test_quality",
+      "description": "The submitted tests are executable pytest tests that use the provided Flask test client or fixtures and include concrete assertions against response status or serialized response content."
     },
     {
       "id": "RUB-014",
       "severity": "minor",
       "category": "repeatability",
-      "description": "Tests isolate state by intentionally using seeded_ids or by creating fresh resources with unique sentinel markers. Tests must not depend on mutations or data created by another test, and broad truthiness over non-unique data is insufficient.",
-      "justification": "Repeatability guard for seeded in-memory applications."
-    },
-    {
-      "id": "RUB-015",
-      "severity": "nitpick",
-      "category": "test_quality",
-      "description": "Tests use explicit body-level assertions with captured IDs and sentinel markers, plus small reusable setup/helper functions where useful. Status-code-only, exception-only, broad truthiness-only, or unrelated endpoint-coverage tests do not satisfy this criterion.",
-      "justification": "Validated quality discriminator: Opus more consistently keeps captured-ID and sentinel assertions."
+      "description": "At least one test isolates state by creating fresh resources with unique sentinel markers and asserts that results do not depend on data created by other tests."
     }
   ],
   "rubric_severity_weights": {
@@ -148,5 +127,5 @@
     "minor": 2,
     "nitpick": 1
   },
-  "rubric_max_score": 44
+  "rubric_max_score": 43
 }
