@@ -44,26 +44,26 @@
     {
       "id": "RUB-002",
       "severity": "major",
-      "category": "tool_call_basic",
-      "description": "A test calls `calculate_budget` through the tool-call interface with a simple addition expression and asserts the response contains the exact expected value."
+      "category": "participant_cross_boundary_read",
+      "description": "A test verifies an ordinary participant read attempt for seeded cross-boundary project data does not expose a seeded beta project marker."
     },
     {
       "id": "RUB-003",
       "severity": "major",
-      "category": "asset_fetch",
-      "description": "A test fetches an internal-looking asset URL and asserts the serialized response does not expose seeded internal metadata."
+      "category": "participant_cross_boundary_comment_non_leak",
+      "description": "A test verifies an ordinary participant comment listing for seeded cross-boundary work does not expose the seeded beta internal comment marker."
     },
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "diagnostic_non_leak",
-      "description": "A test calls a diagnostic or legacy information surface without admin authorization and asserts the serialized response does not expose a seeded secret marker."
+      "category": "same_team_search_basic",
+      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned."
     },
     {
       "id": "RUB-005",
       "severity": "major",
-      "category": "search_basic",
-      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned."
+      "category": "participant_cross_boundary_search_denial",
+      "description": "A test verifies an ordinary participant search result does not expose the seeded beta task marker."
     },
     {
       "id": "RUB-006",
@@ -80,8 +80,8 @@
     {
       "id": "RUB-008",
       "severity": "minor",
-      "category": "serialized_assertions",
-      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects."
+      "category": "serialized_cross_boundary_discovery_assertion",
+      "description": "A test converts the denied ordinary-participant cross-boundary discovery result into a serialized string before asserting that the seeded beta task marker is absent."
     },
     {
       "id": "RUB-009",
@@ -92,7 +92,7 @@
     {
       "id": "RUB-010",
       "severity": "nitpick",
-      "category": "serialization_helper_reuse",
+      "category": "serialized_marker_checks",
       "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
     },
     {
