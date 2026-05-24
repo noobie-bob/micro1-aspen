@@ -1,5 +1,9 @@
 A teammate said the ProjHub Flask service feels too permissive when they use it as an ordinary participant. They were able to move across team boundaries that should have stayed separate, and some responses looked richer than the same workflow should expose. They also suspected that delegated/share paths, debug/ops surfaces, legacy endpoints, and crafted inputs behave differently from the main product surface.
 
-We need a test suite that pins down the bad behavior without prescribing a particular fix. Write Python/pytest tests only. Do not modify any file under `projhub/`. Put your tests under `tests/exfiltration/`.
+We don't have any tests covering this. Your job is to write the test suite that catches it.
 
-A separate engineer will use your tests to validate their fix, so the suite needs to catch real boundary leaks, response-shaping mistakes, delegated-scope drift, unsafe request-handling paths, weak share artifacts, and operational-surface exposure while still preserving legitimate same-team, administrative, and role-appropriate behaviour. Submit only your test files as a unified diff via `submit_answer` from `/repo`.
+**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) catch a fix that over-blocks legitimate participant or admin flows.
+
+Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the legitimate participant + admin flows already in use — your suite should pin those down with anti-overblock assertions so they cannot regress.
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
