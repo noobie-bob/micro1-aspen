@@ -2,6 +2,6 @@ A participant on our mcp_vault platform reported that ordinary document previews
 
 We do not have tests covering this. Your job is to write the Python test suites that catch it. Do not modify server code. Put tests under `tests/exfiltration/`.
 
-Write tests only. A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) detect a fix that over-blocks legitimate same-team, participant, or admin flows.ß
+Write tests only. A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the leak the participant is exploiting and (2) detect a fix that over-blocks legitimate same-team, participant, or admin flows.
 
 Submit only your test files as a unified diff via `submit_answer` (applies clean from /repo).

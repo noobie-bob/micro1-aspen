@@ -44,8 +44,8 @@
     {
       "id": "RUB-002",
       "severity": "major",
-      "category": "participant_cross_boundary_read",
-      "description": "A test verifies an ordinary participant read attempt for seeded cross-boundary project data does not expose a seeded beta project marker."
+      "category": "participant_cross_org_document_read_non_leak",
+      "description": "A test verifies an ordinary participant read attempt for seeded cross-organization document data does not expose a seeded beta private-note marker."
     },
     {
       "id": "RUB-003",
@@ -56,14 +56,14 @@
     {
       "id": "RUB-004",
       "severity": "major",
-      "category": "same_team_search_basic",
-      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned."
+      "category": "same_org_search_basic",
+      "description": "A test searches for an existing alpha document marker as a same-organization caller and asserts that the expected document is returned."
     },
     {
       "id": "RUB-005",
       "severity": "major",
-      "category": "participant_cross_boundary_search_denial",
-      "description": "A test verifies an ordinary participant search result does not expose the seeded beta task marker."
+      "category": "participant_cross_org_search_denial",
+      "description": "A test verifies an ordinary participant search result does not expose a seeded beta private-note marker."
     },
     {
       "id": "RUB-006",

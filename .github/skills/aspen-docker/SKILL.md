@@ -138,9 +138,12 @@ reasoning.txt
 
 ## Building and Pushing
 
-> **WARNING:** Apple Silicon produces arm64. Always use `docker buildx --platform linux/amd64`.
 
-### Build production image:
+> **Note:** Apple Silicon (M1/M2) hosts are natively arm64. To make images runnable both on Linux (amd64) and macOS (arm64), prefer publishing a multi-arch manifest that contains both `linux/amd64` and `linux/arm64` variants. Building only `linux/amd64` is still acceptable for some workflows, but Docker Desktop will warn about a platform mismatch when running an amd64-only image on an arm64 host and may rely on emulation.
+
+### Build production image (single-arch)
+
+If you intentionally target only linux/amd64 (legacy requirement), use:
 
 ```bash
 cd micro1-aspen/tasks/taskNN/
@@ -153,6 +156,62 @@ docker buildx build --platform linux/amd64 \
 ```
 
 `--provenance=false --sbom=false` prevents OCI attestation manifests that E2B cannot parse.
+
+### Build production image (recommended: multi-arch)
+
+To support both Apple Silicon and Linux runners, build a multi-arch image that contains amd64 and arm64 variants:
+
+```bash
+cd micro1-aspen/tasks/taskNN/
+
+docker buildx build --platform linux/amd64,linux/arm64 \
+  --provenance=false --sbom=false \
+  -f aspen__{substrate}_{descriptor}_{NNN}/Dockerfile \
+  -t micro1ai/aspen-{substrate}:{descriptor}-v{N} \
+  --push .
+```
+
+Notes:
+- Building multi-arch requires `docker buildx` and may use emulation for cross-platform stages. It creates an index (manifest list) that lets Docker automatically pull the correct platform variant on the target host.
+- If you later run into "platform mismatch" warnings on macOS, re-publish as multi-arch.
+
+### Multi-arch verification & digest capture
+
+After pushing, inspect the image index (manifest list) and capture the top-level digest (the index digest). Use that index digest for `image_digest` in `task_config.json` when the image is multi-arch:
+
+```bash
+docker buildx imagetools inspect micro1ai/aspen-{substrate}:{descriptor}-v{N}
+
+# The output shows a top-level "Digest:" (index digest) and per-platform manifests.
+# Use the top-level "Digest:" value (sha256:...) as `image_digest` in task_config.json
+```
+
+Example verification commands (pulls correct platform variant automatically when available):
+
+```bash
+docker image rm micro1ai/aspen-{substrate}:{descriptor}-v{N} || true
+docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} uname -m
+
+# Force a specific platform if needed:
+docker run --rm --platform linux/amd64 micro1ai/aspen-{substrate}:{descriptor}-v{N} uname -m
+```
+
+To extract the commit stored in the image (commit location depends on Dockerfile):
+
+```bash
+# common places to check inside the running container
+docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} cat /repo/.git/refs/heads/master || true
+docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} cat /repo/{substrate}/.git/refs/heads/master || true
+
+# or, if git is available in the image
+docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} git -C /repo rev-parse HEAD || true
+```
+
+If you see "No such file or directory" for `/repo` or `.git`, inspect the container root to locate where files were copied (context path differences):
+
+```bash
+docker run --rm micro1ai/aspen-{substrate}:{descriptor}-v{N} sh -c "ls -la / && ls -la /repo || true && ls -la /{substrate} || true"
+```
 
 ### Capture the digest:
 
@@ -192,6 +251,9 @@ Expected: ONLY substrate files, `tests/conftest.py`, `pytest.ini`, `requirements
 - **No test_smoke.py in production:** Do not reference it in `prompt.txt`. Reference `conftest.py` instead.
 - **No placeholder strings in config:** Replace `"LEAVE_BLANK"` with empty strings.
 - **No pipeline-name leftovers:** No `shield`, `sequoia`, or `hornbeam` in git config or commit messages.
+
+- **Chown / user creation gotcha:** `chown -R user:user /repo` will fail if `user` does not exist. Create the `user` before chown (recommended: `groupadd` + `useradd` with uid 1000) or use numeric ownership `chown -R 1000:1000 /repo`.
+- **Context path gotcha:** When running `docker buildx build` the final argument is the build context. If you run the command from inside `tasks/taskNN` use `.` as context; from repo root you can pass `tasks/taskNN` as the context and adjust `-f` accordingly.
 
 ## First-Push Checklist
 

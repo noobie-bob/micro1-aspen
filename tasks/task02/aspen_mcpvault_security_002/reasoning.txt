@@ -1,4 +1,0 @@
-mcp_vault is a compact Python MCP server with seeded organizations, folders, documents, previews, search, audit, export, diagnostics, and small utility tools. The task is calibrated for simple unit tests that import the app module and call call_tool directly.
-
-The prompt is an incident report about ordinary document readback/search exposure, so the rubric prioritizes prompt-aligned read, preview, search, export denial, admin anti-overblock, and diagnostics non-leak behavior. The rubric uses short descriptions, one-line justifications, serialized response assertions, and a controlled mix of security checks and product-regression checks.
-

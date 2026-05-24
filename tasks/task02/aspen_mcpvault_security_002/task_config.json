@@ -4,9 +4,9 @@
   "task_type": "test_authoring",
   "repo": {
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task02",
-    "base_commit": "7ed0b4744037d7d5a9837106305b32fd5e7fe4df",
+    "base_commit": "b744718ee7d6c74363f5a3c1d113be65371bb3eb",
     "image_name": "micro1ai/aspen-mcp_vault_fastmcp:security-v1",
-    "image_digest": "sha256:948380849346a209522191e10900c0cf7d643f6a90e1db7124542a41a8b4e120",
+    "image_digest": "sha256:05ce66520cf9d9f8bc0eb40ed198e1741c996c278cb10511bf480dd397382db0",
     "repo_dir": "/mcp_vault",
     "language": "python"
   },
@@ -45,92 +45,79 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "same_org_get_document_alpha_id",
-      "description": "A test calls get_document as user-key for doc-alpha and asserts the returned id is doc-alpha.",
-      "justification": "Validates same-org access for the seeded 'doc-alpha' from seed.py (owner 'alice-uuid', title contains SENTINEL_ALPHA_DOC_BODY)."
+      "description": "A test calls get_document as user-key for doc-alpha and asserts the returned id is doc-alpha."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "valid_tool_call_specific_marker",
-      "description": "A test calls one valid mcp_vault tool through call_tool and asserts a specific seeded marker or exact expected value is returned.",
-      "justification": "Ensures tool call return values include seeded markers (e.g., SENTINEL_METADATA_TOKEN or diagnostic markers in seed.py)."
+      "description": "A test calls one valid mcp_vault tool through the tool-call interface and asserts the response contains a seeded alpha document marker."
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "same_org_search_alpha_result",
-      "description": "A test calls search_documents as user-key with an alpha-targeting query and asserts the returned results include doc-alpha.",
-      "justification": "Anchors search expectations to seeded titles/IDs in seed.py so an alpha-targeted query reliably returns 'doc-alpha'."
+      "description": "A test calls search_documents as user-key with an alpha-targeting query and asserts the returned results include doc-alpha."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "admin_get_document_beta_id",
-      "description": "A test calls get_document as admin-key for doc-beta and asserts the returned id is doc-beta.",
-      "justification": "Confirms admin visibility for 'doc-beta' seeded in seed.py (owner 'bob-uuid', title contains SENTINEL_BETA_DOC_BODY)."
+      "description": "A test calls get_document as admin-key for doc-beta and asserts the returned id is doc-beta."
     },
     {
       "id": "RUB-005",
       "severity": "minor",
       "category": "repeatability",
-      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state.",
-      "justification": "Require `app.reset_store()` or seeded IDs from seed.py so tests are order-independent and reproducible across runs."
+      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state."
     },
     {
       "id": "RUB-006",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects.",
-      "justification": "Prevent brittle assertions by serializing `call_tool` responses (tools may return non-JSON objects); anchors to API wrappers in app.py."
+      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects."
     },
     {
       "id": "RUB-007",
       "severity": "nitpick",
       "category": "explicit_expected_values",
-      "description": "Tests use explicit expected values or seeded markers rather than broad truthiness checks.",
-      "justification": "Prefer asserting against seeded values (e.g., 'doc-alpha', SENTINEL_ALPHA_PRIVATE_NOTE) to avoid under-specified tests."
+      "description": "Tests use explicit expected values or seeded markers rather than broad truthiness checks."
     },
     {
       "id": "RUB-008",
       "severity": "nitpick",
       "category": "serialization_helper_reuse",
-      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions.",
-      "justification": "Encourages a shared serialization helper to reduce duplication and ensure consistent checks across tests."
+      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
     },
     {
       "id": "RUB-009",
       "severity": "major",
       "category": "participant_discovery_beta_private_note_non_leak",
-      "description": "A test serializes participant discovery results for seeded cross-organization document data and asserts the results do not contain a seeded beta private-note marker.",
-      "justification": "Guards against leakage of `SENTINEL_BETA_PRIVATE_NOTE` (seeded in seed.py) in participant-facing discovery APIs."
+      "description": "A test serializes participant discovery results for seeded cross-organization document data and asserts the results do not contain a seeded beta private-note marker."
     },
     {
       "id": "RUB-010",
       "severity": "major",
       "category": "admin_preview_beta_identifier",
-      "description": "A test verifies an administrator preview response for seeded cross-organization document data contains a seeded beta identifier.",
-      "justification": "Verifies admin preview responses expose beta identifiers or sentinel markers like SENTINEL_BETA_DOC_BODY as present in seed.py."
+      "description": "A test verifies an administrator preview response for seeded cross-organization document data contains a seeded beta identifier."
     },
     {
       "id": "RUB-011",
       "severity": "minor",
       "category": "same_org_preview_alpha_identifier",
-      "description": "A test verifies a participant same-organization preview response for seeded alpha document data contains a seeded alpha identifier.",
-      "justification": "Ensures same-org participant preview responses include seeded alpha markers (SENTINEL_ALPHA_DOC_BODY) from seed.py."
+      "description": "A test verifies a participant same-organization preview response for seeded alpha document data contains a seeded alpha identifier."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "cross_org_preview_denial",
-      "description": "A test verifies a participant cross-organization preview attempt for seeded beta document data is denied.",
-      "justification": "Checks access control: cross-org preview requests for 'doc-beta' should be denied per folder/owner mapping in seed.py."
+      "description": "A test verifies a participant cross-organization preview attempt for seeded beta document data is denied."
     },
     {
       "id": "RUB-013",
       "severity": "major",
       "category": "cross_org_document_fetch_denial",
-      "description": "A test verifies a participant cross-organization direct document fetch attempt is denied.",
-      "justification": "Verifies direct fetches of 'doc-beta' by non-admins are rejected, matching seeded ownership and folder policies in seed.py."
+      "description": "A test verifies a participant cross-organization direct document fetch attempt is denied."
     }
   ],
   "rubric_severity_weights": {
