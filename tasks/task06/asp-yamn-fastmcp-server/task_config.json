@@ -6,7 +6,7 @@
     "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task06",
     "base_commit": "484e1c60642be13c9315097114d673cec207ee5e",
     "image_name": "micro1ai/aspen-mcp_hub_fastmcp:security-v1",
-    "image_digest": "sha256:e94d420e2d41d247023d5bd3159052e174c1012111a19b9fbb4cbb1239f3222b",
+    "image_digest": "sha256:e6af5f07f7891b0160bc9e531fbd06a3bc5fb08cf3fcbf67f07ef01ead7eb672",
     "repo_dir": "/mcp_hub",
     "language": "python"
   },
@@ -39,85 +39,73 @@
       "id": "RUB-001",
       "severity": "critical",
       "category": "same_team_participant_access",
-      "description": "A test verifies user-key can access seeded same-team task or project data.",
-      "justification": "Verifies user-key access to seeded same-team data, confirming legitimate same-team visibility and detecting unintended leaks.\nAssigned critical because leaking team-private data has high confidentiality impact and must be prioritized in scoring."
+      "description": "A test verifies user-key can access seeded same-team task or project data."
     },
     {
       "id": "RUB-002",
       "severity": "major",
       "category": "tool_call_basic",
-      "description": "A test calls a valid tool through call_tool and asserts a specific expected response or response marker is returned.",
-      "justification": "Asserts a tool call returns a specific marker to validate tool output integrity and detect exfiltration vectors.\nRated major because tool misbehavior can enable exploit chains but usually has lower direct confidentiality impact than raw data leaks."
+      "description": "A test calls `calculate_budget` through the tool-call interface with a simple addition expression and asserts the response contains the exact expected value."
     },
     {
       "id": "RUB-003",
       "severity": "major",
       "category": "asset_fetch",
-      "description": "A test fetches an internal-looking asset URL and asserts the serialized response does not expose seeded internal metadata.",
-      "justification": "Fetches internal-looking assets and checks for internal metadata exposure, catching leak vectors through attachments or indirect endpoints.\nMajor severity reflects that asset leaks can expose sensitive internals but are often narrower in scope than full data breaches."
+      "description": "A test fetches an internal-looking asset URL and asserts the serialized response does not expose seeded internal metadata."
     },
     {
       "id": "RUB-004",
       "severity": "major",
       "category": "diagnostic_non_leak",
-      "description": "A test calls a diagnostic or legacy information surface without admin authorization and asserts the serialized response does not expose a seeded secret marker.",
-      "justification": "Calls diagnostic/legacy surfaces without admin privileges to ensure they do not leak seeded secrets or internal state.\nClassified major because diagnostics can reveal sensitive information but typically require specific, non-default calls."
+      "description": "A test calls a diagnostic or legacy information surface without admin authorization and asserts the serialized response does not expose a seeded secret marker."
     },
     {
       "id": "RUB-005",
       "severity": "major",
       "category": "search_basic",
-      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned.",
-      "justification": "Performs same-team searches to validate visibility and boundary enforcement for search results.\nMarked major since incorrect search exposure can reveal multiple items and has noticeable product impact."
+      "description": "A test searches for an existing alpha task marker as a same-team caller and asserts that the expected task is returned."
     },
     {
       "id": "RUB-006",
       "severity": "major",
       "category": "admin_cross_team_access",
-      "description": "A test verifies admin-key can access seeded cross-team project or task data.",
-      "justification": "Verifies admin-key cross-team access to confirm intended elevated privileges and prevent privilege misconfiguration.\nMajor severity chosen because misconfigured admin access can cause high-impact cross-team data exposure."
+      "description": "A test verifies admin-key can access seeded cross-team project or task data."
     },
     {
       "id": "RUB-007",
       "severity": "minor",
       "category": "repeatability",
-      "description": "The submitted tests are independent and reproducible, using fresh setup or stable seeded data rather than relying on order-dependent state.",
-      "justification": "Ensures tests are independent and reproducible to avoid order-dependent flakiness and unreliable grading.\nAssigned minor because test hygiene improves reliability but is not a direct security vulnerability."
+      "description": "The submitted tests define or use a visible setup step that runs before every test function to restore seeded application state, and no test reads IDs or objects created by another test function."
     },
     {
       "id": "RUB-008",
       "severity": "minor",
       "category": "serialized_assertions",
-      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects.",
-      "justification": "Requires serialization of responses so assertions inspect actual payloads rather than opaque objects, reducing false positives.\nMinor severity reflects a best-practice that improves test accuracy without being a security blocker."
+      "description": "The submitted tests serialize tool responses before checking content or markers, so assertions inspect the actual returned data rather than opaque objects."
     },
     {
       "id": "RUB-009",
       "severity": "nitpick",
       "category": "captured_values",
-      "description": "Test that explicit expected values are used rather than broad truthiness checks.",
-      "justification": "Encourages explicit expected values over truthiness to increase assertion precision and reduce accidental passes.\nMarked nitpick because this is a stylistic/quality improvement with minimal impact on security scoring."
+      "description": "Test that explicit expected values are used rather than broad truthiness checks."
     },
     {
       "id": "RUB-010",
       "severity": "nitpick",
       "category": "serialization_helper_reuse",
-      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions.",
-      "justification": "Promotes reuse of a serialization helper across tests to ensure consistent formatting and reduce duplication.\nNitpick severity: maintainability benefit only, low impact on correctness or security."
+      "description": "The submitted tests define a serialization helper and reuse it in at least two test functions."
     },
     {
       "id": "RUB-011",
       "severity": "major",
       "category": "second_participant_same_team_access",
-      "description": "A test verifies user2-key can access seeded beta same-team task or project data and asserts a specific beta marker or seeded beta identifier.",
-      "justification": "Checks that a second participant (user2) has the expected same-team visibility, catching asymmetric authorization gaps.\nMajor severity because participant-level gaps often indicate authorization bugs with meaningful product impact."
+      "description": "A test verifies user2-key can access seeded beta same-team task or project data and asserts a specific beta marker or seeded beta identifier."
     },
     {
       "id": "RUB-012",
       "severity": "major",
       "category": "cross_team_denial_serialized_marker_check",
-      "description": "A test serializes a denied user-key cross-team task or project access attempt and asserts the response does not expose a seeded beta marker.",
-      "justification": "Serializes denied cross-team access attempts and asserts no seeded beta marker is exposed, preventing information leaks via denial responses.\nMajor severity because denial-response leakage can disclose the existence of cross-team assets and erode confidentiality."
+      "description": "A test serializes a denied user-key cross-team task or project access attempt and asserts the response does not expose a seeded beta marker."
     }
   ],
   "rubric_severity_weights": {
