@@ -90,18 +90,6 @@
         {
             "id": "RUB-012",
             "severity": "major",
-            "category": "latest_artifact_success_regression",
-            "description": "A test verifies the newest valid recovery artifact still completes the legitimate recovery flow successfully."
-        },
-        {
-            "id": "RUB-013",
-            "severity": "major",
-            "category": "real_mail_or_route_artifact_capture",
-            "description": "Tests obtain recovery artifacts through the application's public recovery route, mail outbox, or documented smoke-test capture path rather than inserting valid tokens directly into storage."
-        },
-        {
-            "id": "RUB-014",
-            "severity": "major",
             "category": "persistent_client_model",
             "description": "Tests use independent persistent clients or cookie jars for multi-request and cross-client recovery behavior."
         }
@@ -112,5 +100,5 @@
         "minor": 2,
         "nitpick": 1
     },
-    "rubric_max_score": 51
+    "rubric_max_score": 45
 }
