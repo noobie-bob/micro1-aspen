@@ -11,7 +11,7 @@
         "language": "python",
         "base_commit": "bb92416d6895b3af0174bb3c6c6315d35b8d4eb5",
         "image_name": "micro1ai/aspen-yamn-robyn:authorisation-validation-v1",
-        "image_digest": "sha256:1f0286960ab50c021ee8cc4d47ada2329f59c652da9422decea62ac5f1ec33e1"
+        "image_digest": "sha256:2d84b20bfd3549695c8926181e6bd6f4ef2933905839b3183a084b013c313c66"
     },
     "severity": "high",
     "submission": {
