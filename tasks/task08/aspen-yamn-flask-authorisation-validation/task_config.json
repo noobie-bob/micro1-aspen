@@ -1,0 +1,116 @@
+{
+    "instance_id": "aspen__yamn_flask_authorisation_validation_001",
+    "pipeline": "aspen",
+    "task_type": "test_authoring",
+    "title": "Aspen YAMN Flask Authorization Validation",
+    "track": "Realm Aspen",
+    "rubric_only": true,
+    "repo": {
+        "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task08",
+        "repo_dir": "/repo",
+        "language": "python",
+        "base_commit": "5fa70d141e774f4d182ed1209e9557e6dd1efe9e",
+        "image_name": "micro1ai/aspen-yamn-flask:authorisation-validation-v1",
+        "image_digest": "sha256:7cc078f2ea2a15beaffb9774e27da44bb73833e98ff14e2250b53a6b07d5541d"
+    },
+    "severity": "high",
+    "submission": {
+        "expected_diff_paths": [
+            "tests/exfiltration/"
+        ],
+        "presentation": "git_diff"
+    },
+    "ground_truth_issues": [
+        {
+            "id": "RUB-001",
+            "severity": "critical",
+            "category": "three_artifact_latest_only",
+            "description": "A test creates three distinct recovery artifacts for the same account through the real recovery flow and proves only the third/newest artifact can complete recovery."
+        },
+        {
+            "id": "RUB-002",
+            "severity": "critical",
+            "category": "all_prior_artifacts_rejected",
+            "description": "A test proves both earlier artifacts from a three-artifact sequence are rejected and cannot change the password."
+        },
+        {
+            "id": "RUB-003",
+            "severity": "critical",
+            "category": "stale_attempt_preserves_latest",
+            "description": "A test attempts recovery with a stale artifact, then proves the current newest artifact is still usable afterward."
+        },
+        {
+            "id": "RUB-004",
+            "severity": "critical",
+            "category": "used_latest_consumes_itself",
+            "description": "A test completes recovery with the newest artifact, then proves that exact newest artifact cannot be reused."
+        },
+        {
+            "id": "RUB-005",
+            "severity": "critical",
+            "category": "used_latest_keeps_older_invalid",
+            "description": "A test completes recovery with the newest artifact, then proves all older superseded artifacts remain unusable afterward."
+        },
+        {
+            "id": "RUB-006",
+            "severity": "critical",
+            "category": "cross_client_supersession",
+            "description": "A test uses two independent clients where client A obtains an artifact, client B obtains a newer artifact for the same account, and client A's older artifact is rejected."
+        },
+        {
+            "id": "RUB-007",
+            "severity": "critical",
+            "category": "cross_client_final_password_authority",
+            "description": "A test uses independent clients in overlapping recovery flows and proves the final account password can only be set by the newest valid artifact."
+        },
+        {
+            "id": "RUB-008",
+            "severity": "critical",
+            "category": "concurrent_single_winner",
+            "description": "A test issues concurrent or near-concurrent recovery requests and proves exactly one resulting artifact can complete recovery."
+        },
+        {
+            "id": "RUB-009",
+            "severity": "critical",
+            "category": "concurrent_losers_cannot_authenticate",
+            "description": "A test proves passwords attempted through losing or stale concurrent artifacts cannot be used to authenticate."
+        },
+        {
+            "id": "RUB-010",
+            "severity": "major",
+            "category": "stale_artifact_no_side_effects",
+            "description": "A test proves a failed stale-artifact recovery attempt does not change password state, invalidate the newest artifact, or corrupt later login behavior."
+        },
+        {
+            "id": "RUB-011",
+            "severity": "major",
+            "category": "post_recovery_auth_matrix",
+            "description": "A test verifies the authentication matrix after recovery: old password fails, stale-artifact password fails, and newest-artifact password succeeds."
+        },
+        {
+            "id": "RUB-012",
+            "severity": "major",
+            "category": "latest_artifact_success_regression",
+            "description": "A test verifies the newest valid recovery artifact still completes the legitimate recovery flow successfully."
+        },
+        {
+            "id": "RUB-013",
+            "severity": "major",
+            "category": "real_mail_or_route_artifact_capture",
+            "description": "Tests obtain recovery artifacts through the application's public recovery route, mail outbox, or documented smoke-test capture path rather than inserting valid tokens directly into storage."
+        },
+        {
+            "id": "RUB-014",
+            "severity": "major",
+            "category": "persistent_client_model",
+            "description": "Tests use independent persistent clients or cookie jars for multi-request and cross-client recovery behavior."
+        }
+    ],
+    "rubric_severity_weights": {
+        "critical": 4,
+        "major": 3,
+        "minor": 2,
+        "nitpick": 1
+    },
+    "rubric_max_score": 51
+}

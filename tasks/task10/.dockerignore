@@ -1,0 +1,9 @@
+# Python artifacts
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+
+# Exclude task config and supporting docs from container
+aspen-yamn-sanic-authorisation-validation/
+*.md
+reasoning.txt

@@ -1,0 +1,9 @@
+A user reported that they received multiple password recovery emails at different times and noticed older recovery links — ones they expected to be invalidated by the newer request — still appeared to work. The account recovery flow does not seem to enforce that only the most recently issued artifact is valid; earlier artifacts from the same account remain usable even after a newer one has been generated.
+
+We don't have any tests covering this. Your job is to write the test suite that catches it.
+
+**Write tests only. Do not modify any file under `projhub/`.** A separate engineer will use your tests to validate their fix; for them to trust your tests, the suite must (1) catch the broken supersession behavior and (2) verify the legitimate recovery flow still completes correctly so a fix cannot over-block genuine recovery. 
+
+Put your tests under `tests/exfiltration/`. `tests/test_smoke.py` shows the baseline account and recovery flows already in use — your suite should pin those down with regression assertions.
+
+Submit only your test files as a unified diff via `submit_answer` (applies clean from `/repo`).
