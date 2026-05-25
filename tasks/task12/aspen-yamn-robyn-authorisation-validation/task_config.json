@@ -9,9 +9,9 @@
         "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task12",
         "repo_dir": "/repo",
         "language": "python",
-        "base_commit": "bb92416d6895b3af0174bb3c6c6315d35b8d4eb5",
-        "image_name": "micro1ai/aspen-yamn-robyn:authorisation-validation-v1",
-        "image_digest": "sha256:2d84b20bfd3549695c8926181e6bd6f4ef2933905839b3183a084b013c313c66"
+        "base_commit": "89972529d98223b1168f711ce34de9c0293f4ed6",
+        "image_name": "micro1ai/aspen-yamn-robyn:authorisation-validation-v2",
+        "image_digest": "sha256:494fdd01d23e89f5802be5a59adc216f87ac202d0aff661e43c03315ebdb60f3"
     },
     "severity": "high",
     "submission": {

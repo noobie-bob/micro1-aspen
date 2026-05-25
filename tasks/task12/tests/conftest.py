@@ -1,4 +1,6 @@
-import multiprocessing
+import os
+import subprocess
+import sys
 import time
 
 import pytest
@@ -8,24 +10,24 @@ _PORT = 9301
 _BASE = f"http://127.0.0.1:{_PORT}"
 
 
-def _run_server():
-    from projhub.app import app
-    app.start(host="127.0.0.1", port=_PORT)
-
-
 @pytest.fixture(scope="session", autouse=True)
 def _server():
-    p = multiprocessing.Process(target=_run_server)
-    p.start()
+    env = {**os.environ, "PROJHUB_PORT": str(_PORT)}
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    proc = subprocess.Popen(
+        [sys.executable, os.path.join(root, "projhub", "app.py")],
+        env=env,
+        cwd=root,
+    )
     for _ in range(40):
         try:
-            requests.get(f"{_BASE}/__test__/sent-reset-emails", timeout=0.3)
+            requests.get(f"{_BASE}/__test__/sent-reset-emails", timeout=0.5)
             break
         except Exception:
             time.sleep(0.25)
     yield
-    p.terminate()
-    p.join(timeout=5)
+    proc.terminate()
+    proc.wait(timeout=5)
 
 
 class _Client:
