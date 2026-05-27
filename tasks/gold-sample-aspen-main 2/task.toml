@@ -1,0 +1,41 @@
+schema_version = "1.1"
+
+[task]
+name = "aspen/Author-tests-for-hidden-coding-task-artifact-exfiltration-in-taskhub-API"
+description = "Author tests for hidden coding-task artifact exfiltration in taskhub API"
+authors = []
+keywords = []
+
+[metadata]
+source = "m1-rl-envs"
+environment_id = "aspen"
+instance_id = "aspen__test_authoring_taskhub_idor_001"
+pipeline = "aspen"
+task_type = "test_authoring"
+rubric_only = true
+image_digest = "sha256:eb3c08ebd46399645b2b2cc3ff1f394fb093f7bc9953f012502e3dfa27a40489"
+base_commit = "87567646bb8d3e34b8c2b1b5f8f24d8965b8ba71"
+
+
+[verifier]
+timeout_sec = 1800.0
+
+[verifier.env]
+ANTHROPIC_API_KEY = "${ANTHROPIC_API_KEY:-}"
+OPENAI_API_KEY = "${OPENAI_API_KEY:-}"
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+build_timeout_sec = 3600.0
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = true
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]

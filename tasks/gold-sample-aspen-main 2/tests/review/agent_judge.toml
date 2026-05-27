@@ -1,0 +1,88 @@
+[judge]
+judge = "claude-code"
+
+timeout = 600
+isolated = false
+cwd = "/repo"
+prompt_template = "prompt.md"
+
+[[criterion]]
+name = "rub_001"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin GET /tasks/{id} response does not contain the private sandbox_config fields (gold_patch_b64, task_config_b64, test_patch_b64, hidden_seed_files). Category: access_control."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_002"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin GET /coding-tasks (list endpoint) response redacts the private sandbox_config fields from every row. Category: access_control."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_003"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin GET /tasks/{id}/files/{name} returns a 4xx for files that appear in sandbox_config.hidden_seed_files (per-task hidden-name awareness, not just well-known names). Category: access_control."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_004"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin GET /runs/{id}/artifacts (and /artifacts-zip) returns a 4xx when the run\u0027s model is a *_validation mode (e.g., gold_patch_validation, golden_repo_validation), recognizing validation runs as private. Category: ownership."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_005"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin GET /runs/{id}/artifacts (and /artifacts-zip) returns a 4xx when the run\u0027s created_by does not match the calling participant\u0027s user_id (cross-author run privacy). Category: ownership."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_006"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test exercises the duplicate-then-PATCH laundering flow: a non-admin duplicates a task, then PATCHes the clone\u0027s name; the test asserts the PATCH response does not leak the inherited private sandbox_config fields. Category: redaction."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_007"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test exercises the duplicate-then-share laundering flow: a non-admin duplicates a task, then calls /tasks/{id}/share on the clone; the test asserts the share response does not leak the inherited private fields. Category: redaction."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_008"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test exercises the duplicate-then-export laundering flow: a non-admin duplicates a task, then calls GET /tasks/{id}/export on the clone; the test asserts the export response does not leak the inherited private fields. Category: redaction."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_009"
+description = "The agent\u0027s submitted diff satisfies this rubric item: An anti-overblock test asserts that an admin GET /coding-tasks (list endpoint) STILL returns rows containing the private sandbox_config fields (gold_patch_b64 visible to admin). Catches over-eager fixes that scrub the list endpoint unconditionally. Category: regression_guard."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_010"
+description = "The agent\u0027s submitted diff satisfies this rubric item: Anti-overblock tests assert that a non-admin participant CAN still call /tasks/{id}/duplicate, /tasks/{id}/share, and /tasks/{id}/export on their own resources (returns 200/201, not 403). Catches over-eager fixes that admin-gate the entire write surface. Category: regression_guard."
+type = "binary"
+weight = 3.0
+
+[[criterion]]
+name = "rub_011"
+description = "The agent\u0027s submitted diff satisfies this rubric item: An anti-overblock test asserts that a non-admin GET /tasks/{id}/files/public_readme.md (or the equivalent public seed file) still returns 200 with the public content. Category: regression_guard."
+type = "binary"
+weight = 2.0
+
+[[criterion]]
+name = "rub_012"
+description = "The agent\u0027s submitted diff satisfies this rubric item: A test asserts that a non-admin cannot use path traversal (e.g., .. segments) in /tasks/{id}/files/{path} to reach .golden/ or other private subdirectories. Category: traversal."
+type = "binary"
+weight = 2.0
+
+[[criterion]]
+name = "rub_013"
+description = "The agent\u0027s submitted diff satisfies this rubric item: Tests seed sentinel marker bytes into private artifacts (gold patch, hidden seed files, validation run outputs) and assert those marker bytes do not appear anywhere in non-admin responses, including inside zip-archive contents. Strictly stronger than status-code-only assertions. Category: test_quality."
+type = "binary"
+weight = 1.0
+
+[scoring]
+aggregation = "weighted_mean"

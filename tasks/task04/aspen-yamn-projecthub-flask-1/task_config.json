@@ -1,9 +1,9 @@
 {
-  "instance_id": "aspen__projhub_flask_visibility",
+  "instance_id": "aspen__projhub_flask_visibility_004",
   "pipeline": "aspen",
   "task_type": "test_authoring",
   "repo": {
-    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task01",
+    "source_url": "https://github.com/noobie-bob/micro1-aspen/tree/main/tasks/task04",
     "base_commit": "54b6d7cab5a8c421d5ff7874a1d5f6d07d5c5668",
     "image_name": "micro1ai/aspen-yamn-projecthub-flask:security-v1",
     "image_digest": "sha256:b1f6f8bad85187b8a702da429f219a32cfc3de24f00b4fdac938b6ebb0755ba7",
